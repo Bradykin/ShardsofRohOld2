@@ -1,0 +1,23 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 11.00
+# Visual Studio 2010
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Shards of Roh", "Assembly-CSharp.csproj", "{3C66B08F-B50D-F2A9-4DBF-8B9C0EF0330B}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{3C66B08F-B50D-F2A9-4DBF-8B9C0EF0330B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3C66B08F-B50D-F2A9-4DBF-8B9C0EF0330B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3C66B08F-B50D-F2A9-4DBF-8B9C0EF0330B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3C66B08F-B50D-F2A9-4DBF-8B9C0EF0330B}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(MonoDevelopProperties) = preSolution
+		StartupItem = Assembly-CSharp.csproj
+	EndGlobalSection
+EndGlobal
