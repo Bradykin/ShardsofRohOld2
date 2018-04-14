@@ -7,6 +7,7 @@ public class PlayerContainer : MonoBehaviour {
 	public string playerName;
 	public GameObject buildToggle;
 	public bool buildToggleActive;
+	public string buildToggleSetting;
 	LayerMask buildToggleMask;
 
 	private Player player;

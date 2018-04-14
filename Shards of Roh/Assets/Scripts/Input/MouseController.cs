@@ -57,7 +57,7 @@ public class MouseController : MonoBehaviour {
 				RaycastHit hit;
 				Ray ray = Camera.main.ScreenPointToRay (getMousePosition());
 				if (Physics.Raycast (ray, out hit, 1000, buildToggleMask)) {
-					Building newBuilding = ObjectFactory.createBuildingByName ("WatchTower", GameManager.addPlayerToGame ("Player"), false);
+					Building newBuilding = ObjectFactory.createBuildingByName (GameManager.player.buildToggleSetting, GameManager.addPlayerToGame ("Player"), false);
 					GameObject instance = Instantiate (Resources.Load (newBuilding.getPrefabPath (), typeof(GameObject)) as GameObject);
 					instance.GetComponent<BuildingContainer> ().setBuilding (newBuilding);
 					if (instance.GetComponent<UnityEngine.AI.NavMeshObstacle> () != null) {
@@ -73,7 +73,9 @@ public class MouseController : MonoBehaviour {
 					instance.GetComponent<UnityEngine.AI.NavMeshObstacle> ().size = instance.transform.GetChild (1).GetComponent<UnityEngine.AI.NavMeshObstacle> ().size;
 
 					GameManager.player.buildToggleActive = false;
-					GameManager.player.buildToggle.transform.GetChild (0).gameObject.SetActive (false);
+					for (int i = 0; i < GameManager.player.buildToggle.transform.childCount; i++) {
+						GameManager.player.buildToggle.transform.GetChild (i).gameObject.SetActive (false);
+					}
 
 					GameManager.addPlayerToGame ("Player").addBuildingToPlayer (instance.GetComponent<BuildingContainer> ());
 				}
@@ -165,8 +167,10 @@ public class MouseController : MonoBehaviour {
 							targetLoc = clicked.GetComponent<BuildingContainer> ().getBuilding ().getCurLoc ();
 							foreach (var r in GameManager.player.getPlayer ().getCurUnitTarget ()) {
 								if (r.getUnit ().getVillager () == true) {
-									r.getUnit ().setAttackTarget (clicked.GetComponent<BuildingContainer> ());
-									attacking = true;
+									//if (!(r.getUnit ().getBuildingTarget ().getBuilding ().getOwner ().getName () == r.getUnit ().getOwner ().getName ()) || !r.getUnit ().getBuildingTarget ().getBuilding ().getIsBuilt ()) {
+										r.getUnit ().setAttackTarget (clicked.GetComponent<BuildingContainer> ());
+										attacking = true;
+									//}
 								} else {
 									if (clicked.GetComponent<BuildingContainer> ().getBuilding ().getIsResource () == false) {
 										if (clicked.GetComponent<BuildingContainer> ().getBuilding ().getOwner ().getName () != r.getUnit ().getOwner ().getName ()) {

@@ -18,6 +18,7 @@ public class BuildingContainer : ObjectContainer {
 
 		if (gameObject.GetComponent<UnityEngine.AI.NavMeshObstacle> () != null) {
 			building.setCurLoc (gameObject.GetComponent<UnityEngine.AI.NavMeshObstacle> ().transform.position);
+			building.setColliderSize (gameObject.GetComponent<UnityEngine.AI.NavMeshObstacle> ().size);
 		}
 	}
 

@@ -8,6 +8,7 @@ public class UnitContainer : ObjectContainer {
 
 	void Start () {
 		//Set values for preset units
+		setup ();
 		if (presetOwnerName != "") {
 			Player newPlayer = GameManager.addPlayerToGame (presetOwnerName);
 			setUnit (ObjectFactory.createUnitByName (gameObject.name, newPlayer));

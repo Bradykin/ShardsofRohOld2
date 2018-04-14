@@ -10,6 +10,7 @@ public abstract class Building : Object {
 	protected bool isResource = false;
 	protected bool isBuilt = true;
 	protected bool toBuild = false;
+	protected Vector3 navColliderSize = new Vector3 ();
 
 	//Variables that adjust during gameplay
 
@@ -48,6 +49,7 @@ public abstract class Building : Object {
 				} else {
 					GameManager.print ("Unidentified resource - Building");
 				}
+				curHealth -= _attack;
 			} else if (getOwner ().getName () == _attacker.getOwner ().getName ()) {
 				curHealth += _attack;
 			} else {
@@ -59,11 +61,7 @@ public abstract class Building : Object {
 	}
 
 	public override string getPrefabPath () {
-		//if (isBuilt == true) {
-			return "Prefabs/" + race + "/Buildings/" + name;
-		//} else {
-		//	return "Prefabs/" + race + "/Buildings/Foundations/" + name;
-		//}
+		return "Prefabs/" + race + "/Buildings/" + name;
 	}
 
 	public bool getDead () {
@@ -88,5 +86,13 @@ public abstract class Building : Object {
 
 	public void setToBuild (bool _toBuild) {
 		toBuild = _toBuild;
+	}
+
+	public Vector3 getColliderSize () {
+		return navColliderSize;
+	}
+
+	public void setColliderSize (Vector3 _size) {
+		navColliderSize = _size;
 	}
 }

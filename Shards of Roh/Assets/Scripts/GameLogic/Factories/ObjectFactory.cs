@@ -79,6 +79,12 @@ public class ObjectFactory : MonoBehaviour {
 		return building;
 	}
 
+	public static Stables createStables (Player _owner, bool _isBuilt) {
+		Stables building = new Stables (_owner);
+		building.initPostCreate (_isBuilt);
+		return building;
+	}
+
 	public static Gold createGold (Player _owner, bool _isBuilt) {
 		Gold building = new Gold (_owner);
 		building.initPostCreate (_isBuilt);
@@ -117,6 +123,9 @@ public class ObjectFactory : MonoBehaviour {
 	public static Building createBuildingByName (string _name, Player _owner, bool _isBuilt = true) {
 		if (_name == "WatchTower" || _name == "WatchTower(Clone)") {
 			return createWatchTower (_owner, _isBuilt);
+		} else if (_name == "Stables" || _name == "Stables(Clone)") {
+			return createStables (_owner, _isBuilt);
+		
 		} else if (_name == "Gold" || _name == "Gold(Clone)") {
 			return createGold (_owner, _isBuilt);
 		}

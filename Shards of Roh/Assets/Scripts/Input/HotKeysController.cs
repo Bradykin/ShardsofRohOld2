@@ -15,6 +15,9 @@ public class HotKeysController : MonoBehaviour {
 		//Send CameraController information on WASD input
 		cameraMovement ();
 
+		//Check for using the clicked thing's selected ability
+		selectedAbilities ();
+
 		//For any mid-implementation or testing hotkeys
 		testKeys ();
 	}
@@ -72,6 +75,36 @@ public class HotKeysController : MonoBehaviour {
 		CameraController.setMoveDirection (key);
 	}
 
+	private void selectedAbilities () {
+		if (Input.GetKeyDown (KeyCode.Alpha1)) {
+			if (GameManager.player.getPlayer ().getCurUnitTarget ().Count > 0) {
+				//This shouldn't check first in list, eventually should use some other logic system
+				if (GameManager.player.getPlayer ().getCurUnitTarget (0).getUnit ().getAbility (0) != null) {
+					GameManager.player.getPlayer ().getCurUnitTarget (0).getUnit ().getAbility (0).enact (GameManager.player.getPlayer ());
+				}
+			} else if (GameManager.player.getPlayer ().getCurBuildingTarget ().Count > 0) {
+				//This shouldn't check first in list, eventually should use some other logic system
+				if (GameManager.player.getPlayer ().getCurBuildingTarget (0).getBuilding ().getAbility (0) != null) {
+					GameManager.player.getPlayer ().getCurBuildingTarget (0).getBuilding ().getAbility (0).enact (GameManager.player.getPlayer ());
+				}
+			}
+		}
+
+		if (Input.GetKeyDown (KeyCode.Alpha2)) {
+			if (GameManager.player.getPlayer ().getCurUnitTarget ().Count > 0) {
+				//This shouldn't check first in list, eventually should use some other logic system
+				if (GameManager.player.getPlayer ().getCurUnitTarget (0).getUnit ().getAbility (1) != null) {
+					GameManager.player.getPlayer ().getCurUnitTarget (0).getUnit ().getAbility (1).enact (GameManager.player.getPlayer ());
+				}
+			} else if (GameManager.player.getPlayer ().getCurBuildingTarget ().Count > 0) {
+				//This shouldn't check first in list, eventually should use some other logic system
+				if (GameManager.player.getPlayer ().getCurBuildingTarget (0).getBuilding ().getAbility (1) != null) {
+					GameManager.player.getPlayer ().getCurBuildingTarget (0).getBuilding ().getAbility (1).enact (GameManager.player.getPlayer ());
+				}
+			}
+		}
+	}
+
 	//Any test hotkeys or mid-implementation features go here as to not get interwoven with other systems
 	private void testKeys () {
 		if (Input.GetKeyDown (KeyCode.I)) {
@@ -82,43 +115,6 @@ public class HotKeysController : MonoBehaviour {
 		}
 		if (Input.GetKeyDown (KeyCode.P)) {
 			FormationController.formationMode = 2;
-		}
-
-		if (Input.GetKeyDown (KeyCode.Alpha1)) {
-			RaycastHit hit;
-			Ray ray = Camera.main.ScreenPointToRay (MouseController.getMousePosition());
-			if (Physics.Raycast (ray, out hit, 1000)) {
-				Unit newUnit = ObjectFactory.createUnitByName ("LightCavalry", GameManager.addPlayerToGame("Player"));
-				GameObject instance = Instantiate (Resources.Load (newUnit.getPrefabPath (), typeof(GameObject)) as GameObject);
-
-				instance.GetComponent<UnitContainer> ().setUnit (newUnit);
-				if (instance.GetComponent<UnityEngine.AI.NavMeshAgent> () != null) {
-					instance.GetComponent<UnityEngine.AI.NavMeshAgent> ().Warp (new Vector3 (hit.point.x, Terrain.activeTerrain.SampleHeight(hit.point), hit.point.z));
-				}
-
-				GameManager.addPlayerToGame ("Player").addUnitToPlayer (instance.GetComponent<UnitContainer> ());
-
-			} else {
-				print ("Click off map - HotKeysController");
-			}
-		}
-
-		if (Input.GetKeyDown (KeyCode.Alpha2)) {
-			RaycastHit hit;
-			Ray ray = Camera.main.ScreenPointToRay (MouseController.getMousePosition());
-			if (Physics.Raycast (ray, out hit, 1000)) {
-				Building newBuilding = ObjectFactory.createBuildingByName ("Gold", GameManager.addPlayerToGame("Nature"));
-				GameObject instance = Instantiate (Resources.Load (newBuilding.getPrefabPath (), typeof(GameObject)) as GameObject);
-				instance.GetComponent<BuildingContainer> ().setBuilding (newBuilding);
-				if (instance.GetComponent<UnityEngine.AI.NavMeshObstacle> () != null) {
-					instance.GetComponent<UnityEngine.AI.NavMeshObstacle> ().transform.position = (new Vector3 (hit.point.x, Terrain.activeTerrain.SampleHeight(hit.point), hit.point.z));
-				}
-
-				GameManager.addPlayerToGame ("Nature").addBuildingToPlayer (instance.GetComponent<BuildingContainer> ());
-
-			} else {
-				print ("Click off map - HotKeysController");
-			}
 		}
 
 		if (Input.GetKeyDown (KeyCode.Alpha3)) {
@@ -143,21 +139,15 @@ public class HotKeysController : MonoBehaviour {
 			RaycastHit hit;
 			Ray ray = Camera.main.ScreenPointToRay (MouseController.getMousePosition());
 			if (Physics.Raycast (ray, out hit, 1000)) {
-				Building newBuilding = ObjectFactory.createBuildingByName ("WatchTower", GameManager.addPlayerToGame ("Player"), false);
-				GameObject instance = Instantiate (Resources.Load (newBuilding.getPrefabPath (), typeof(GameObject)) as GameObject);
-				instance.GetComponent<BuildingContainer> ().setBuilding (newBuilding);
-				if (instance.GetComponent<UnityEngine.AI.NavMeshObstacle> () != null) {
-					instance.GetComponent<UnityEngine.AI.NavMeshObstacle> ().transform.position = (new Vector3 (hit.point.x, Terrain.activeTerrain.SampleHeight(hit.point), hit.point.z));
+				Unit newUnit = ObjectFactory.createUnitByName ("LightCavalry", GameManager.addPlayerToGame("Player"));
+				GameObject instance = Instantiate (Resources.Load (newUnit.getPrefabPath (), typeof(GameObject)) as GameObject);
+
+				instance.GetComponent<UnitContainer> ().setUnit (newUnit);
+				if (instance.GetComponent<UnityEngine.AI.NavMeshAgent> () != null) {
+					instance.GetComponent<UnityEngine.AI.NavMeshAgent> ().Warp (new Vector3 (hit.point.x, Terrain.activeTerrain.SampleHeight(hit.point), hit.point.z));
 				}
 
-				instance.transform.GetChild (1).gameObject.SetActive (true);
-				instance.transform.GetChild (2).gameObject.SetActive (false);
-				instance.GetComponent<BoxCollider> ().center = instance.transform.GetChild (1).GetComponent <BoxCollider> ().center;
-				instance.GetComponent<BoxCollider> ().size = instance.transform.GetChild (1).GetComponent <BoxCollider> ().size;
-				instance.GetComponent<UnityEngine.AI.NavMeshObstacle> ().center = instance.transform.GetChild (1).GetComponent<UnityEngine.AI.NavMeshObstacle> ().center;
-				instance.GetComponent<UnityEngine.AI.NavMeshObstacle> ().size = instance.transform.GetChild (1).GetComponent<UnityEngine.AI.NavMeshObstacle> ().size;
-
-				GameManager.addPlayerToGame ("Player").addBuildingToPlayer (instance.GetComponent<BuildingContainer> ());
+				GameManager.addPlayerToGame ("Player").addUnitToPlayer (instance.GetComponent<UnitContainer> ());
 
 			} else {
 				print ("Click off map - HotKeysController");
@@ -165,24 +155,20 @@ public class HotKeysController : MonoBehaviour {
 		}
 
 		if (Input.GetKeyDown (KeyCode.Alpha5)) {
-			if (GameManager.player.buildToggleActive == true) {
-				GameManager.player.buildToggleActive = false;
-				GameManager.player.buildToggle.transform.GetChild (0).gameObject.SetActive (false);
-			} else {
-				GameManager.player.buildToggleActive = true;
-				GameManager.player.buildToggle.transform.GetChild (0).gameObject.SetActive (true);
-			}
-		}
-
-		if (Input.GetKeyDown (KeyCode.Alpha6)) {
-			if (GameManager.player.getPlayer ().getCurUnitTarget ().Count > 0) {
-				if (GameManager.player.getPlayer ().getCurUnitTarget (0).getUnit ().getAbility (0) != null) {
-					GameManager.player.getPlayer ().getCurUnitTarget (0).getUnit ().getAbility (0).enact (GameManager.player.getPlayer ());
-				} else {
-					print ("Check1");
+			RaycastHit hit;
+			Ray ray = Camera.main.ScreenPointToRay (MouseController.getMousePosition());
+			if (Physics.Raycast (ray, out hit, 1000)) {
+				Building newBuilding = ObjectFactory.createBuildingByName ("Gold", GameManager.addPlayerToGame("Nature"));
+				GameObject instance = Instantiate (Resources.Load (newBuilding.getPrefabPath (), typeof(GameObject)) as GameObject);
+				instance.GetComponent<BuildingContainer> ().setBuilding (newBuilding);
+				if (instance.GetComponent<UnityEngine.AI.NavMeshObstacle> () != null) {
+					instance.GetComponent<UnityEngine.AI.NavMeshObstacle> ().transform.position = (new Vector3 (hit.point.x, Terrain.activeTerrain.SampleHeight(hit.point), hit.point.z));
 				}
+
+				GameManager.addPlayerToGame ("Nature").addBuildingToPlayer (instance.GetComponent<BuildingContainer> ());
+
 			} else {
-				print ("Check2");
+				print ("Click off map - HotKeysController");
 			}
 		}
 	}

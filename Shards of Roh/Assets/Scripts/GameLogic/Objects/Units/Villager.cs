@@ -12,8 +12,9 @@ public class Villager : Unit {
 		attack = 10;
 		attackSpeed = 1;
 		attackRange = 2;
-		abilities.Add (new Build ("WatchTower"));
 
+		abilities.Add (new ToggleBuild ("WatchTower"));
+		abilities.Add (new ToggleBuild ("Stables"));
 		isVillager = true;
 	}
 }
