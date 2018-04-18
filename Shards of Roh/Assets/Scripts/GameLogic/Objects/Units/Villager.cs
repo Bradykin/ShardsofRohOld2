@@ -11,7 +11,8 @@ public class Villager : Unit {
 		health = 100;
 		attack = 10;
 		attackSpeed = 1;
-		attackRange = 2;
+		attackRange = 1;
+		cost = new Resource (0, 0, 50);
 
 		abilities.Add (new ToggleBuild ("WatchTower"));
 		abilities.Add (new ToggleBuild ("Stables"));

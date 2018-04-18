@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class PlayerMaterial : MonoBehaviour {
 
+	//Get material value for the team's units
 	public static string getMaterial (string _playerName) {
 		string returnValue = "Materials/WK_Standard_Units";
 		switch (_playerName) {

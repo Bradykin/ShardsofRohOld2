@@ -9,6 +9,7 @@ public class UnitContainer : ObjectContainer {
 	void Start () {
 		//Set values for preset units
 		setup ();
+		//Rest of function
 		if (presetOwnerName != "") {
 			Player newPlayer = GameManager.addPlayerToGame (presetOwnerName);
 			setUnit (ObjectFactory.createUnitByName (gameObject.name, newPlayer));
@@ -57,7 +58,7 @@ public class UnitContainer : ObjectContainer {
 			Vector3 point2 = unit.getUnitTarget ().GetComponent<CapsuleCollider> ().ClosestPointOnBounds (gameObject.GetComponent<CapsuleCollider> ().transform.position);
 			if (Vector3.Distance (point1, point2) <= unit.getAttackRange ()) {
 				gameObject.GetComponent<UnityEngine.AI.NavMeshAgent> ().destination = gameObject.GetComponent<UnityEngine.AI.NavMeshAgent> ().transform.position;
-				lookDirection (point1, point2);
+				//lookDirection (point1, point2);
 				gameObject.GetComponent<Animator> ().SetBool ("isAttacking", true);
 				unit.attackUnit ();
 			}
@@ -66,7 +67,7 @@ public class UnitContainer : ObjectContainer {
 			Vector3 point2 = unit.getBuildingTarget ().GetComponent<BoxCollider> ().ClosestPointOnBounds (GetComponent<CapsuleCollider> ().transform.position);
 			if (Vector3.Distance (point1, point2) <= unit.getAttackRange ()) {
 				gameObject.GetComponent<UnityEngine.AI.NavMeshAgent> ().destination = gameObject.GetComponent<UnityEngine.AI.NavMeshAgent> ().transform.position;
-				lookDirection (point1, point2);
+				//lookDirection (point1, point2);
 				gameObject.GetComponent<Animator> ().SetBool ("isAttacking", true);
 				unit.attackBuilding ();
 			}
@@ -77,8 +78,13 @@ public class UnitContainer : ObjectContainer {
 		}
 
 		if (unit.getDead () == true) {
-			GameManager.print ("Destroy unit");
-			GameManager.destroyUnit (this, unit.getOwner ());
+			gameObject.GetComponent<CapsuleCollider> ().enabled = false;
+			gameObject.GetComponent<UnityEngine.AI.NavMeshAgent> ().enabled = false;
+			gameObject.GetComponent<Animator> ().SetBool ("isDead", true);
+			gameObject.GetComponent<Animator> ().SetInteger ("deathAnimation", Random.Range (0, 2));
+			if (gameObject.GetComponent<Animator> ().GetCurrentAnimatorStateInfo (0).IsName ("PostDeath")) {
+				GameManager.destroyUnit (this, unit.getOwner ());
+			}
 		}
 	}
 

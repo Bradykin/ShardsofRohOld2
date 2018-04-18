@@ -10,7 +10,8 @@ public class Archer : Unit {
 		owner = _owner;
 		health = 100;
 		attack = 10;
-		attackSpeed = 1;
+		attackSpeed = 0.75f;
 		attackRange = 50;
+		cost = new Resource (0, 0, 50);
 	}
 }

@@ -11,6 +11,7 @@ public abstract class Object {
 	protected int health;
 	protected float curHealth;
 	protected List<Ability> abilities = new List<Ability> ();
+	protected Resource cost;
 
 	//Variables that will default if not declared
 
@@ -51,4 +52,8 @@ public abstract class Object {
 	}
 
 	public abstract string getPrefabPath ();
+
+	public Resource getCost () {
+		return cost;
+	}
 }

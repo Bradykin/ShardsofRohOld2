@@ -12,5 +12,6 @@ public class SpearCavalry : Unit {
 		attack = 10;
 		attackSpeed = 1;
 		attackRange = 2;
+		cost = new Resource (0, 0, 50);
 	}
 }

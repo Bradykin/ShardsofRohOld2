@@ -9,6 +9,7 @@ public class Stables : Building {
 		race = "Humans";
 		owner = _owner;
 		health = 1000;
+		cost = new Resource (0, 0, 50);
 
 		abilities.Add (new CreateUnit ("LightCavalry", this));
 		abilities.Add (new CreateUnit ("SpearCavalry", this));

@@ -4,8 +4,10 @@ using UnityEngine;
 
 public class FormationController : MonoBehaviour {
 
+	//Variable that denotes which formation to use
 	public static int formationMode = 0;
 
+	//Choose a formation and return it
 	public static List<Formation> findFormationPositions (bool _attacking, List <UnitContainer> _units, Vector3 _destination, Vector3 _unitBackVec, Vector3 _unitSideVec) {
 
 		if (_attacking == true) {
@@ -16,7 +18,7 @@ public class FormationController : MonoBehaviour {
 			} else if (formationMode == 1) {
 				return arrowheadFormation (_units, _destination, _unitBackVec, _unitSideVec);
 			} else if (formationMode == 2) {
-				return attackFormation (_units, _destination, _unitBackVec, _unitSideVec);
+				return doubleBoxFormation (_units, _destination, _unitBackVec, _unitSideVec);
 			}
 		}
 
@@ -24,6 +26,36 @@ public class FormationController : MonoBehaviour {
 		return basicFormation (_units, _destination, _unitBackVec, _unitSideVec);
 	}
 
+	//Return a rectangle formation, rows of 5
+	public static List<Formation> basicFormation (List <UnitContainer> _units, Vector3 _destination, Vector3 _unitBackVec, Vector3 _unitSideVec) {
+		List <Formation> positions = new List <Formation> ();
+		Vector3 curPoint = _destination;
+		List <string> unitTypes = new List <string> ();
+
+		for (int i = 0; i < _units.Count; i++) {
+			unitTypes.Add (_units [i].getUnit ().getName ());
+		}
+		unitTypes.Sort ();
+
+		for (int i = 0; i < _units.Count; i++) {
+			positions.Add (new Formation (curPoint, unitTypes [i]));
+			if (i % 5 == 0) {
+				curPoint = curPoint + _unitSideVec;
+			} else if (i % 5 == 1) {
+				curPoint = curPoint - (_unitSideVec * 2);
+			} else if (i % 5 == 2) {
+				curPoint = curPoint + (_unitSideVec * 3);
+			} else if (i % 5 == 3) {
+				curPoint = curPoint - (_unitSideVec * 4);
+			} else if (i % 5 == 4) {
+				curPoint = curPoint + (_unitSideVec * 2) + _unitBackVec;
+			} 
+		}
+
+		return positions;
+	}
+
+	//Return an arrowhead formation, grows by 2 on each row
 	public static List<Formation> arrowheadFormation (List <UnitContainer> _units, Vector3 _destination, Vector3 _unitBackVec, Vector3 _unitSideVec) {
 		List <Formation> positions = new List <Formation> ();
 		Vector3 curPoint = _destination;
@@ -54,6 +86,7 @@ public class FormationController : MonoBehaviour {
 		return positions;
 	}
 
+	//Return a doubleBox formation, two groups of rows of 3
 	public static List<Formation> doubleBoxFormation (List <UnitContainer> _units, Vector3 _destination, Vector3 _unitBackVec, Vector3 _unitSideVec) {
 		List <Formation> positions = new List <Formation> ();
 		Vector3 curPoint = _destination;
@@ -88,34 +121,7 @@ public class FormationController : MonoBehaviour {
 		return positions;
 	}
 
-	public static List<Formation> basicFormation (List <UnitContainer> _units, Vector3 _destination, Vector3 _unitBackVec, Vector3 _unitSideVec) {
-		List <Formation> positions = new List <Formation> ();
-		Vector3 curPoint = _destination;
-		List <string> unitTypes = new List <string> ();
-
-		for (int i = 0; i < _units.Count; i++) {
-			unitTypes.Add (_units [i].getUnit ().getName ());
-		}
-		unitTypes.Sort ();
-
-		for (int i = 0; i < _units.Count; i++) {
-			positions.Add (new Formation (curPoint, unitTypes [i]));
-			if (i % 5 == 0) {
-				curPoint = curPoint + _unitSideVec;
-			} else if (i % 5 == 1) {
-				curPoint = curPoint - (_unitSideVec * 2);
-			} else if (i % 5 == 2) {
-				curPoint = curPoint + (_unitSideVec * 3);
-			} else if (i % 5 == 3) {
-				curPoint = curPoint - (_unitSideVec * 4);
-			} else if (i % 5 == 4) {
-				curPoint = curPoint + (_unitSideVec * 2) + _unitBackVec;
-			} 
-		}
-
-		return positions;
-	}
-
+	//Return an attack formation, TBD
 	public static List<Formation> attackFormation (List <UnitContainer> _units, Vector3 _destination, Vector3 _unitBackVec, Vector3 _unitSideVec) {
 		List <Formation> positions = new List <Formation> ();
 		Vector3 curPoint = _destination;

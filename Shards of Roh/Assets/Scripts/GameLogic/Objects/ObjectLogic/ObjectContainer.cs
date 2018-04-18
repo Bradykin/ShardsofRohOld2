@@ -7,7 +7,7 @@ public abstract class ObjectContainer : MonoBehaviour {
 	public string presetOwnerName;
 
 	protected void setup () {
-		print ("TeST");
+		
 	}
 
 }

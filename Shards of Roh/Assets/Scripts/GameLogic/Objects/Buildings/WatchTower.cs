@@ -9,5 +9,6 @@ public class WatchTower : Building {
 		race = "Humans";
 		owner = _owner;
 		health = 1000;
+		cost = new Resource (0, 0, 50);
 	}
 }

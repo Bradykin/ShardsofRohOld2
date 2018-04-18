@@ -7,61 +7,66 @@ public class Resource {
 	private int wood = 0;
 	private int gold = 0;
 
-	public Resource (int _food = 0, int _wood = 0, int _gold = 0) {
+	//Set value of food/wood/gold
+	public Resource (int _food, int _wood, int _gold) {
 		food = _food;
 		wood = _wood;
 		gold = _gold;
 	}
 
-	public void add (Resource _other) {
-		food += _other.food;
-		wood += _other.wood;
-		gold += _other.gold;
+	//Add the value of another Resource to this Resource
+	public void add (Resource _add) {
+		food += _add.food;
+		wood += _add.wood;
+		gold += _add.gold;
 	}
 
-	public void add (int _food, int _wood, int _gold) {
-		food += _food;
-		wood += _wood;
-		gold += _gold;
-	}
-
-	public void spend (Resource _other) {
-		food -= _other.food;
-		wood -= _other.wood;
-		gold -= _other.gold;
+	//Spend the value of another Resource from this Resource
+	public void spend (Resource _cost) {
+		food -= _cost.food;
+		wood -= _cost.wood;
+		gold -= _cost.gold;
 
 		if (food <= 0) {
 			food = 0;
+			GameManager.print ("Overspent food");
 		}
 		if (wood <= 0) {
 			wood = 0;
+			GameManager.print ("Overspent wood");
 		}
 		if (gold <= 0) {
 			gold = 0;
+			GameManager.print ("Overspent gold");
 		}
 	}
 
+	//Check if this Resource has enough to spend the value of another Resource
 	public bool hasEnough (Resource _cost) {
 		if (food >= _cost.food && wood >= _cost.wood && gold >= _cost.gold) {
 			return true;
+		} else {
+			return false;
 		}
-
-		return false;
 	}
 
-	public int GetFoodCount () {
+	//Get food value
+	public int getFood () {
 		return food;
 	}
 
-	public int GetWoodCount () {
+	//Get wood value
+	public int getWood () {
 		return wood;
 	}
-		
-	public int GetGoldCount () {
+
+	//Get gold value
+	public int getGold () {
 		return gold;
 	}
 
-	public string toString () {
+	//Unused Function
+	/*public string toString () {
 		return "Food: " + food + ", Wood: " + wood + ", Gold: " + gold;
-	}
+	}*/
 }

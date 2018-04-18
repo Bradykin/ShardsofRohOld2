@@ -10,7 +10,8 @@ public class LightCavalry : Unit {
 		owner = _owner;
 		health = 100;
 		attack = 10;
-		attackSpeed = 1;
-		attackRange = 2;
+		attackSpeed = 1.0f;
+		attackRange = 2.0f;
+		cost = new Resource (0, 0, 50);
 	}
 }

@@ -19,7 +19,6 @@ public abstract class Building : Object {
 		if (isBuilt == true) {
 			curHealth = health;
 		} else {
-			GameManager.print ("Unbuilt");
 			curHealth = 1;
 		}
 		isDead = false;
@@ -41,11 +40,11 @@ public abstract class Building : Object {
 		if (_attacker.getVillager () == true) {
 			if (getIsResource () == true) {
 				if (getName () == "Food") {
-					_attacker.getOwner ().getResource ().add (_attack, 0, 0);
+					_attacker.getOwner ().getResource ().add (new Resource (_attack, 0, 0));
 				} else if (getName () == "Wood") {
-					_attacker.getOwner ().getResource ().add (0, _attack, 0);
+					_attacker.getOwner ().getResource ().add (new Resource (0, _attack, 0));
 				} else if (getName () == "Gold") {
-					_attacker.getOwner ().getResource ().add (0, 0, _attack);
+					_attacker.getOwner ().getResource ().add (new Resource (0, 0, _attack));
 				} else {
 					GameManager.print ("Unidentified resource - Building");
 				}

@@ -34,22 +34,7 @@ public class MouseController : MonoBehaviour {
 			SelectionBox.drawScreenRectBorder (rect, 2, new Color (0.8f, 0.8f, 0.95f));
 		}
 	}
-
-	public static Vector2 getMousePosition () {
-		return mousePosition;
-	}
-
-	public static float getZoomValue () {
-		return zoomValue;
-	}
-
-	public static bool getRotateCamera () {
-		if (Input.GetKey (KeyCode.LeftControl) && Input.GetMouseButton (1)) {
-			return true;
-		}
-		return false;
-	}
-
+		
 	public static void handleLeftClick () {
 		//Create selection box while mouse button is held down
 		if (GameManager.player.buildToggleActive == true) {
@@ -58,26 +43,29 @@ public class MouseController : MonoBehaviour {
 				Ray ray = Camera.main.ScreenPointToRay (getMousePosition());
 				if (Physics.Raycast (ray, out hit, 1000, buildToggleMask)) {
 					Building newBuilding = ObjectFactory.createBuildingByName (GameManager.player.buildToggleSetting, GameManager.addPlayerToGame ("Player"), false);
-					GameObject instance = Instantiate (Resources.Load (newBuilding.getPrefabPath (), typeof(GameObject)) as GameObject);
-					instance.GetComponent<BuildingContainer> ().setBuilding (newBuilding);
-					if (instance.GetComponent<UnityEngine.AI.NavMeshObstacle> () != null) {
-						print ("HI");
-						instance.GetComponent<UnityEngine.AI.NavMeshObstacle> ().transform.position = (new Vector3 (hit.point.x, Terrain.activeTerrain.SampleHeight(hit.point), hit.point.z));
+					if (GameManager.player.getPlayer ().getResource ().hasEnough (newBuilding.getCost ())) {
+						GameManager.player.getPlayer ().getResource ().spend (newBuilding.getCost ());
+						GameObject instance = Instantiate (Resources.Load (newBuilding.getPrefabPath (), typeof(GameObject)) as GameObject);
+						instance.GetComponent<BuildingContainer> ().setBuilding (newBuilding);
+						if (instance.GetComponent<UnityEngine.AI.NavMeshObstacle> () != null) {
+							instance.GetComponent<UnityEngine.AI.NavMeshObstacle> ().transform.position = (new Vector3 (hit.point.x, Terrain.activeTerrain.SampleHeight (hit.point), hit.point.z));
+						}
+
+						instance.transform.GetChild (1).gameObject.SetActive (true);
+						instance.transform.GetChild (2).gameObject.SetActive (false);
+						instance.GetComponent<BoxCollider> ().center = instance.transform.GetChild (1).GetComponent <BoxCollider> ().center;
+						instance.GetComponent<BoxCollider> ().size = instance.transform.GetChild (1).GetComponent <BoxCollider> ().size;
+						instance.GetComponent<UnityEngine.AI.NavMeshObstacle> ().center = instance.transform.GetChild (1).GetComponent<UnityEngine.AI.NavMeshObstacle> ().center;
+						instance.GetComponent<UnityEngine.AI.NavMeshObstacle> ().size = instance.transform.GetChild (1).GetComponent<UnityEngine.AI.NavMeshObstacle> ().size;
+
+						GameManager.player.buildToggleActive = false;
+						GameManager.player.buildToggleSetting = null;
+						for (int i = 0; i < GameManager.player.buildToggle.transform.childCount; i++) {
+							GameManager.player.buildToggle.transform.GetChild (i).gameObject.SetActive (false);
+						}
+
+						GameManager.addPlayerToGame ("Player").addBuildingToPlayer (instance.GetComponent<BuildingContainer> ());
 					}
-
-					instance.transform.GetChild (1).gameObject.SetActive (true);
-					instance.transform.GetChild (2).gameObject.SetActive (false);
-					instance.GetComponent<BoxCollider> ().center = instance.transform.GetChild (1).GetComponent <BoxCollider> ().center;
-					instance.GetComponent<BoxCollider> ().size = instance.transform.GetChild (1).GetComponent <BoxCollider> ().size;
-					instance.GetComponent<UnityEngine.AI.NavMeshObstacle> ().center = instance.transform.GetChild (1).GetComponent<UnityEngine.AI.NavMeshObstacle> ().center;
-					instance.GetComponent<UnityEngine.AI.NavMeshObstacle> ().size = instance.transform.GetChild (1).GetComponent<UnityEngine.AI.NavMeshObstacle> ().size;
-
-					GameManager.player.buildToggleActive = false;
-					for (int i = 0; i < GameManager.player.buildToggle.transform.childCount; i++) {
-						GameManager.player.buildToggle.transform.GetChild (i).gameObject.SetActive (false);
-					}
-
-					GameManager.addPlayerToGame ("Player").addBuildingToPlayer (instance.GetComponent<BuildingContainer> ());
 				}
 			}
 		} else {
@@ -246,4 +234,20 @@ public class MouseController : MonoBehaviour {
 
 		}
 	}
+
+	public static Vector2 getMousePosition () {
+		return mousePosition;
+	}
+
+	public static float getZoomValue () {
+		return zoomValue;
+	}
+
+	public static bool getRotateCamera () {
+		if (Input.GetKey (KeyCode.LeftControl) && Input.GetMouseButton (1)) {
+			return true;
+		}
+		return false;
+	}
+
 }

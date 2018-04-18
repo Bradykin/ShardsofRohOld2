@@ -10,7 +10,7 @@ public class Player {
 	private List<BuildingContainer> buildings = new List<BuildingContainer> ();
 	private List<UnitContainer> curUnitTarget = new List<UnitContainer> ();
 	private List<BuildingContainer> curBuildingTarget = new List<BuildingContainer> ();
-	private Resource resource = new Resource(0,0,0);
+	private Resource resource = new Resource (0, 0, 0);
 
 	public Player (string _name) {
 		name = _name;
@@ -125,13 +125,22 @@ public class Player {
 			for (int x = 0; x < _formationPositions.Count; x++) {
 				for (int y = 0; y < _formationPositions.Count; y++) {
 					if (x != y && _formationPositions [x].getUnitType () == _formationPositions [y].getUnitType ()) {
-						UnityEngine.AI.NavMeshPath pathX = newList [x].GetComponent<UnityEngine.AI.NavMeshAgent> ().path;
-						UnityEngine.AI.NavMeshPath pathY = newList [y].GetComponent<UnityEngine.AI.NavMeshAgent> ().path;
+						//UnityEngine.AI.NavMeshPath pathX = newList [x].GetComponent<UnityEngine.AI.NavMeshAgent> ().path;
+						//UnityEngine.AI.NavMeshPath pathY = newList [y].GetComponent<UnityEngine.AI.NavMeshAgent> ().path;
 						float curDistanceX = 0;
 						float curDistanceY = 0;
 						float newDistanceX = 0;
 						float newDistanceY = 0;
-						if (pathX.corners.Length >= 2 && pathY.corners.Length >= 2) {
+
+						//Another idea on how to do this
+						curDistanceX = getPathLength (newList [x], _formationPositions [x].getPosition ());
+						curDistanceY = getPathLength (newList [y], _formationPositions [y].getPosition ());
+
+						newDistanceX = getPathLength (newList [x], _formationPositions [y].getPosition ());
+						newDistanceY = getPathLength (newList [y], _formationPositions [x].getPosition ());
+
+						//Old approach
+						/*if (pathX.corners.Length >= 2 && pathY.corners.Length >= 2) {
 							curDistanceX = Vector3.Distance (pathX.corners [pathX.corners.Length - 2], _formationPositions [x].getPosition ());
 							curDistanceY = Vector3.Distance (pathY.corners [pathY.corners.Length - 2], _formationPositions [y].getPosition ());
 
@@ -143,7 +152,8 @@ public class Player {
 
 							newDistanceX = Vector3.Distance (newList [x].getUnit ().getCurLoc (), _formationPositions [y].getPosition ());
 							newDistanceY = Vector3.Distance (newList [y].getUnit ().getCurLoc (), _formationPositions [x].getPosition ());
-						}
+						}*/
+
 						if ((Mathf.Max (curDistanceX, curDistanceY) - Mathf.Min (curDistanceX, curDistanceY)) > (Mathf.Max (newDistanceX, newDistanceY) - Mathf.Min (newDistanceX, newDistanceY))) {
 							if ((curDistanceX + curDistanceY) > (newDistanceX + newDistanceY)) {
 								findBetter = true;
@@ -224,5 +234,17 @@ public class Player {
 
 	public Resource getResource () {
 		return resource;
+	}
+
+	//Mid development function
+	public float getPathLength (UnitContainer _unit, Vector3 _newPathEnd) {
+		UnityEngine.AI.NavMeshPath path = _unit.GetComponent<UnityEngine.AI.NavMeshAgent> ().path;
+		path.corners [path.corners.Length - 1] = _newPathEnd;
+		float newDist = 0;
+		for (int i = 0; i < path.corners.Length - 1; i++) {
+			newDist += Vector3.Distance (path.corners [i], path.corners [i + 1]);
+		}
+
+		return newDist;
 	}
 }

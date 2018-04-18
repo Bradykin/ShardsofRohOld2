@@ -6,10 +6,11 @@ public abstract class Unit : Object {
 
 	//Variables that must be declared in subclass
 	protected int attack;
+	//Number of attacks per second
 	protected float attackSpeed;
 
 	//Variables that will default if not declared
-	protected float attackRange = 10.0f;
+	protected float attackRange = 2.0f;
 	protected float damageCheck = 0.5f;
 	protected bool isVillager = false;
 

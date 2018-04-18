@@ -6,15 +6,13 @@ using Enum;
 public class CameraController : MonoBehaviour {
 
 	private static CameraDirection moveDirection;
+	private static Vector2 mousePosition;
 	private static float zoomValue;
-	private static float xPos;
-	private static float zPos;
 
+	private static Vector2 screenSize;
 	private static float scrollSpeed;
 	private static float zoomSpeed;
-	private static float scrollWidth;
-	private static float screenWidth;
-	private static float screenHeight;
+	private static float scrollBorder;
 	private static Vector3 min;
 	private static Vector3 max;
 	private static bool boundsSet = false;
@@ -23,36 +21,16 @@ public class CameraController : MonoBehaviour {
 	void Start () {
 		scrollSpeed = 50.0f;
 		zoomSpeed = -375000.0f;
-		scrollWidth = 25.0f;
-		screenWidth = Screen.width;
-		screenHeight = Screen.height;
+		scrollBorder = 25.0f;
+		screenSize.x = Screen.width;
+		screenSize.y = Screen.height;
 		moveDirection = CameraDirection.None;
 	}
 	
 	// Update is called once per frame
 	void Update () {
 		moveCamera ();
-		RotateCamera ();
-	}
-		
-
-	//Set the bounds of camera movement
-	public static void setBounds (GameObject _map) {
-		if (_map != null) {
-			if (_map.transform.position != new Vector3 (-250, 0, -250)) {
-				_map.transform.position = new Vector3 (-250, 0, -250);
-			}
-			min = new Vector3 (_map.transform.position.x - 25.0f, 5.0f, _map.transform.position.z - 25.0f);
-			max = new Vector3 (_map.transform.position.x + Terrain.activeTerrain.terrainData.size.x + 25.0f, 100.0f, _map.transform.position.z + Terrain.activeTerrain.terrainData.size.z + 25.0f);
-			boundsSet = true;
-		} else {
-			print ("Missing Terrain - CameraController.setBounds");
-		}
-	}
-
-	//For hotKeyController to set moveDirection
-	public static void setMoveDirection (CameraDirection _moveDirection) {
-		moveDirection = _moveDirection;
+		rotateCamera ();
 	}
 
 	//Calculate new camera location using hotkey, mouse location, and mouse wheel zoom
@@ -75,20 +53,20 @@ public class CameraController : MonoBehaviour {
 		}
 
 		//Process mouse location
-		if (xPos >= 0 && xPos <= scrollWidth) {
+		if (mousePosition.x >= 0 && mousePosition.x <= scrollBorder) {
 			if (moveDirection == CameraDirection.Front || moveDirection == CameraDirection.None || moveDirection == CameraDirection.Back) {
 				movement.x = movement.x - scrollSpeed;
 			}
-		} else if (xPos <= screenWidth && xPos >= screenWidth - scrollWidth) {
+		} else if (mousePosition.x <= screenSize.x && mousePosition.x >= screenSize.x - scrollBorder) {
 			if (moveDirection == CameraDirection.Front || moveDirection == CameraDirection.None || moveDirection == CameraDirection.Back) {
 				movement.x = movement.x + scrollSpeed;
 			}
 		}
-		if (zPos >= 0 && zPos <= scrollWidth) {
+		if (mousePosition.y >= 0 && mousePosition.y <= scrollBorder) {
 			if (moveDirection == CameraDirection.Left || moveDirection == CameraDirection.None || moveDirection == CameraDirection.Right) {
 				movement.z = movement.z - scrollSpeed;
 			}
-		} else if (zPos <= screenHeight && zPos >= screenHeight - scrollWidth) {
+		} else if (mousePosition.y <= screenSize.y && mousePosition.y >= screenSize.y - scrollBorder) {
 			if (moveDirection == CameraDirection.Left || moveDirection == CameraDirection.None || moveDirection == CameraDirection.Right) {
 				movement.z = movement.z + scrollSpeed;
 			}
@@ -138,19 +116,20 @@ public class CameraController : MonoBehaviour {
 		return _destination;
 	}
 
+	//Move camera to calculated location
 	private void moveCamera () {
 		//Update values
 		Vector3 origin = Camera.main.transform.position;
 		zoomValue = MouseController.getZoomValue ();
-		xPos = MouseController.getMousePosition ().x;
-		zPos = MouseController.getMousePosition ().y;
+		mousePosition = new Vector2 (MouseController.getMousePosition ().x, MouseController.getMousePosition ().y);
 
 		Vector3 destination = calcLocation (origin);
 		destination = checkBounds (origin, destination);
 		Camera.main.transform.position = destination;
 	}
 
-	private void RotateCamera () {
+	//Rotate camera using control + mouose movement
+	private void rotateCamera () {
 		if (MouseController.getRotateCamera ()) {
 			Vector3 origin = Camera.main.transform.eulerAngles;
 			Vector3 destination = origin;
@@ -162,5 +141,24 @@ public class CameraController : MonoBehaviour {
 				Camera.main.transform.eulerAngles = Vector3.MoveTowards (origin, destination, Time.deltaTime * 100);
 			}
 		}
+	}
+
+	//Set the bounds of camera movement
+	public static void setBounds (GameObject _map) {
+		if (_map != null) {
+			if (_map.transform.position != new Vector3 (-250, 0, -250)) {
+				_map.transform.position = new Vector3 (-250, 0, -250);
+			}
+			min = new Vector3 (_map.transform.position.x - 25.0f, 5.0f, _map.transform.position.z - 25.0f);
+			max = new Vector3 (_map.transform.position.x + Terrain.activeTerrain.terrainData.size.x + 25.0f, 100.0f, _map.transform.position.z + Terrain.activeTerrain.terrainData.size.z + 25.0f);
+			boundsSet = true;
+		} else {
+			print ("Missing Terrain - CameraController.setBounds");
+		}
+	}
+
+	//For hotKeyController to set moveDirection
+	public static void setMoveDirection (CameraDirection _moveDirection) {
+		moveDirection = _moveDirection;
 	}
 }

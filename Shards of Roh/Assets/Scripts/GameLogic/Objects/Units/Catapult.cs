@@ -12,5 +12,6 @@ public class Catapult : Unit {
 		attack = 10;
 		attackSpeed = 1;
 		attackRange = 50;
+		cost = new Resource (0, 0, 50);
 	}
 }
