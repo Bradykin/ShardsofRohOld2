@@ -136,7 +136,7 @@ public class HotKeysController : MonoBehaviour {
 			RaycastHit hit;
 			Ray ray = Camera.main.ScreenPointToRay (MouseController.getMousePosition());
 			if (Physics.Raycast (ray, out hit, 1000)) {
-				Unit newUnit = ObjectFactory.createUnitByName ("Villager", GameManager.addPlayerToGame("Player"));
+				Unit newUnit = ObjectFactory.createUnitByName ("Mage", GameManager.addPlayerToGame("Player"));
 				GameObject instance = Instantiate (Resources.Load (newUnit.getPrefabPath (), typeof(GameObject)) as GameObject);
 				instance.GetComponent<UnitContainer> ().setUnit (newUnit);
 				if (instance.GetComponent<UnityEngine.AI.NavMeshAgent> () != null) {
@@ -154,7 +154,7 @@ public class HotKeysController : MonoBehaviour {
 			RaycastHit hit;
 			Ray ray = Camera.main.ScreenPointToRay (MouseController.getMousePosition());
 			if (Physics.Raycast (ray, out hit, 1000)) {
-				Unit newUnit = ObjectFactory.createUnitByName ("LightCavalry", GameManager.addPlayerToGame("Player"));
+				Unit newUnit = ObjectFactory.createUnitByName ("Catapult", GameManager.addPlayerToGame("Enemy3"));
 				GameObject instance = Instantiate (Resources.Load (newUnit.getPrefabPath (), typeof(GameObject)) as GameObject);
 
 				instance.GetComponent<UnitContainer> ().setUnit (newUnit);
@@ -162,7 +162,7 @@ public class HotKeysController : MonoBehaviour {
 					instance.GetComponent<UnityEngine.AI.NavMeshAgent> ().Warp (new Vector3 (hit.point.x, Terrain.activeTerrain.SampleHeight(hit.point), hit.point.z));
 				}
 
-				GameManager.addPlayerToGame ("Player").addUnitToPlayer (instance.GetComponent<UnitContainer> ());
+				GameManager.addPlayerToGame ("Enemy3").addUnitToPlayer (instance.GetComponent<UnitContainer> ());
 
 			} else {
 				print ("Click off map - HotKeysController");
@@ -191,7 +191,7 @@ public class HotKeysController : MonoBehaviour {
 			RaycastHit hit;
 			Ray ray = Camera.main.ScreenPointToRay (MouseController.getMousePosition());
 			if (Physics.Raycast (ray, out hit, 1000)) {
-				Unit newUnit = ObjectFactory.createUnitByName ("Swordsman", GameManager.addPlayerToGame("Player"));
+				Unit newUnit = ObjectFactory.createUnitByName ("MageCavalry", GameManager.addPlayerToGame("Player"));
 				GameObject instance = Instantiate (Resources.Load (newUnit.getPrefabPath (), typeof(GameObject)) as GameObject);
 
 				instance.GetComponent<UnitContainer> ().setUnit (newUnit);

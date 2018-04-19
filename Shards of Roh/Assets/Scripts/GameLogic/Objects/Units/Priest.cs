@@ -2,10 +2,10 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class HeavyCavalry : Unit {
+public class Priest : Unit {
 
-	public HeavyCavalry (Player _owner) {
-		name = "HeavyCavalry";
+	public Priest (Player _owner) {
+		name = "Priest";
 		race = "Humans";
 		owner = _owner;
 		health = 100;

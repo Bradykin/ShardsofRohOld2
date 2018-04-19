@@ -10,7 +10,7 @@ public class Catapult : Unit {
 		owner = _owner;
 		health = 100;
 		attack = 10;
-		attackSpeed = 1;
+		attackSpeed = 0.6f;
 		attackRange = 50;
 		cost = new Resource (0, 0, 50);
 	}

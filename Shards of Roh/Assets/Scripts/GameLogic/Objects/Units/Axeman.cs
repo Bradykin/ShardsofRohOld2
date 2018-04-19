@@ -10,7 +10,7 @@ public class Axeman : Unit {
 		owner = _owner;
 		health = 100;
 		attack = 10;
-		attackSpeed = 1;
+		attackSpeed = 1.333f;
 		attackRange = 2;
 		cost = new Resource (0, 0, 50);
 	}

@@ -10,7 +10,7 @@ public class Villager : Unit {
 		owner = _owner;
 		health = 100;
 		attack = 10;
-		attackSpeed = 1;
+		attackSpeed = 1.2f;
 		attackRange = 1;
 		cost = new Resource (0, 0, 50);
 

@@ -64,6 +64,30 @@ public class ObjectFactory : MonoBehaviour {
 		return unit;
 	}
 
+	public static Mage createMage (Player _owner) {
+		Mage unit = new Mage (_owner);
+		unit.initPostCreate ();
+		return unit;
+	}
+
+	public static MageCavalry createMageCavalry (Player _owner) {
+		MageCavalry unit = new MageCavalry (_owner);
+		unit.initPostCreate ();
+		return unit;
+	}
+
+	public static Priest createPriest (Player _owner) {
+		Priest unit = new Priest (_owner);
+		unit.initPostCreate ();
+		return unit;
+	}
+
+	public static PriestCavalry createPriestCavalry (Player _owner) {
+		PriestCavalry unit = new PriestCavalry (_owner);
+		unit.initPostCreate ();
+		return unit;
+	}
+
 	public static Catapult createCatapult (Player _owner) {
 		Catapult unit = new Catapult (_owner);
 		unit.initPostCreate ();
@@ -112,6 +136,14 @@ public class ObjectFactory : MonoBehaviour {
 			return createHeavyCavalry (_owner);
 		} else if (_name == "BowCavalry" || _name == "BowCavalry(Clone)") {
 			return createBowCavalry (_owner);
+		} else if (_name == "Mage" || _name == "Mage(Clone)") {
+			return createMage (_owner);
+		} else if (_name == "MageCavalry" || _name == "MageCavalry(Clone)") {
+			return createMageCavalry (_owner);
+		} else if (_name == "Priest" || _name == "Priest(Clone)") {
+			return createPriest (_owner);
+		} else if (_name == "PriestCavalry" || _name == "PriestCavalry(Clone)") {
+			return createPriestCavalry (_owner);
 		} else if (_name == "Catapult" || _name == "Catapult(Clone)") {
 			return createCatapult (_owner);
 		}
