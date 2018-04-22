@@ -97,14 +97,78 @@ public class ObjectFactory : MonoBehaviour {
 
 
 
-	public static WatchTower createWatchTower (Player _owner, bool _isBuilt) {
-		WatchTower building = new WatchTower (_owner);
+
+	public static TownCentre createTownCentre (Player _owner, bool _isBuilt) {
+		TownCentre building = new TownCentre (_owner);
+		building.initPostCreate (_isBuilt);
+		return building;
+	}
+
+	public static Windmill createWindmill (Player _owner, bool _isBuilt) {
+		Windmill building = new Windmill (_owner);
+		building.initPostCreate (_isBuilt);
+		return building;
+	}
+
+	public static Barracks createBarracks (Player _owner, bool _isBuilt) {
+		Barracks building = new Barracks (_owner);
 		building.initPostCreate (_isBuilt);
 		return building;
 	}
 
 	public static Stables createStables (Player _owner, bool _isBuilt) {
 		Stables building = new Stables (_owner);
+		building.initPostCreate (_isBuilt);
+		return building;
+	}
+
+	public static WatchTower createWatchTower (Player _owner, bool _isBuilt) {
+		WatchTower building = new WatchTower (_owner);
+		building.initPostCreate (_isBuilt);
+		return building;
+	}
+
+	public static Blacksmith createBlacksmith (Player _owner, bool _isBuilt) {
+		Blacksmith building = new Blacksmith (_owner);
+		building.initPostCreate (_isBuilt);
+		return building;
+	}
+
+	public static Tavern createTavern (Player _owner, bool _isBuilt) {
+		Tavern building = new Tavern (_owner);
+		building.initPostCreate (_isBuilt);
+		return building;
+	}
+
+	public static Fort createFort (Player _owner, bool _isBuilt) {
+		Fort building = new Fort (_owner);
+		building.initPostCreate (_isBuilt);
+		return building;
+	}
+
+	public static Cathedral createCathedral (Player _owner, bool _isBuilt) {
+		Cathedral building = new Cathedral (_owner);
+		building.initPostCreate (_isBuilt);
+		return building;
+	}
+
+	public static CityHall createCityHall (Player _owner, bool _isBuilt) {
+		CityHall building = new CityHall (_owner);
+		building.initPostCreate (_isBuilt);
+		return building;
+	}
+
+
+
+
+	public static Food createFood (Player _owner, bool _isBuilt) {
+		Food building = new Food (_owner);
+		building.initPostCreate (_isBuilt);
+		return building;
+	}
+
+	public static Wood createWood (Player _owner, bool _isBuilt) {
+		Wood building = new Wood (_owner);
 		building.initPostCreate (_isBuilt);
 		return building;
 	}
@@ -153,11 +217,31 @@ public class ObjectFactory : MonoBehaviour {
 	}
 
 	public static Building createBuildingByName (string _name, Player _owner, bool _isBuilt = true) {
-		if (_name == "WatchTower" || _name == "WatchTower(Clone)") {
-			return createWatchTower (_owner, _isBuilt);
+		if (_name == "TownCentre" || _name == "TownCentre(Clone)") {
+			return createTownCentre (_owner, _isBuilt);
+		} else if (_name == "Windmill" || _name == "Windmill(Clone)") {
+			return createWindmill (_owner, _isBuilt);
+		} else if (_name == "Barracks" || _name == "Barracks(Clone)") {
+			return createBarracks (_owner, _isBuilt);
 		} else if (_name == "Stables" || _name == "Stables(Clone)") {
 			return createStables (_owner, _isBuilt);
+		} else if (_name == "WatchTower" || _name == "WatchTower(Clone)") {
+			return createWatchTower (_owner, _isBuilt);
+		} else if (_name == "Blacksmith" || _name == "Blacksmith(Clone)") {
+			return createBlacksmith (_owner, _isBuilt);
+		} else if (_name == "Tavern" || _name == "Tavern(Clone)") {
+			return createTavern (_owner, _isBuilt);
+		} else if (_name == "Fort" || _name == "Fort(Clone)") {
+			return createFort (_owner, _isBuilt);
+		} else if (_name == "Cathedral" || _name == "Cathedral(Clone)") {
+			return createCathedral (_owner, _isBuilt);
+		} else if (_name == "CityHall" || _name == "CityHall(Clone)") {
+			return createCityHall (_owner, _isBuilt);
 		
+		} else if (_name == "Food" || _name == "Food(Clone)") {
+			return createFood (_owner, _isBuilt);
+		} else if (_name == "Wood" || _name == "Wood(Clone)") {
+			return createWood (_owner, _isBuilt);
 		} else if (_name == "Gold" || _name == "Gold(Clone)") {
 			return createGold (_owner, _isBuilt);
 		}

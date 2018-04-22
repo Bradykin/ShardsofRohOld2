@@ -144,7 +144,7 @@ public class MouseController : MonoBehaviour {
 						if (clicked.GetComponent<UnitContainer> () != null) {
 							targetLoc = clicked.GetComponent<UnitContainer> ().getUnit ().getCurLoc ();
 							foreach (var r in GameManager.player.getPlayer ().getCurUnitTarget ()) {
-								if (clicked.GetComponent<UnitContainer> ().getUnit ().getOwner ().getName () != GameManager.player.getPlayer ().getName ()) {
+								if (GameManager.isEnemies (clicked.GetComponent<UnitContainer> ().getUnit ().getOwner (), GameManager.player.getPlayer ())) {
 									r.getUnit ().setAttackTarget (clicked.GetComponent<UnitContainer> ());
 									attacking = true;
 								}
@@ -155,14 +155,12 @@ public class MouseController : MonoBehaviour {
 							targetLoc = clicked.GetComponent<BuildingContainer> ().getBuilding ().getCurLoc ();
 							foreach (var r in GameManager.player.getPlayer ().getCurUnitTarget ()) {
 								if (r.getUnit ().getVillager () == true) {
-									//if (!(r.getUnit ().getBuildingTarget ().getBuilding ().getOwner ().getName () == r.getUnit ().getOwner ().getName ()) || !r.getUnit ().getBuildingTarget ().getBuilding ().getIsBuilt ()) {
-										r.getUnit ().setAttackTarget (clicked.GetComponent<BuildingContainer> ());
-										attacking = true;
-									//}
+									//This should have expanded logic
+									r.getUnit ().setAttackTarget (clicked.GetComponent<BuildingContainer> ());
+									attacking = true;
 								} else {
 									if (clicked.GetComponent<BuildingContainer> ().getBuilding ().getIsResource () == false) {
-										if (clicked.GetComponent<BuildingContainer> ().getBuilding ().getOwner ().getName () != r.getUnit ().getOwner ().getName ()) {
-											//print (clicked.GetComponent<BuildingContainer> ().getBuilding ().getOwner ().getName () + " " + r.getUnit ().getOwner ().getName ());
+										if (GameManager.isEnemies (clicked.GetComponent<BuildingContainer> ().getBuilding ().getOwner (), GameManager.player.getPlayer ())) {
 											r.getUnit ().setAttackTarget (clicked.GetComponent<BuildingContainer> ());
 											attacking = true;
 										}

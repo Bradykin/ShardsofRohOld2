@@ -2,16 +2,18 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Mage : Unit {
+public class Axeman : Unit {
 
-	public Mage (Player _owner) {
-		name = "Mage";
+	public Axeman (Player _owner) {
+		name = "Axeman";
 		race = "Humans";
 		owner = _owner;
 		health = 100;
 		attack = 10;
-		attackSpeed = 0.75f;
+		attackSpeed = 1.333f;
 		attackRange = 2;
 		cost = new Resource (0, 0, 50);
+
+		neededResearch.Add (ResearchFactory.createResearchByName ("Age2", _owner));
 	}
 }

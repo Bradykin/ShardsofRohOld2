@@ -10,6 +10,7 @@ public abstract class Object {
 	protected Player owner;
 	protected int health;
 	protected float curHealth;
+	protected List<Research> neededResearch = new List<Research> ();
 	protected List<Ability> abilities = new List<Ability> ();
 	protected Resource cost;
 
@@ -55,5 +56,9 @@ public abstract class Object {
 
 	public Resource getCost () {
 		return cost;
+	}
+		
+	public List<Research> getNeededResearch () {
+		return neededResearch;
 	}
 }

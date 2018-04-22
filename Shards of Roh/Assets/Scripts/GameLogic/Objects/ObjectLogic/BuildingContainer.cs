@@ -5,6 +5,8 @@ using UnityEngine;
 public class BuildingContainer : ObjectContainer {
 
 	private Building building;
+	private float unitQueueTimer;
+	private float researchQueueTimer;
 
 	// Use this for initialization
 	void Start () {
@@ -20,20 +22,42 @@ public class BuildingContainer : ObjectContainer {
 			building.setCurLoc (gameObject.GetComponent<UnityEngine.AI.NavMeshObstacle> ().transform.position);
 			building.setColliderSize (gameObject.GetComponent<UnityEngine.AI.NavMeshObstacle> ().size);
 		}
+
+		unitQueueTimer = 0.0f;
+		researchQueueTimer = 0.0f;
 	}
 
 	// Update is called once per frame
 	void Update () {
 		building.update ();
 
+		if (building.getUnitQueue ().Count > 0) {
+			unitQueueTimer += Time.deltaTime;
+		} else {
+			unitQueueTimer = 0.0f;
+		}
+
+		if (unitQueueTimer > 5.0f && building.getUnitQueue ().Count > 0) {
+			building.createUnit ();
+			unitQueueTimer = 0.0f;
+		}
+
+		if (building.getResearchQueue ().Count > 0) {
+			researchQueueTimer += Time.deltaTime;
+		} else {
+			researchQueueTimer = 0.0f;
+		}
+
+		if (researchQueueTimer > 5.0f && building.getResearchQueue ().Count > 0) {
+			building.createResearch ();
+			researchQueueTimer = 0.0f;
+		}
+
 		if (building.getDead () == true) {
-			GameManager.print ("Destroy building");
 			GameManager.destroyBuilding (this, building.getOwner ());
 		}
 
 		if (building.getToBuild () == true) {
-			GameManager.print ("Build building");
-
 			building.setIsBuilt (true);
 			building.setToBuild (false);
 

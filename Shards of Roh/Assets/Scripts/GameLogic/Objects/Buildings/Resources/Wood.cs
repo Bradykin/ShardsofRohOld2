@@ -2,15 +2,16 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Gold : Building {
+public class Wood : Building {
 
-	public Gold (Player _owner) {
-		name = "Gold";
+	public Wood (Player _owner) {
+		name = "Wood";
 		race = "Nature";
 		owner = _owner;
 		health = 1000;
 		cost = new Resource (10000, 10000, 10000);
 
 		isResource = true;
+		resourceType =  Enum.ResourceType.Wood;
 	}
 }

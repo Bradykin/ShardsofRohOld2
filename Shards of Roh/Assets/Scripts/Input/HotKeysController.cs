@@ -104,12 +104,124 @@ public class HotKeysController : MonoBehaviour {
 				}
 			}
 		}
+
+		if (Input.GetKeyDown (KeyCode.Alpha3)) {
+			if (GameManager.player.getPlayer ().getCurUnitTarget ().Count > 0) {
+				//This shouldn't check first in list, eventually should use some other logic system
+				if (GameManager.player.getPlayer ().getCurUnitTarget (0).getUnit ().getAbility (2) != null) {
+					GameManager.player.getPlayer ().getCurUnitTarget (0).getUnit ().getAbility (2).enact (GameManager.player.getPlayer ());
+				}
+			} else if (GameManager.player.getPlayer ().getCurBuildingTarget ().Count > 0) {
+				//This shouldn't check first in list, eventually should use some other logic system
+				if (GameManager.player.getPlayer ().getCurBuildingTarget (0).getBuilding ().getAbility (2) != null) {
+					GameManager.player.getPlayer ().getCurBuildingTarget (0).getBuilding ().getAbility (2).enact (GameManager.player.getPlayer ());
+				}
+			}
+		}
+
+		if (Input.GetKeyDown (KeyCode.Alpha4)) {
+			if (GameManager.player.getPlayer ().getCurUnitTarget ().Count > 0) {
+				//This shouldn't check first in list, eventually should use some other logic system
+				if (GameManager.player.getPlayer ().getCurUnitTarget (0).getUnit ().getAbility (3) != null) {
+					GameManager.player.getPlayer ().getCurUnitTarget (0).getUnit ().getAbility (3).enact (GameManager.player.getPlayer ());
+				}
+			} else if (GameManager.player.getPlayer ().getCurBuildingTarget ().Count > 0) {
+				//This shouldn't check first in list, eventually should use some other logic system
+				if (GameManager.player.getPlayer ().getCurBuildingTarget (0).getBuilding ().getAbility (3) != null) {
+					GameManager.player.getPlayer ().getCurBuildingTarget (0).getBuilding ().getAbility (3).enact (GameManager.player.getPlayer ());
+				}
+			}
+		}
+
+		if (Input.GetKeyDown (KeyCode.Alpha5)) {
+			if (GameManager.player.getPlayer ().getCurUnitTarget ().Count > 0) {
+				//This shouldn't check first in list, eventually should use some other logic system
+				if (GameManager.player.getPlayer ().getCurUnitTarget (0).getUnit ().getAbility (4) != null) {
+					GameManager.player.getPlayer ().getCurUnitTarget (0).getUnit ().getAbility (4).enact (GameManager.player.getPlayer ());
+				}
+			} else if (GameManager.player.getPlayer ().getCurBuildingTarget ().Count > 0) {
+				//This shouldn't check first in list, eventually should use some other logic system
+				if (GameManager.player.getPlayer ().getCurBuildingTarget (0).getBuilding ().getAbility (4) != null) {
+					GameManager.player.getPlayer ().getCurBuildingTarget (0).getBuilding ().getAbility (4).enact (GameManager.player.getPlayer ());
+				}
+			}
+		}
+
+		if (Input.GetKeyDown (KeyCode.Alpha6)) {
+			if (GameManager.player.getPlayer ().getCurUnitTarget ().Count > 0) {
+				//This shouldn't check first in list, eventually should use some other logic system
+				if (GameManager.player.getPlayer ().getCurUnitTarget (0).getUnit ().getAbility (5) != null) {
+					GameManager.player.getPlayer ().getCurUnitTarget (0).getUnit ().getAbility (5).enact (GameManager.player.getPlayer ());
+				}
+			} else if (GameManager.player.getPlayer ().getCurBuildingTarget ().Count > 0) {
+				//This shouldn't check first in list, eventually should use some other logic system
+				if (GameManager.player.getPlayer ().getCurBuildingTarget (0).getBuilding ().getAbility (5) != null) {
+					GameManager.player.getPlayer ().getCurBuildingTarget (0).getBuilding ().getAbility (5).enact (GameManager.player.getPlayer ());
+				}
+			}
+		}
+
+		if (Input.GetKeyDown (KeyCode.Q)) {
+			if (GameManager.player.getPlayer ().getCurUnitTarget ().Count > 0) {
+				//This shouldn't check first in list, eventually should use some other logic system
+				if (GameManager.player.getPlayer ().getCurUnitTarget (0).getUnit ().getAbility (6) != null) {
+					GameManager.player.getPlayer ().getCurUnitTarget (0).getUnit ().getAbility (6).enact (GameManager.player.getPlayer ());
+				}
+			} else if (GameManager.player.getPlayer ().getCurBuildingTarget ().Count > 0) {
+				//This shouldn't check first in list, eventually should use some other logic system
+				if (GameManager.player.getPlayer ().getCurBuildingTarget (0).getBuilding ().getAbility (6) != null) {
+					GameManager.player.getPlayer ().getCurBuildingTarget (0).getBuilding ().getAbility (6).enact (GameManager.player.getPlayer ());
+				}
+			}
+		}
+
+		if (Input.GetKeyDown (KeyCode.E)) {
+			if (GameManager.player.getPlayer ().getCurUnitTarget ().Count > 0) {
+				//This shouldn't check first in list, eventually should use some other logic system
+				if (GameManager.player.getPlayer ().getCurUnitTarget (0).getUnit ().getAbility (7) != null) {
+					GameManager.player.getPlayer ().getCurUnitTarget (0).getUnit ().getAbility (7).enact (GameManager.player.getPlayer ());
+				}
+			} else if (GameManager.player.getPlayer ().getCurBuildingTarget ().Count > 0) {
+				//This shouldn't check first in list, eventually should use some other logic system
+				if (GameManager.player.getPlayer ().getCurBuildingTarget (0).getBuilding ().getAbility (7) != null) {
+					GameManager.player.getPlayer ().getCurBuildingTarget (0).getBuilding ().getAbility (7).enact (GameManager.player.getPlayer ());
+				}
+			}
+		}
+
+		if (Input.GetKeyDown (KeyCode.R)) {
+			if (GameManager.player.getPlayer ().getCurUnitTarget ().Count > 0) {
+				//This shouldn't check first in list, eventually should use some other logic system
+				if (GameManager.player.getPlayer ().getCurUnitTarget (0).getUnit ().getAbility (8) != null) {
+					GameManager.player.getPlayer ().getCurUnitTarget (0).getUnit ().getAbility (8).enact (GameManager.player.getPlayer ());
+				}
+			} else if (GameManager.player.getPlayer ().getCurBuildingTarget ().Count > 0) {
+				//This shouldn't check first in list, eventually should use some other logic system
+				if (GameManager.player.getPlayer ().getCurBuildingTarget (0).getBuilding ().getAbility (8) != null) {
+					GameManager.player.getPlayer ().getCurBuildingTarget (0).getBuilding ().getAbility (8).enact (GameManager.player.getPlayer ());
+				}
+			}
+		}
+
+		if (Input.GetKeyDown (KeyCode.T)) {
+			if (GameManager.player.getPlayer ().getCurUnitTarget ().Count > 0) {
+				//This shouldn't check first in list, eventually should use some other logic system
+				if (GameManager.player.getPlayer ().getCurUnitTarget (0).getUnit ().getAbility (9) != null) {
+					GameManager.player.getPlayer ().getCurUnitTarget (0).getUnit ().getAbility (9).enact (GameManager.player.getPlayer ());
+				}
+			} else if (GameManager.player.getPlayer ().getCurBuildingTarget ().Count > 0) {
+				//This shouldn't check first in list, eventually should use some other logic system
+				if (GameManager.player.getPlayer ().getCurBuildingTarget (0).getBuilding ().getAbility (9) != null) {
+					GameManager.player.getPlayer ().getCurBuildingTarget (0).getBuilding ().getAbility (9).enact (GameManager.player.getPlayer ());
+				}
+			}
+		}
 	}
 
 	//Any test hotkeys or mid-implementation features go here as to not get interwoven with other systems
 	private void testKeys () {
 		if (Input.GetKeyDown (KeyCode.I)) {
-			FormationController.formationMode = 0;
+			print (GameManager.player.getPlayer ().getResource ().toString ());
 		}
 		if (Input.GetKeyDown (KeyCode.O)) {
 			foreach (var r in GameManager.player.getPlayer ().getCurUnitTarget ()) {
@@ -132,12 +244,13 @@ public class HotKeysController : MonoBehaviour {
 			}
 		}
 
-		if (Input.GetKeyDown (KeyCode.Alpha3)) {
+		/*if (Input.GetKeyDown (KeyCode.Alpha4)) {
 			RaycastHit hit;
 			Ray ray = Camera.main.ScreenPointToRay (MouseController.getMousePosition());
 			if (Physics.Raycast (ray, out hit, 1000)) {
-				Unit newUnit = ObjectFactory.createUnitByName ("Mage", GameManager.addPlayerToGame("Player"));
+				Unit newUnit = ObjectFactory.createUnitByName ("Archer", GameManager.addPlayerToGame("Player"));
 				GameObject instance = Instantiate (Resources.Load (newUnit.getPrefabPath (), typeof(GameObject)) as GameObject);
+
 				instance.GetComponent<UnitContainer> ().setUnit (newUnit);
 				if (instance.GetComponent<UnityEngine.AI.NavMeshAgent> () != null) {
 					instance.GetComponent<UnityEngine.AI.NavMeshAgent> ().Warp (new Vector3 (hit.point.x, Terrain.activeTerrain.SampleHeight(hit.point), hit.point.z));
@@ -150,30 +263,11 @@ public class HotKeysController : MonoBehaviour {
 			}
 		}
 
-		if (Input.GetKeyDown (KeyCode.Alpha4)) {
-			RaycastHit hit;
-			Ray ray = Camera.main.ScreenPointToRay (MouseController.getMousePosition());
-			if (Physics.Raycast (ray, out hit, 1000)) {
-				Unit newUnit = ObjectFactory.createUnitByName ("Catapult", GameManager.addPlayerToGame("Enemy3"));
-				GameObject instance = Instantiate (Resources.Load (newUnit.getPrefabPath (), typeof(GameObject)) as GameObject);
-
-				instance.GetComponent<UnitContainer> ().setUnit (newUnit);
-				if (instance.GetComponent<UnityEngine.AI.NavMeshAgent> () != null) {
-					instance.GetComponent<UnityEngine.AI.NavMeshAgent> ().Warp (new Vector3 (hit.point.x, Terrain.activeTerrain.SampleHeight(hit.point), hit.point.z));
-				}
-
-				GameManager.addPlayerToGame ("Enemy3").addUnitToPlayer (instance.GetComponent<UnitContainer> ());
-
-			} else {
-				print ("Click off map - HotKeysController");
-			}
-		}
-
 		if (Input.GetKeyDown (KeyCode.Alpha5)) {
 			RaycastHit hit;
 			Ray ray = Camera.main.ScreenPointToRay (MouseController.getMousePosition());
 			if (Physics.Raycast (ray, out hit, 1000)) {
-				Building newBuilding = ObjectFactory.createBuildingByName ("Gold", GameManager.addPlayerToGame("Nature"));
+				Building newBuilding = ObjectFactory.createBuildingByName ("Wood", GameManager.addPlayerToGame("Nature"));
 				GameObject instance = Instantiate (Resources.Load (newBuilding.getPrefabPath (), typeof(GameObject)) as GameObject);
 				instance.GetComponent<BuildingContainer> ().setBuilding (newBuilding);
 				if (instance.GetComponent<UnityEngine.AI.NavMeshObstacle> () != null) {
@@ -200,6 +294,62 @@ public class HotKeysController : MonoBehaviour {
 				}
 
 				GameManager.addPlayerToGame ("Player").addUnitToPlayer (instance.GetComponent<UnitContainer> ());
+
+			} else {
+				print ("Click off map - HotKeysController");
+			}
+		}*/
+
+		if (Input.GetKeyDown (KeyCode.Alpha7)) {
+			RaycastHit hit;
+			Ray ray = Camera.main.ScreenPointToRay (MouseController.getMousePosition());
+			if (Physics.Raycast (ray, out hit, 1000)) {
+				Unit newUnit = ObjectFactory.createUnitByName ("Villager", GameManager.addPlayerToGame("Player"));
+				GameObject instance = Instantiate (Resources.Load (newUnit.getPrefabPath (), typeof(GameObject)) as GameObject);
+
+				instance.GetComponent<UnitContainer> ().setUnit (newUnit);
+				if (instance.GetComponent<UnityEngine.AI.NavMeshAgent> () != null) {
+					instance.GetComponent<UnityEngine.AI.NavMeshAgent> ().Warp (new Vector3 (hit.point.x, Terrain.activeTerrain.SampleHeight(hit.point), hit.point.z));
+				}
+
+				GameManager.addPlayerToGame ("Player").addUnitToPlayer (instance.GetComponent<UnitContainer> ());
+
+			} else {
+				print ("Click off map - HotKeysController");
+			}
+		}
+
+		if (Input.GetKeyDown (KeyCode.Alpha8)) {
+			RaycastHit hit;
+			Ray ray = Camera.main.ScreenPointToRay (MouseController.getMousePosition());
+			if (Physics.Raycast (ray, out hit, 1000)) {
+				Unit newUnit = ObjectFactory.createUnitByName ("Archer", GameManager.addPlayerToGame("Player"));
+				GameObject instance = Instantiate (Resources.Load (newUnit.getPrefabPath (), typeof(GameObject)) as GameObject);
+
+				instance.GetComponent<UnitContainer> ().setUnit (newUnit);
+				if (instance.GetComponent<UnityEngine.AI.NavMeshAgent> () != null) {
+					instance.GetComponent<UnityEngine.AI.NavMeshAgent> ().Warp (new Vector3 (hit.point.x, Terrain.activeTerrain.SampleHeight(hit.point), hit.point.z));
+				}
+
+				GameManager.addPlayerToGame ("Player").addUnitToPlayer (instance.GetComponent<UnitContainer> ());
+
+			} else {
+				print ("Click off map - HotKeysController");
+			}
+		}
+
+		if (Input.GetKeyDown (KeyCode.Alpha9)) {
+			RaycastHit hit;
+			Ray ray = Camera.main.ScreenPointToRay (MouseController.getMousePosition());
+			if (Physics.Raycast (ray, out hit, 1000)) {
+				Building newBuilding = ObjectFactory.createBuildingByName ("Barracks", GameManager.addPlayerToGame("Enemy1"));
+				GameObject instance = Instantiate (Resources.Load (newBuilding.getPrefabPath (), typeof(GameObject)) as GameObject);
+				instance.GetComponent<BuildingContainer> ().setBuilding (newBuilding);
+				if (instance.GetComponent<UnityEngine.AI.NavMeshObstacle> () != null) {
+					instance.GetComponent<UnityEngine.AI.NavMeshObstacle> ().transform.position = (new Vector3 (hit.point.x, Terrain.activeTerrain.SampleHeight(hit.point), hit.point.z));
+				}
+
+				GameManager.addPlayerToGame ("Enemy1").addBuildingToPlayer (instance.GetComponent<BuildingContainer> ());
 
 			} else {
 				print ("Click off map - HotKeysController");

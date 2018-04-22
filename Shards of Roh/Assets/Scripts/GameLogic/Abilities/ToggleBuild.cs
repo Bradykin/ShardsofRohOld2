@@ -17,19 +17,26 @@ public class ToggleBuild : Ability {
 		if (GameManager.player.buildToggleSetting == buildName) {
 			GameManager.player.buildToggleActive = false;
 			GameManager.player.buildToggleSetting = null;
-			GameManager.player.buildToggle.transform.GetChild (0).gameObject.SetActive (false);
 
 			for (int i = 0; i < GameManager.player.buildToggle.transform.childCount; i++) {
 				GameManager.player.buildToggle.transform.GetChild (i).gameObject.SetActive (false);
 			}
 		} else {
-			GameManager.player.buildToggleActive = true;
-			GameManager.player.buildToggleSetting = buildName;
-			GameManager.player.buildToggle.transform.GetChild (0).gameObject.SetActive (true);
-
 			for (int i = 0; i < GameManager.player.buildToggle.transform.childCount; i++) {
 				if (GameManager.player.buildToggle.transform.GetChild (i).gameObject.name == buildName) {
-					GameManager.player.buildToggle.transform.GetChild (i).gameObject.SetActive (true);
+					bool hasResearch = true;
+					foreach (var r in ObjectFactory.createBuildingByName (buildName, owner).getNeededResearch ()) {
+						if (owner.hasResearch (r) == false) {
+							hasResearch = false;
+						}
+					}
+					if (hasResearch == true) {
+						GameManager.player.buildToggleActive = true;
+						GameManager.player.buildToggleSetting = buildName;
+						GameManager.player.buildToggle.transform.GetChild (i).gameObject.SetActive (true);
+					} else {
+						GameManager.player.buildToggle.transform.GetChild (i).gameObject.SetActive (false);
+					}
 				} else {
 					GameManager.player.buildToggle.transform.GetChild (i).gameObject.SetActive (false);
 				}

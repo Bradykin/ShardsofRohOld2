@@ -11,7 +11,9 @@ public class Stables : Building {
 		health = 1000;
 		cost = new Resource (0, 0, 50);
 
-		abilities.Add (new CreateUnit ("LightCavalry", this));
-		abilities.Add (new CreateUnit ("SpearCavalry", this));
+		abilities.Add (new QueueUnit ("LightCavalry", this));
+		abilities.Add (new QueueUnit ("SpearCavalry", this));
+		abilities.Add (new QueueUnit ("HeavyCavalry", this));
+		abilities.Add (new QueueUnit ("BowCavalry", this));
 	}
 }

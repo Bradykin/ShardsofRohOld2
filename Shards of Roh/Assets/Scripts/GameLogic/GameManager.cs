@@ -15,6 +15,7 @@ public class GameManager : MonoBehaviour {
 
 		player = GameObject.Find ("Player").GetComponent<PlayerContainer> ();
 		playersInGame.Add (player.getPlayer ());
+		player.getPlayer ().getResource ().add (new Resource (1000, 1000, 1000));
 	}
 	
 	// Update is called once per frame
@@ -39,6 +40,14 @@ public class GameManager : MonoBehaviour {
 
 		playersInGame.Add (newPlayer);
 		return newPlayer;
+	}
+
+	public static bool isEnemies (Player _player1, Player _player2) {
+		if (_player1.getName () != _player2.getName ()) {
+			return true;
+		} else {
+			return false;
+		}
 	}
 
 	public static void destroyUnit (UnitContainer _toDestroy, Player _player) {

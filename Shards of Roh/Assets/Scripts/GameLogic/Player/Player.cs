@@ -10,6 +10,7 @@ public class Player {
 	private List<BuildingContainer> buildings = new List<BuildingContainer> ();
 	private List<UnitContainer> curUnitTarget = new List<UnitContainer> ();
 	private List<BuildingContainer> curBuildingTarget = new List<BuildingContainer> ();
+	private List<Research> researchList = new List<Research> ();
 	private Resource resource = new Resource (0, 0, 0);
 
 	public Player (string _name) {
@@ -234,6 +235,23 @@ public class Player {
 
 	public Resource getResource () {
 		return resource;
+	}
+
+	public void addResearch (Research _research) {
+		researchList.Add (_research);
+	}
+
+	public List<Research> getResearch () {
+		return researchList;
+	}
+
+	public bool hasResearch (Research _research) {
+		for (int i = 0; i < researchList.Count; i++) {
+			if (researchList [i].getName () == _research.getName ()) {
+				return true;
+			}
+		}
+		return false;
 	}
 
 	//Mid development function

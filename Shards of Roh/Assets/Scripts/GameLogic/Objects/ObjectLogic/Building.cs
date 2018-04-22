@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Enum;
 
 public abstract class Building : Object {
 
@@ -8,9 +9,12 @@ public abstract class Building : Object {
 
 	//Variables that will default if not declared
 	protected bool isResource = false;
+	protected ResourceType resourceType = ResourceType.None;
 	protected bool isBuilt = true;
 	protected bool toBuild = false;
 	protected Vector3 navColliderSize = new Vector3 ();
+	protected List<UnitQueue> unitQueue = new List<UnitQueue> ();
+	protected List<ResearchQueue> researchQueue = new List<ResearchQueue> ();
 
 	//Variables that adjust during gameplay
 
@@ -59,6 +63,37 @@ public abstract class Building : Object {
 		}
 	}
 
+	public void createUnit () {
+		Vector3 targetLoc = getCurLoc ();
+		targetLoc.x += getColliderSize ().x / 2;
+		targetLoc.z -= getColliderSize ().z / 2;
+		RaycastHit hit;
+		Ray ray = Camera.main.ScreenPointToRay (Camera.main.WorldToScreenPoint (targetLoc));
+		if (Physics.Raycast (ray, out hit, 1000)) {
+			if (unitQueue [0] != null) {
+				for (int i = 0; i < unitQueue [0].getSize (); i++) {
+					Unit newUnit = ObjectFactory.createUnitByName (unitQueue [0].getUnit ().getName (), getOwner ());
+					GameObject instance = GameManager.Instantiate (Resources.Load (newUnit.getPrefabPath (), typeof(GameObject)) as GameObject);
+					instance.GetComponent<UnitContainer> ().setUnit (newUnit);
+					if (instance.GetComponent<UnityEngine.AI.NavMeshAgent> () != null) {
+						instance.GetComponent<UnityEngine.AI.NavMeshAgent> ().Warp (hit.point);
+					}
+
+					GameManager.addPlayerToGame (getOwner ().getName ()).addUnitToPlayer (instance.GetComponent<UnitContainer> ());
+				}
+				getUnitQueue ().RemoveAt (0);
+			}
+		}
+	}
+
+	public void createResearch () {
+		if (researchQueue.Count > 0) {
+			GameManager.print ("AddResearch: " + researchQueue [0].getResearch ().getName ());
+			GameManager.addPlayerToGame (getOwner ().getName ()).addResearch (researchQueue [0].getResearch ());
+			getResearchQueue ().RemoveAt (0);
+		}
+	}
+
 	public override string getPrefabPath () {
 		return "Prefabs/" + race + "/Buildings/" + name;
 	}
@@ -93,5 +128,31 @@ public abstract class Building : Object {
 
 	public void setColliderSize (Vector3 _size) {
 		navColliderSize = _size;
+	}
+
+	public void addToUnitQueue (Unit _newUnit) {
+		bool insert = false;
+		for (int i = 0; i < unitQueue.Count; i++) {
+			if (unitQueue [i].getUnit ().getName () == _newUnit.getName () && unitQueue [i].getFull () == false && insert == false) {
+				unitQueue [i].addSize (1);
+				insert = true;
+			}
+		}
+
+		if (insert == false) {
+			unitQueue.Add (new UnitQueue (_newUnit, 1));
+		}
+	}
+
+	public List<UnitQueue> getUnitQueue () {
+		return unitQueue;
+	}
+
+	public void addToResearchQueue (Research _newResearch) {
+		researchQueue.Add (new ResearchQueue (_newResearch));
+	}
+
+	public List<ResearchQueue> getResearchQueue () {
+		return researchQueue;
 	}
 }

@@ -9,4 +9,7 @@ namespace Enum {
 
 	//Type of target for abilities
 	public enum TargetType {None, Unit, Building, Ground}
+
+	//Type of resource
+	public enum ResourceType {None, Food, Wood, Gold}
 }

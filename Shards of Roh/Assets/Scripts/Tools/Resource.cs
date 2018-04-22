@@ -66,7 +66,7 @@ public class Resource {
 	}
 
 	//Unused Function
-	/*public string toString () {
+	public string toString () {
 		return "Food: " + food + ", Wood: " + wood + ", Gold: " + gold;
-	}*/
+	}
 }

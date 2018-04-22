@@ -54,20 +54,24 @@ public class UnitContainer : ObjectContainer {
 
 		//Check for distance to targets, update isAttacking
 		if (unit.getUnitTarget () != null && unit.getUnitTarget ().getUnit ().getDead () == false) {
-			Vector3 point1 = gameObject.GetComponent<CapsuleCollider> ().ClosestPointOnBounds (unit.getUnitTarget ().GetComponent<CapsuleCollider> ().transform.position);
-			Vector3 point2 = unit.getUnitTarget ().GetComponent<CapsuleCollider> ().ClosestPointOnBounds (gameObject.GetComponent<CapsuleCollider> ().transform.position);
-			if (Vector3.Distance (point1, point2) <= unit.getAttackRange ()) {
+			Vector3 point1 = gameObject.GetComponent<CapsuleCollider> ().bounds.center;
+			Vector3 point2 = unit.getUnitTarget ().GetComponent<CapsuleCollider> ().bounds.center;
+			point1.y = 0;
+			point2.y = 0;
+			if (Vector3.Distance (point1, point2) - gameObject.GetComponent<CapsuleCollider> ().radius - unit.getUnitTarget ().GetComponent<CapsuleCollider> ().radius <= unit.getAttackRange ()) {
 				gameObject.GetComponent<UnityEngine.AI.NavMeshAgent> ().destination = gameObject.GetComponent<UnityEngine.AI.NavMeshAgent> ().transform.position;
-				//lookDirection (point1, point2);
+				lookDirection (GetComponent<CapsuleCollider> ().bounds.center, unit.getUnitTarget ().GetComponent<CapsuleCollider> ().bounds.center);
 				gameObject.GetComponent<Animator> ().SetBool ("isAttacking", true);
 				unit.attackUnit ();
 			}
 		} else if (unit.getBuildingTarget () != null && unit.getBuildingTarget ().getBuilding ().getDead () == false) {
-			Vector3 point1 = GetComponent<CapsuleCollider> ().ClosestPointOnBounds (unit.getBuildingTarget ().GetComponent<BoxCollider> ().transform.position);
-			Vector3 point2 = unit.getBuildingTarget ().GetComponent<BoxCollider> ().ClosestPointOnBounds (GetComponent<CapsuleCollider> ().transform.position);
-			if (Vector3.Distance (point1, point2) <= unit.getAttackRange ()) {
-				gameObject.GetComponent<UnityEngine.AI.NavMeshAgent> ().destination = gameObject.GetComponent<UnityEngine.AI.NavMeshAgent> ().transform.position;
-				//lookDirection (point1, point2);
+			Vector3 point1 = GetComponent<CapsuleCollider> ().bounds.center;
+			Vector3 point2 = unit.getBuildingTarget ().GetComponent<BoxCollider> ().ClosestPoint (GetComponent<CapsuleCollider> ().bounds.center);
+			point1.y = 0;
+			point2.y = 0;
+			if (Vector3.Distance (point1, point2) - GetComponent<CapsuleCollider> ().radius <= unit.getAttackRange ()) {
+				gameObject.GetComponent<UnityEngine.AI.NavMeshAgent> ().ResetPath ();
+				lookDirection (GetComponent<CapsuleCollider> ().bounds.center, unit.getBuildingTarget ().GetComponent<BoxCollider> ().bounds.center);
 				gameObject.GetComponent<Animator> ().SetBool ("isAttacking", true);
 				unit.attackBuilding ();
 			}
@@ -92,7 +96,7 @@ public class UnitContainer : ObjectContainer {
 		Vector3 direction = (_point2 - _point1).normalized;
 		direction.y = 0;
 		Quaternion lookRotation = Quaternion.LookRotation (direction);
-		gameObject.transform.rotation = Quaternion.Slerp (gameObject.transform.rotation, lookRotation, Time.deltaTime * gameObject.GetComponent<UnityEngine.AI.NavMeshAgent> ().angularSpeed);
+		gameObject.transform.rotation = Quaternion.Slerp (gameObject.transform.rotation, lookRotation, Time.deltaTime * 10);
 	}
 
 	public void setUnit (Unit _unit) {
