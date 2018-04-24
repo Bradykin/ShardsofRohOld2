@@ -5,6 +5,8 @@ using UnityEngine;
 public class Player {
 
 	private string name;
+	private int population;
+	private int maxPopulation;
 
 	private List<UnitContainer> units = new List<UnitContainer> ();
 	private List<BuildingContainer> buildings = new List<BuildingContainer> ();
@@ -15,6 +17,8 @@ public class Player {
 
 	public Player (string _name) {
 		name = _name;
+		updatePopulation ();
+		updatemaxPopulation ();
 	}
 
 	public void addCurUnitTarget (UnitContainer _curUnitTarget) {
@@ -92,6 +96,56 @@ public class Player {
 			return curBuildingTarget [_index];
 		} else {
 			return null;
+		}
+	}
+
+	public void processFormationMovement (Vector3 targetLoc) {
+		foreach (var r in GameManager.player.getPlayer ().getCurUnitTarget ()) {
+			r.getUnit ().dropAttackTarget ();
+		}
+
+		//Calculate angle vectors for formations
+		Vector3 unitVec = new Vector3 (0, 0, 0);
+		foreach (var r in GameManager.player.getPlayer ().getCurUnitTarget ()) {
+			//This works well, but I worry about performance issues. Think of a better way!
+			UnityEngine.AI.NavMeshPath path = new UnityEngine.AI.NavMeshPath ();
+			UnityEngine.AI.NavMesh.CalculatePath (r.gameObject.GetComponent<UnityEngine.AI.NavMeshAgent> ().transform.position, targetLoc, UnityEngine.AI.NavMesh.AllAreas, path);
+			r.gameObject.GetComponent<UnityEngine.AI.NavMeshAgent> ().path = path;
+			if (path.corners.Length >= 2) {
+				unitVec = unitVec + path.corners [path.corners.Length - 2];
+			} else {
+				unitVec = unitVec + r.getUnit ().getCurLoc ();
+			}
+		}
+		unitVec = unitVec / GameManager.player.getPlayer ().getCurUnitTarget ().Count;
+		unitVec = (unitVec - targetLoc).normalized * 4;
+		Vector3 perpVec = Vector3.Cross (unitVec, new Vector3 (0, 1, 0));
+
+		//Calculate formation positions and match each unit to a formation spot.
+		List <Formation> formationPositions = FormationController.findFormationPositions (false, GameManager.player.getPlayer ().getCurUnitTarget (), targetLoc, unitVec, perpVec);
+		GameManager.player.getPlayer ().sortCurUnitTarget (targetLoc, formationPositions);
+
+		//Assign each unit to move to it's formation location
+		foreach (var r in GameManager.player.getPlayer ().getCurUnitTarget ()) {
+			if (r.gameObject.GetComponent<UnityEngine.AI.NavMeshAgent> () != null) {
+				if (formationPositions.Count > 0) {
+					/*if (clicked.GetComponent<UnitContainer> () != null || clicked.GetComponent<BuildingContainer> () != null) {
+						r.gameObject.GetComponent<UnityEngine.AI.NavMeshAgent> ().destination = formationPositions [0].getPosition ();
+						UnityEngine.AI.NavMeshPath path = new UnityEngine.AI.NavMeshPath ();
+						UnityEngine.AI.NavMesh.CalculatePath (r.gameObject.GetComponent<UnityEngine.AI.NavMeshAgent> ().transform.position, r.gameObject.GetComponent<UnityEngine.AI.NavMeshAgent> ().destination, UnityEngine.AI.NavMesh.AllAreas, path);
+						r.gameObject.GetComponent<UnityEngine.AI.NavMeshAgent> ().path = path;
+					} else {*/
+					UnityEngine.AI.NavMeshPath path = new UnityEngine.AI.NavMeshPath ();
+					UnityEngine.AI.NavMesh.CalculatePath (r.gameObject.GetComponent<UnityEngine.AI.NavMeshAgent> ().transform.position, formationPositions [0].getPosition (), UnityEngine.AI.NavMesh.AllAreas, path);
+					r.gameObject.GetComponent<UnityEngine.AI.NavMeshAgent> ().path = path;
+					//}
+					formationPositions.RemoveAt (0);
+				} else {
+					GameManager.print ("Missing FormationPosition - MouseController");
+				}
+			} else {
+				GameManager.print ("Missing NavMeshAgent - MouseController");
+			}
 		}
 	}
 
@@ -254,7 +308,45 @@ public class Player {
 		return false;
 	}
 
-	//Mid development function
+	public int getpopulation () {
+		return population;
+	}
+
+	public int getmaxPopulation () {
+		return maxPopulation;
+	}
+
+	public void updatePopulation () {
+		population = 0;
+		foreach (var r in getUnits ()) {
+			population += r.getUnit ().getPopulationCost ();
+		}
+
+		foreach (var r in getBuildings ()) {
+			foreach (var u in r.getBuilding ().getUnitQueue ()) {
+				population += u.getSize ();
+			}
+		}
+	}
+
+	public void updatemaxPopulation () {
+		maxPopulation = 0;
+		foreach (var r in getBuildings ()) {
+			if (r.getBuilding ().getIsBuilt ()) {
+				maxPopulation += r.getBuilding ().getPopulationValue ();
+			}
+		}
+	}
+
+	public bool hasPopulationSpace (int _add) {
+		if (population + _add <= maxPopulation) {
+			return true;
+		} else {
+			return false;
+		}
+	}
+
+	//Mid development funct ion
 	public float getPathLength (UnitContainer _unit, Vector3 _newPathEnd) {
 		UnityEngine.AI.NavMeshPath path = _unit.GetComponent<UnityEngine.AI.NavMeshAgent> ().path;
 		path.corners [path.corners.Length - 1] = _newPathEnd;

@@ -10,6 +10,7 @@ public abstract class Unit : Object {
 	protected float attackSpeed;
 
 	//Variables that will default if not declared
+	protected int populationCost = 1;
 	protected float attackRange = 2.0f;
 	protected float damageCheck = 0.5f;
 	protected bool isVillager = false;
@@ -19,6 +20,7 @@ public abstract class Unit : Object {
 	protected BuildingContainer buildingTarget;
 	protected float attackTimer;
 	protected bool hasHit;
+	protected float isCombatTimer = 0;
 
 	public void initPostCreate () {
 		curHealth = health;
@@ -26,6 +28,10 @@ public abstract class Unit : Object {
 	}
 
 	public void update () {
+		if (isCombatTimer > 0) {
+			isCombatTimer -= Time.deltaTime;
+		}
+
 		if (curHealth <= 0) {
 			isDead = true;
 		}
@@ -43,11 +49,13 @@ public abstract class Unit : Object {
 		}
 	}
 
-	public void attackUnit () {
+	public bool attackUnit () {
+		bool shouldHit = false;
+		isCombatTimer = 5.0f;
 		attackTimer += Time.deltaTime;
 		if ((attackTimer * (1.0f / damageCheck)) >= (1.0f / attackSpeed) && hasHit == false) {
 			if (unitTarget != null) {
-				unitTarget.getUnit ().getHit (this, attack);
+				shouldHit = true;
 			} else {
 				GameManager.print ("Missing UnitTarget - Unit");
 			}
@@ -57,13 +65,17 @@ public abstract class Unit : Object {
 			attackTimer = attackTimer - (1 / attackSpeed);
 			hasHit = false;
 		}
+
+		return shouldHit;
 	}
 
-	public void attackBuilding () {	
+	public bool attackBuilding () {	
+		bool shouldHit = false;
+		isCombatTimer = 5.0f;
 		attackTimer += Time.deltaTime;
 		if ((attackTimer * (1.0f / damageCheck)) >= (1.0f / attackSpeed) && hasHit == false) {
 			if (buildingTarget != null) {
-				buildingTarget.getBuilding ().getHit (this, attack);
+				shouldHit = true;
 			} else {
 				GameManager.print ("Missing BuildingTarget - Unit");
 			}
@@ -73,9 +85,15 @@ public abstract class Unit : Object {
 			attackTimer = attackTimer - (1 / attackSpeed);
 			hasHit = false;
 		}
+
+		return shouldHit;
 	}
 
-	public void getHit (Unit _attacker, float _attack) {
+	public void getHit (UnitContainer _attacker, float _attack) {
+		/*if (unitTarget == null && buildingTarget == null && isMoving == false) {
+			setAttackTarget (_attacker);
+		}*/
+		isCombatTimer = 5.0f;
 		curHealth -= _attack;
 		GameManager.print ("gotHit: " + curHealth + "/" + health);
 	}
@@ -90,6 +108,10 @@ public abstract class Unit : Object {
 
 	public BuildingContainer getBuildingTarget () {
 		return buildingTarget;
+	}
+
+	public int getAttack () {
+		return attack;
 	}
 
 	public float getAttackRange () {
@@ -117,5 +139,13 @@ public abstract class Unit : Object {
 
 	public bool getDead () {
 		return isDead;
+	}
+
+	public int getPopulationCost () {
+		return populationCost;
+	}
+
+	public float getIsCombatTimer () {
+		return isCombatTimer;
 	}
 }

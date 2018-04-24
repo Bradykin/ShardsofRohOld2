@@ -30,6 +30,43 @@ public class PlayerContainer : MonoBehaviour {
 				buildToggle.transform.position = (new Vector3 (hit.point.x, Terrain.activeTerrain.SampleHeight(hit.point), hit.point.z));
 			}
 		}
+
+		player.updatePopulation ();
+		player.updatemaxPopulation ();
+	}
+
+	public void processRightClickUnitCommand (Vector3 targetLoc, GameObject clicked) {
+		//Handle if clicked on unit
+		if (clicked.GetComponent<UnitContainer> () != null) {
+			targetLoc = clicked.GetComponent<UnitContainer> ().getUnit ().getCurLoc ();
+			foreach (var r in GameManager.player.getPlayer ().getCurUnitTarget ()) {
+				if (GameManager.isEnemies (clicked.GetComponent<UnitContainer> ().getUnit ().getOwner (), GameManager.player.getPlayer ())) {
+					r.getUnit ().setAttackTarget (clicked.GetComponent<UnitContainer> ());
+					r.checkAttackLogic ();
+				}
+			}
+		}
+		//Handle is clicked on building
+		else if (clicked.GetComponent<BuildingContainer> () != null) {
+			targetLoc = clicked.GetComponent<BuildingContainer> ().getBuilding ().getCurLoc ();
+			foreach (var r in GameManager.player.getPlayer ().getCurUnitTarget ()) {
+				if (r.getUnit ().getVillager () == true) {
+					//This should have expanded logic
+					r.getUnit ().setAttackTarget (clicked.GetComponent<BuildingContainer> ());
+				} else {
+					if (clicked.GetComponent<BuildingContainer> ().getBuilding ().getIsResource () == false) {
+						if (GameManager.isEnemies (clicked.GetComponent<BuildingContainer> ().getBuilding ().getOwner (), GameManager.player.getPlayer ())) {
+							r.getUnit ().setAttackTarget (clicked.GetComponent<BuildingContainer> ());
+							r.checkAttackLogic ();
+						}
+					}
+				}
+			}
+		}
+		//Handle if clicked on nothing
+		else {
+			getPlayer ().processFormationMovement (targetLoc);
+		}
 	}
 
 	public Player getPlayer () {

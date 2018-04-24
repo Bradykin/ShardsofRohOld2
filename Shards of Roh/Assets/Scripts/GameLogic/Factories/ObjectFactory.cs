@@ -10,6 +10,12 @@ public class ObjectFactory : MonoBehaviour {
 		return unit;
 	}
 
+	public static Axeman createAxeman (Player _owner) {
+		Axeman unit = new Axeman (_owner);
+		unit.initPostCreate ();
+		return unit;
+	}
+
 	public static Spearman createSpearman (Player _owner) {
 		Spearman unit = new Spearman (_owner);
 		unit.initPostCreate ();
@@ -18,12 +24,6 @@ public class ObjectFactory : MonoBehaviour {
 
 	public static Swordsman createSwordsman (Player _owner) {
 		Swordsman unit = new Swordsman (_owner);
-		unit.initPostCreate ();
-		return unit;
-	}
-
-	public static Axeman createAxeman (Player _owner) {
-		Axeman unit = new Axeman (_owner);
 		unit.initPostCreate ();
 		return unit;
 	}
@@ -182,12 +182,12 @@ public class ObjectFactory : MonoBehaviour {
 	public static Unit createUnitByName (string _name, Player _owner) {
 		if (_name == "Villager" || _name == "Villager(Clone)") {
 			return createVillager (_owner);
+		} else if (_name == "Axeman" || _name == "Axeman(Clone)") {
+			return createAxeman (_owner);
 		} else if (_name == "Spearman" || _name == "Spearman(Clone)") {
 			return createSpearman (_owner);
 		} else if (_name == "Swordsman" || _name == "Swordsman(Clone)") {
 			return createSwordsman (_owner);
-		} else if (_name == "Axeman" || _name == "Axeman(Clone)") {
-			return createAxeman (_owner);
 		} else if (_name == "HeavyInfantry" || _name == "HeavyInfantry(Clone)") {
 			return createHeavyInfantry (_owner);
 		} else if (_name == "Archer" || _name == "Archer(Clone)") {

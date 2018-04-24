@@ -136,89 +136,10 @@ public class MouseController : MonoBehaviour {
 					RaycastHit hit;
 					Ray ray = Camera.main.ScreenPointToRay (Input.mousePosition);
 					if (Physics.Raycast (ray, out hit, 1000)) {
-						bool attacking = false;
 						Vector3 targetLoc = hit.point;
 						GameObject clicked = hit.collider.gameObject;
 
-						//Handle if clicked on unit
-						if (clicked.GetComponent<UnitContainer> () != null) {
-							targetLoc = clicked.GetComponent<UnitContainer> ().getUnit ().getCurLoc ();
-							foreach (var r in GameManager.player.getPlayer ().getCurUnitTarget ()) {
-								if (GameManager.isEnemies (clicked.GetComponent<UnitContainer> ().getUnit ().getOwner (), GameManager.player.getPlayer ())) {
-									r.getUnit ().setAttackTarget (clicked.GetComponent<UnitContainer> ());
-									attacking = true;
-								}
-							}
-						}
-						//Handle is clicked on building
-						else if (clicked.GetComponent<BuildingContainer> () != null) {
-							targetLoc = clicked.GetComponent<BuildingContainer> ().getBuilding ().getCurLoc ();
-							foreach (var r in GameManager.player.getPlayer ().getCurUnitTarget ()) {
-								if (r.getUnit ().getVillager () == true) {
-									//This should have expanded logic
-									r.getUnit ().setAttackTarget (clicked.GetComponent<BuildingContainer> ());
-									attacking = true;
-								} else {
-									if (clicked.GetComponent<BuildingContainer> ().getBuilding ().getIsResource () == false) {
-										if (GameManager.isEnemies (clicked.GetComponent<BuildingContainer> ().getBuilding ().getOwner (), GameManager.player.getPlayer ())) {
-											r.getUnit ().setAttackTarget (clicked.GetComponent<BuildingContainer> ());
-											attacking = true;
-										}
-									}
-								}
-							}
-						}
-						//Handle if clicked on nothing
-						else {
-							foreach (var r in GameManager.player.getPlayer ().getCurUnitTarget ()) {
-								r.getUnit ().dropAttackTarget ();
-							}
-						}
-
-
-						//Calculate angle vectors for formations
-						Vector3 unitVec = new Vector3 (0, 0, 0);
-						foreach (var r in GameManager.player.getPlayer ().getCurUnitTarget ()) {
-							//This works well, but I worry about performance issues. Think of a better way!
-							UnityEngine.AI.NavMeshPath path = new UnityEngine.AI.NavMeshPath ();
-							UnityEngine.AI.NavMesh.CalculatePath (r.gameObject.GetComponent<UnityEngine.AI.NavMeshAgent> ().transform.position, targetLoc, UnityEngine.AI.NavMesh.AllAreas, path);
-							r.gameObject.GetComponent<UnityEngine.AI.NavMeshAgent> ().path = path;
-							if (path.corners.Length >= 2) {
-								unitVec = unitVec + path.corners [path.corners.Length - 2];
-							} else {
-								unitVec = unitVec + r.getUnit ().getCurLoc ();
-							}
-						}
-						unitVec = unitVec / GameManager.player.getPlayer ().getCurUnitTarget ().Count;
-						unitVec = (unitVec - targetLoc).normalized * 4;
-						Vector3 perpVec = Vector3.Cross (unitVec, new Vector3 (0, 1, 0));
-
-						//Calculate formation positions and match each unit to a formation spot.
-						List <Formation> formationPositions = FormationController.findFormationPositions (attacking, GameManager.player.getPlayer ().getCurUnitTarget (), targetLoc, unitVec, perpVec);
-						GameManager.player.getPlayer ().sortCurUnitTarget (targetLoc, formationPositions);
-
-						//Assign each unit to move to it's formation location
-						foreach (var r in GameManager.player.getPlayer ().getCurUnitTarget ()) {
-							if (r.gameObject.GetComponent<UnityEngine.AI.NavMeshAgent> () != null) {
-								if (formationPositions.Count > 0) {
-									if (clicked.GetComponent<UnitContainer> () != null || clicked.GetComponent<BuildingContainer> () != null) {
-										r.gameObject.GetComponent<UnityEngine.AI.NavMeshAgent> ().destination = formationPositions [0].getPosition ();
-										UnityEngine.AI.NavMeshPath path = new UnityEngine.AI.NavMeshPath ();
-										UnityEngine.AI.NavMesh.CalculatePath (r.gameObject.GetComponent<UnityEngine.AI.NavMeshAgent> ().transform.position, r.gameObject.GetComponent<UnityEngine.AI.NavMeshAgent> ().destination, UnityEngine.AI.NavMesh.AllAreas, path);
-										r.gameObject.GetComponent<UnityEngine.AI.NavMeshAgent> ().path = path;
-									} else {
-										UnityEngine.AI.NavMeshPath path = new UnityEngine.AI.NavMeshPath ();
-										UnityEngine.AI.NavMesh.CalculatePath (r.gameObject.GetComponent<UnityEngine.AI.NavMeshAgent> ().transform.position, formationPositions [0].getPosition (), UnityEngine.AI.NavMesh.AllAreas, path);
-										r.gameObject.GetComponent<UnityEngine.AI.NavMeshAgent> ().path = path;
-									}
-									formationPositions.RemoveAt (0);
-								} else {
-									print ("Missing FormationPosition - MouseController");
-								}
-							} else {
-								print ("Missing NavMeshAgent - MouseController");
-							}
-						}
+						GameManager.player.processRightClickUnitCommand (targetLoc, clicked);
 					}
 				} else if (GameManager.player.getPlayer ().getCurBuildingTarget ().Count > 0) {
 					

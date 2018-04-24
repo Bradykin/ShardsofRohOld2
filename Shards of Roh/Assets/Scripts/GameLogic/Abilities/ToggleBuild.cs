@@ -13,8 +13,10 @@ public class ToggleBuild : Ability {
 		targetType = TargetType.None;
 	}
 
+	//Handle the change of the buildToggle
 	public override void enact (Player owner, Unit targetUnit = null, Building targetBuilding = null, Vector3 targetPos = new Vector3 ()) {
 		if (GameManager.player.buildToggleSetting == buildName) {
+			//If the buildName is equal to the current buildToggleSetting, disable it
 			GameManager.player.buildToggleActive = false;
 			GameManager.player.buildToggleSetting = null;
 
@@ -22,6 +24,7 @@ public class ToggleBuild : Ability {
 				GameManager.player.buildToggle.transform.GetChild (i).gameObject.SetActive (false);
 			}
 		} else {
+			//If you have the required research for the buildName, set buildToggleSetting to it, otherwise disable it
 			for (int i = 0; i < GameManager.player.buildToggle.transform.childCount; i++) {
 				if (GameManager.player.buildToggle.transform.GetChild (i).gameObject.name == buildName) {
 					bool hasResearch = true;
@@ -35,6 +38,8 @@ public class ToggleBuild : Ability {
 						GameManager.player.buildToggleSetting = buildName;
 						GameManager.player.buildToggle.transform.GetChild (i).gameObject.SetActive (true);
 					} else {
+						GameManager.player.buildToggleActive = false;
+						GameManager.player.buildToggleSetting = null;
 						GameManager.player.buildToggle.transform.GetChild (i).gameObject.SetActive (false);
 					}
 				} else {

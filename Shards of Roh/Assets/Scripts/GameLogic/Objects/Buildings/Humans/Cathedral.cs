@@ -11,9 +11,9 @@ public class Cathedral : Building {
 		health = 1000;
 		cost = new Resource (0, 0, 50);
 
-		abilities.Add (new QueueUnit ("Mage", this));
-		abilities.Add (new QueueUnit ("MageCavalry", this));
-		abilities.Add (new QueueUnit ("Priest", this));
-		abilities.Add (new QueueUnit ("PriestCavalry", this));
+		abilities.Add (new AddToUnitQueue ("Mage", this));
+		abilities.Add (new AddToUnitQueue ("MageCavalry", this));
+		abilities.Add (new AddToUnitQueue ("Priest", this));
+		abilities.Add (new AddToUnitQueue ("PriestCavalry", this));
 	}
 }

@@ -36,6 +36,21 @@ public class UnitContainer : ObjectContainer {
 	void Update () {
 		unit.update ();
 
+		checkMoveLogic ();
+		checkAttackLogic ();
+
+		if (unit.getDead () == true) {
+			gameObject.GetComponent<CapsuleCollider> ().enabled = false;
+			gameObject.GetComponent<UnityEngine.AI.NavMeshAgent> ().enabled = false;
+			gameObject.GetComponent<Animator> ().SetBool ("isDead", true);
+			gameObject.GetComponent<Animator> ().SetInteger ("deathAnimation", Random.Range (0, 2));
+			if (gameObject.GetComponent<Animator> ().GetCurrentAnimatorStateInfo (0).IsName ("PostDeath")) {
+				GameManager.destroyUnit (this, unit.getOwner ());
+			}
+		}
+	}
+
+	public void checkMoveLogic () {
 		//Update curLoc and isMoving
 		if (gameObject.GetComponent<UnityEngine.AI.NavMeshAgent> () != null) {
 			unit.setCurLoc (gameObject.GetComponent<UnityEngine.AI.NavMeshAgent> ().transform.position);
@@ -45,13 +60,21 @@ public class UnitContainer : ObjectContainer {
 				} else {
 					gameObject.GetComponent<Animator> ().SetBool ("isMoving", true);
 				}
+
+				if (getUnit ().getIsCombatTimer () > 0) {
+					gameObject.GetComponent<Animator> ().SetBool ("isCombat", true);
+				} else {
+					gameObject.GetComponent<Animator> ().SetBool ("isCombat", false);
+				}
 			} else {
 				print ("Missing Animator - UnitContainer");
 			}
 		} else {
 			print ("Missing NavMeshAgent - UnitContainer");
 		}
+	}
 
+	public void checkAttackLogic () {
 		//Check for distance to targets, update isAttacking
 		if (unit.getUnitTarget () != null && unit.getUnitTarget ().getUnit ().getDead () == false) {
 			Vector3 point1 = gameObject.GetComponent<CapsuleCollider> ().bounds.center;
@@ -62,7 +85,11 @@ public class UnitContainer : ObjectContainer {
 				gameObject.GetComponent<UnityEngine.AI.NavMeshAgent> ().destination = gameObject.GetComponent<UnityEngine.AI.NavMeshAgent> ().transform.position;
 				lookDirection (GetComponent<CapsuleCollider> ().bounds.center, unit.getUnitTarget ().GetComponent<CapsuleCollider> ().bounds.center);
 				gameObject.GetComponent<Animator> ().SetBool ("isAttacking", true);
-				unit.attackUnit ();
+				if (unit.attackUnit () == true) {
+					getUnit ().getUnitTarget ().getUnit ().getHit (this, getUnit ().getAttack ());
+				}
+			} else {
+				gameObject.GetComponent<UnityEngine.AI.NavMeshAgent> ().destination = unit.getUnitTarget ().GetComponent<CapsuleCollider> ().ClosestPoint (point1);
 			}
 		} else if (unit.getBuildingTarget () != null && unit.getBuildingTarget ().getBuilding ().getDead () == false) {
 			Vector3 point1 = GetComponent<CapsuleCollider> ().bounds.center;
@@ -73,22 +100,16 @@ public class UnitContainer : ObjectContainer {
 				gameObject.GetComponent<UnityEngine.AI.NavMeshAgent> ().ResetPath ();
 				lookDirection (GetComponent<CapsuleCollider> ().bounds.center, unit.getBuildingTarget ().GetComponent<BoxCollider> ().bounds.center);
 				gameObject.GetComponent<Animator> ().SetBool ("isAttacking", true);
-				unit.attackBuilding ();
+				if (unit.attackBuilding () == true) {
+					getUnit ().getBuildingTarget ().getBuilding ().getHit (this, getUnit ().getAttack ());
+				}
+			} else {
+				gameObject.GetComponent<UnityEngine.AI.NavMeshAgent> ().destination = point2;
 			}
 		} else {
 			gameObject.GetComponent<Animator> ().SetBool ("isAttacking", false);
 			unit.dropAttackTarget ();
 			unit.passiveAttackTimer ();
-		}
-
-		if (unit.getDead () == true) {
-			gameObject.GetComponent<CapsuleCollider> ().enabled = false;
-			gameObject.GetComponent<UnityEngine.AI.NavMeshAgent> ().enabled = false;
-			gameObject.GetComponent<Animator> ().SetBool ("isDead", true);
-			gameObject.GetComponent<Animator> ().SetInteger ("deathAnimation", Random.Range (0, 2));
-			if (gameObject.GetComponent<Animator> ().GetCurrentAnimatorStateInfo (0).IsName ("PostDeath")) {
-				GameManager.destroyUnit (this, unit.getOwner ());
-			}
 		}
 	}
 

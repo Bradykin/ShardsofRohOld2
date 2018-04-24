@@ -8,6 +8,7 @@ public abstract class Building : Object {
 	//Variables that must be declared in subclass
 
 	//Variables that will default if not declared
+	protected int populationValue = 0;
 	protected bool isResource = false;
 	protected ResourceType resourceType = ResourceType.None;
 	protected bool isBuilt = true;
@@ -40,20 +41,20 @@ public abstract class Building : Object {
 		}
 	}
 
-	public void getHit (Unit _attacker, int _attack) {
-		if (_attacker.getVillager () == true) {
+	public void getHit (UnitContainer _attacker, int _attack) {
+		if (_attacker.getUnit ().getVillager () == true) {
 			if (getIsResource () == true) {
 				if (getName () == "Food") {
-					_attacker.getOwner ().getResource ().add (new Resource (_attack, 0, 0));
+					_attacker.getUnit ().getOwner ().getResource ().add (new Resource (_attack, 0, 0));
 				} else if (getName () == "Wood") {
-					_attacker.getOwner ().getResource ().add (new Resource (0, _attack, 0));
+					_attacker.getUnit ().getOwner ().getResource ().add (new Resource (0, _attack, 0));
 				} else if (getName () == "Gold") {
-					_attacker.getOwner ().getResource ().add (new Resource (0, 0, _attack));
+					_attacker.getUnit ().getOwner ().getResource ().add (new Resource (0, 0, _attack));
 				} else {
 					GameManager.print ("Unidentified resource - Building");
 				}
 				curHealth -= _attack;
-			} else if (getOwner ().getName () == _attacker.getOwner ().getName ()) {
+			} else if (getOwner ().getName () == _attacker.getUnit ().getOwner ().getName ()) {
 				curHealth += _attack;
 			} else {
 				curHealth -= _attack;
@@ -64,13 +65,15 @@ public abstract class Building : Object {
 	}
 
 	public void createUnit () {
+		//Set unit spawn location
 		Vector3 targetLoc = getCurLoc ();
 		targetLoc.x += getColliderSize ().x / 2;
 		targetLoc.z -= getColliderSize ().z / 2;
 		RaycastHit hit;
 		Ray ray = Camera.main.ScreenPointToRay (Camera.main.WorldToScreenPoint (targetLoc));
 		if (Physics.Raycast (ray, out hit, 1000)) {
-			if (unitQueue [0] != null) {
+			if (unitQueue.Count > 0) {
+				//Spawn units according to the size of the next unitQueue
 				for (int i = 0; i < unitQueue [0].getSize (); i++) {
 					Unit newUnit = ObjectFactory.createUnitByName (unitQueue [0].getUnit ().getName (), getOwner ());
 					GameObject instance = GameManager.Instantiate (Resources.Load (newUnit.getPrefabPath (), typeof(GameObject)) as GameObject);
@@ -87,6 +90,7 @@ public abstract class Building : Object {
 	}
 
 	public void createResearch () {
+		//Gain the next research
 		if (researchQueue.Count > 0) {
 			GameManager.print ("AddResearch: " + researchQueue [0].getResearch ().getName ());
 			GameManager.addPlayerToGame (getOwner ().getName ()).addResearch (researchQueue [0].getResearch ());
@@ -154,5 +158,9 @@ public abstract class Building : Object {
 
 	public List<ResearchQueue> getResearchQueue () {
 		return researchQueue;
+	}
+
+	public int getPopulationValue () {
+		return populationValue;
 	}
 }

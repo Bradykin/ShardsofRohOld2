@@ -11,10 +11,10 @@ public class Barracks : Building {
 		health = 1000;
 		cost = new Resource (0, 0, 50);
 
-		abilities.Add (new QueueUnit ("Axeman", this));
-		abilities.Add (new QueueUnit ("Spearman", this));
-		abilities.Add (new QueueUnit ("Swordsman", this));
-		abilities.Add (new QueueUnit ("HeavyInfantry", this));
-		abilities.Add (new QueueUnit ("Archer", this));
+		abilities.Add (new AddToUnitQueue ("Axeman", this));
+		abilities.Add (new AddToUnitQueue ("Spearman", this));
+		abilities.Add (new AddToUnitQueue ("Swordsman", this));
+		abilities.Add (new AddToUnitQueue ("HeavyInfantry", this));
+		abilities.Add (new AddToUnitQueue ("Archer", this));
 	}
 }

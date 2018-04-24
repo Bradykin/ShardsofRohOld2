@@ -11,7 +11,7 @@ public class Blacksmith : Building {
 		health = 1000;
 		cost = new Resource (0, 0, 50);
 
-		abilities.Add (new QueueUnit ("Catapult", this));
+		abilities.Add (new AddToUnitQueue ("Catapult", this));
 
 		neededResearch.Add (ResearchFactory.createResearchByName ("Age2", _owner));
 	}

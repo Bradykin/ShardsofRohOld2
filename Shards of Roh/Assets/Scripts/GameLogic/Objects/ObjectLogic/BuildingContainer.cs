@@ -30,28 +30,7 @@ public class BuildingContainer : ObjectContainer {
 	// Update is called once per frame
 	void Update () {
 		building.update ();
-
-		if (building.getUnitQueue ().Count > 0) {
-			unitQueueTimer += Time.deltaTime;
-		} else {
-			unitQueueTimer = 0.0f;
-		}
-
-		if (unitQueueTimer > 5.0f && building.getUnitQueue ().Count > 0) {
-			building.createUnit ();
-			unitQueueTimer = 0.0f;
-		}
-
-		if (building.getResearchQueue ().Count > 0) {
-			researchQueueTimer += Time.deltaTime;
-		} else {
-			researchQueueTimer = 0.0f;
-		}
-
-		if (researchQueueTimer > 5.0f && building.getResearchQueue ().Count > 0) {
-			building.createResearch ();
-			researchQueueTimer = 0.0f;
-		}
+		checkQueues ();
 
 		if (building.getDead () == true) {
 			GameManager.destroyBuilding (this, building.getOwner ());
@@ -73,6 +52,32 @@ public class BuildingContainer : ObjectContainer {
 					r.getUnit ().dropAttackTarget ();
 				}
 			}
+		}
+	}
+
+	protected void checkQueues () {
+		//Update the progress of the building's unitQueue
+		if (building.getUnitQueue ().Count > 0) {
+			unitQueueTimer += Time.deltaTime;
+		} else {
+			unitQueueTimer = 0.0f;
+		}
+
+		if (unitQueueTimer > 5.0f && building.getUnitQueue ().Count > 0) {
+			building.createUnit ();
+			unitQueueTimer = 0.0f;
+		}
+
+		//Update the progress of the building's researchQueue
+		if (building.getResearchQueue ().Count > 0) {
+			researchQueueTimer += Time.deltaTime;
+		} else {
+			researchQueueTimer = 0.0f;
+		}
+
+		if (researchQueueTimer > 5.0f && building.getResearchQueue ().Count > 0) {
+			building.createResearch ();
+			researchQueueTimer = 0.0f;
 		}
 	}
 
