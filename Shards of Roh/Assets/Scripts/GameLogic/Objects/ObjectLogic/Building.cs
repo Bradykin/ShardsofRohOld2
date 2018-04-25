@@ -56,6 +56,9 @@ public abstract class Building : Object {
 				curHealth -= _attack;
 			} else if (getOwner ().getName () == _attacker.getUnit ().getOwner ().getName ()) {
 				curHealth += _attack;
+				if (curHealth >= health) {
+					curHealth = health;
+				}
 			} else {
 				curHealth -= _attack;
 			}

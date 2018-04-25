@@ -40,6 +40,14 @@ public abstract class Object {
 		return name;
 	}
 
+	public float getCurHealth () {
+		return curHealth;
+	}
+
+	public int getHealth () {
+		return health;
+	}
+
 	public Ability getAbility (int _index) {
 		if (abilities.Count > _index) {
 			return abilities [_index];

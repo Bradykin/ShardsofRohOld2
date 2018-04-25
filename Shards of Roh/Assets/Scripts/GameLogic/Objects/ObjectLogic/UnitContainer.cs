@@ -5,6 +5,7 @@ using UnityEngine;
 public class UnitContainer : ObjectContainer {
 
 	private Unit unit;
+	private List<Behaviours> unitBehaviours = new List<Behaviours> ();
 
 	void Start () {
 		//Set values for preset units
@@ -31,6 +32,7 @@ public class UnitContainer : ObjectContainer {
 				r.material = Resources.Load (PlayerMaterial.getMaterial (unit.getOwner ().getName ()), typeof (Material)) as Material;
 			}
 		}
+		unitBehaviours.Add (new Retaliate ());
 	}
 
 	void Update () {
@@ -38,6 +40,7 @@ public class UnitContainer : ObjectContainer {
 
 		checkMoveLogic ();
 		checkAttackLogic ();
+		checkBehaviourLogic ();
 
 		if (unit.getDead () == true) {
 			gameObject.GetComponent<CapsuleCollider> ().enabled = false;
@@ -57,13 +60,13 @@ public class UnitContainer : ObjectContainer {
 			if (gameObject.GetComponent<Animator> () != null) {
 				if (Vector3.Distance (gameObject.GetComponent<UnityEngine.AI.NavMeshAgent> ().transform.position, gameObject.GetComponent<UnityEngine.AI.NavMeshAgent> ().destination) <= 0.1) {
 					gameObject.GetComponent<Animator> ().SetBool ("isMoving", false);
-					getUnit ().setIsMoving (false);
+					getUnit ().isMoving = false;
 				} else {
 					gameObject.GetComponent<Animator> ().SetBool ("isMoving", true);
-					getUnit ().setIsMoving (true);
+					getUnit ().isMoving = true;
 				}
 
-				if (getUnit ().getIsCombatTimer () > 0) {
+				if (getUnit ().isCombatTimer > 0) {
 					gameObject.GetComponent<Animator> ().SetBool ("isCombat", true);
 				} else {
 					gameObject.GetComponent<Animator> ().SetBool ("isCombat", false);
@@ -89,7 +92,7 @@ public class UnitContainer : ObjectContainer {
 				}
 				lookDirection (GetComponent<CapsuleCollider> ().bounds.center, unit.getUnitTarget ().GetComponent<CapsuleCollider> ().bounds.center);
 				gameObject.GetComponent<Animator> ().SetBool ("isAttacking", true);
-				getUnit ().setIsAttacking (true);
+				getUnit ().isAttacking = true;
 				if (unit.attackUnit () == true) {
 					getUnit ().getUnitTarget ().getUnit ().getHit (this, getUnit ().getAttack ());
 				}
@@ -98,7 +101,7 @@ public class UnitContainer : ObjectContainer {
 					gameObject.GetComponent<UnityEngine.AI.NavMeshAgent> ().destination = unit.getUnitTarget ().GetComponent<CapsuleCollider> ().ClosestPoint (point1);
 				}
 				gameObject.GetComponent<Animator> ().SetBool ("isAttacking", false);
-				getUnit ().setIsAttacking (false);
+				getUnit ().isAttacking = false;
 			}
 		} else if (unit.getBuildingTarget () != null && unit.getBuildingTarget ().getBuilding ().getDead () == false) {
 			Vector3 point1 = GetComponent<CapsuleCollider> ().bounds.center;
@@ -109,7 +112,7 @@ public class UnitContainer : ObjectContainer {
 				gameObject.GetComponent<UnityEngine.AI.NavMeshAgent> ().ResetPath ();
 				lookDirection (GetComponent<CapsuleCollider> ().bounds.center, unit.getBuildingTarget ().GetComponent<BoxCollider> ().bounds.center);
 				gameObject.GetComponent<Animator> ().SetBool ("isAttacking", true);
-				getUnit ().setIsAttacking (true);
+				getUnit ().isAttacking = true;
 				if (unit.attackBuilding () == true) {
 					getUnit ().getBuildingTarget ().getBuilding ().getHit (this, getUnit ().getAttack ());
 				}
@@ -118,14 +121,24 @@ public class UnitContainer : ObjectContainer {
 					gameObject.GetComponent<UnityEngine.AI.NavMeshAgent> ().destination = point2;
 				}
 				gameObject.GetComponent<Animator> ().SetBool ("isAttacking", false);
-				getUnit ().setIsAttacking (false);
+				getUnit ().isAttacking = false;
 			}
 		} else {
 			gameObject.GetComponent<Animator> ().SetBool ("isAttacking", false);
-			getUnit ().setIsAttacking (false);
+			getUnit ().isAttacking = false;
 			unit.dropAttackTarget ();
 			unit.passiveAttackTimer ();
 		}
+	}
+
+	public void checkBehaviourLogic () {
+		foreach (var r in unitBehaviours) {
+			r.enact (this);
+		}
+
+		//Reset values tracked for behaviour logic
+		getUnit ().gotHit = false;
+		getUnit ().gotHitBy = null;
 	}
 
 	private void lookDirection (Vector3 _point1, Vector3 _point2) {

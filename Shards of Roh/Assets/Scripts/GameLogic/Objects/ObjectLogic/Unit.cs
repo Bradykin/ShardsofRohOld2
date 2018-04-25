@@ -18,15 +18,21 @@ public abstract class Unit : Object {
 	//Variables that adjust during gameplay
 	protected UnitContainer unitTarget;
 	protected BuildingContainer buildingTarget;
-	protected float attackTimer;
-	protected bool hasHit;
-	protected float isCombatTimer = 0;
-	protected bool isMoving;
-	protected bool isAttacking;
+	protected float attackTimer { get; set; }
+	protected bool hasHit { get; set; }
+	public float isCombatTimer { get; private set; }
+	public bool isMoving { get; set; }
+	public bool isAttacking { get; set; }
+	public bool gotHit { get; set; }
+	public UnitContainer gotHitBy  { get; set; }
 
 	public void initPostCreate () {
 		curHealth = health;
-		isDead = false;
+		isCombatTimer = 0;
+		isMoving = false;
+		isAttacking = false;
+		gotHit = false;
+		gotHitBy = null;
 	}
 
 	public void update () {
@@ -92,13 +98,11 @@ public abstract class Unit : Object {
 	}
 
 	public void getHit (UnitContainer _attacker, float _attack) {
-		/*This needs to be in a behaviour
-		if (unitTarget == null && buildingTarget == null && isMoving == false && isAttacking == false) {
-			setAttackTarget (_attacker);
-		}*/
+		gotHit = true;
+		gotHitBy = _attacker;
 		isCombatTimer = 5.0f;
 		curHealth -= _attack;
-		GameManager.print ("gotHit: " + curHealth + "/" + health);
+		//GameManager.print ("gotHit: " + curHealth + "/" + health);
 	}
 
 	public override string getPrefabPath () {
@@ -146,25 +150,5 @@ public abstract class Unit : Object {
 
 	public int getPopulationCost () {
 		return populationCost;
-	}
-
-	public float getIsCombatTimer () {
-		return isCombatTimer;
-	}
-
-	public bool getIsMoving () {
-		return isMoving;
-	}
-
-	public void setIsMoving (bool _isMoving) {
-		isMoving = _isMoving;
-	}
-
-	public bool getIsAttacking () {
-		return isAttacking;
-	}
-
-	public void setIsAttacking (bool _isAttacking) {
-		isAttacking = _isAttacking;
 	}
 }
