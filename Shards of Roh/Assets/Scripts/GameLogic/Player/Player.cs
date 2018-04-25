@@ -117,7 +117,7 @@ public class Player {
 				if (path.corners.Length >= 2) {
 					unitVec = unitVec + path.corners [path.corners.Length - 2];
 				} else {
-					unitVec = unitVec + r.getUnit ().getCurLoc ();
+					unitVec = unitVec + r.getUnit ().curLoc;
 				}
 			}
 		}
@@ -162,12 +162,12 @@ public class Player {
 
 			foreach (var r in curUnitTarget) {
 				if (_formationPositions.Count > 0) {
-					if (distance == -1 || Vector3.Distance (r.getUnit ().getCurLoc (), _formationPositions [x].getPosition ()) < distance) {
+					if (distance == -1 || Vector3.Distance (r.getUnit ().curLoc, _formationPositions [x].getPosition ()) < distance) {
 						if (r.getUnit ().getName () == _formationPositions [x].getUnitType () || _formationPositions [x].getUnitType () == "") {
 							lowest = r;
-							distance = Vector3.Distance (r.getUnit ().getCurLoc (), _formationPositions [x].getPosition ());
+							distance = Vector3.Distance (r.getUnit ().curLoc, _formationPositions [x].getPosition ());
 						} else {
-							GameManager.print ("Wrong unit");
+							//GameManager.print ("Wrong unit");
 						}
 					}
 				} else {

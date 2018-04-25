@@ -36,6 +36,7 @@ public abstract class Unit : Object {
 	}
 
 	public void update () {
+
 		if (isCombatTimer > 0) {
 			isCombatTimer -= Time.deltaTime;
 		}
@@ -142,10 +143,6 @@ public abstract class Unit : Object {
 
 	public bool getVillager () {
 		return isVillager;
-	}
-
-	public bool getDead () {
-		return isDead;
 	}
 
 	public int getPopulationCost () {

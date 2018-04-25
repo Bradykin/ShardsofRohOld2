@@ -17,16 +17,8 @@ public abstract class Object {
 	//Variables that will default if not declared
 
 	//Variables that adjust during gameplay
-	protected Vector3 curLoc;
-	protected bool isDead;
-
-	public Vector3 getCurLoc () {
-		return curLoc;
-	}
-
-	public void setCurLoc (Vector3 _curLoc) {
-		curLoc = _curLoc;
-	}
+	public Vector3 curLoc { get; set; }
+	public bool isDead { get; protected set; }
 
 	public Player getOwner () {
 		return owner;

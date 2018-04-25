@@ -42,7 +42,7 @@ public class UnitContainer : ObjectContainer {
 		checkAttackLogic ();
 		checkBehaviourLogic ();
 
-		if (unit.getDead () == true) {
+		if (unit.isDead == true) {
 			gameObject.GetComponent<CapsuleCollider> ().enabled = false;
 			gameObject.GetComponent<UnityEngine.AI.NavMeshAgent> ().enabled = false;
 			gameObject.GetComponent<Animator> ().SetBool ("isDead", true);
@@ -56,7 +56,7 @@ public class UnitContainer : ObjectContainer {
 	public void checkMoveLogic () {
 		//Update curLoc and isMoving
 		if (gameObject.GetComponent<UnityEngine.AI.NavMeshAgent> () != null) {
-			unit.setCurLoc (gameObject.GetComponent<UnityEngine.AI.NavMeshAgent> ().transform.position);
+			unit.curLoc = gameObject.GetComponent<UnityEngine.AI.NavMeshAgent> ().transform.position;
 			if (gameObject.GetComponent<Animator> () != null) {
 				if (Vector3.Distance (gameObject.GetComponent<UnityEngine.AI.NavMeshAgent> ().transform.position, gameObject.GetComponent<UnityEngine.AI.NavMeshAgent> ().destination) <= 0.1) {
 					gameObject.GetComponent<Animator> ().SetBool ("isMoving", false);
@@ -81,7 +81,7 @@ public class UnitContainer : ObjectContainer {
 
 	public void checkAttackLogic () {
 		//Check for distance to targets, update isAttacking
-		if (unit.getUnitTarget () != null && unit.getUnitTarget ().getUnit ().getDead () == false) {
+		if (unit.getUnitTarget () != null && unit.getUnitTarget ().getUnit ().isDead == false) {
 			Vector3 point1 = gameObject.GetComponent<CapsuleCollider> ().bounds.center;
 			Vector3 point2 = unit.getUnitTarget ().GetComponent<CapsuleCollider> ().bounds.center;
 			point1.y = 0;

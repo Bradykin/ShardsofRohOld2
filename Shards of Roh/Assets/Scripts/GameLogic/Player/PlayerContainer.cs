@@ -38,7 +38,7 @@ public class PlayerContainer : MonoBehaviour {
 	public void processRightClickUnitCommand (Vector3 targetLoc, GameObject clicked) {
 		//Handle if clicked on unit
 		if (clicked.GetComponent<UnitContainer> () != null) {
-			targetLoc = clicked.GetComponent<UnitContainer> ().getUnit ().getCurLoc ();
+			targetLoc = clicked.GetComponent<UnitContainer> ().getUnit ().curLoc;
 			foreach (var r in GameManager.player.getPlayer ().getCurUnitTarget ()) {
 				if (GameManager.isEnemies (clicked.GetComponent<UnitContainer> ().getUnit ().getOwner (), GameManager.player.getPlayer ())) {
 					r.getUnit ().setAttackTarget (clicked.GetComponent<UnitContainer> ());
@@ -48,7 +48,7 @@ public class PlayerContainer : MonoBehaviour {
 		}
 		//Handle is clicked on building
 		else if (clicked.GetComponent<BuildingContainer> () != null) {
-			targetLoc = clicked.GetComponent<BuildingContainer> ().getBuilding ().getCurLoc ();
+			targetLoc = clicked.GetComponent<BuildingContainer> ().getBuilding ().curLoc;
 			foreach (var r in GameManager.player.getPlayer ().getCurUnitTarget ()) {
 				if (r.getUnit ().getVillager () == true) {
 					//This should have expanded logic

@@ -69,7 +69,7 @@ public abstract class Building : Object {
 
 	public void createUnit () {
 		//Set unit spawn location
-		Vector3 targetLoc = getCurLoc ();
+		Vector3 targetLoc = curLoc;
 		targetLoc.x += getColliderSize ().x / 2;
 		targetLoc.z -= getColliderSize ().z / 2;
 		RaycastHit hit;
