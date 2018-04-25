@@ -21,6 +21,8 @@ public abstract class Unit : Object {
 	protected float attackTimer;
 	protected bool hasHit;
 	protected float isCombatTimer = 0;
+	protected bool isMoving;
+	protected bool isAttacking;
 
 	public void initPostCreate () {
 		curHealth = health;
@@ -90,7 +92,8 @@ public abstract class Unit : Object {
 	}
 
 	public void getHit (UnitContainer _attacker, float _attack) {
-		/*if (unitTarget == null && buildingTarget == null && isMoving == false) {
+		/*This needs to be in a behaviour
+		if (unitTarget == null && buildingTarget == null && isMoving == false && isAttacking == false) {
 			setAttackTarget (_attacker);
 		}*/
 		isCombatTimer = 5.0f;
@@ -147,5 +150,21 @@ public abstract class Unit : Object {
 
 	public float getIsCombatTimer () {
 		return isCombatTimer;
+	}
+
+	public bool getIsMoving () {
+		return isMoving;
+	}
+
+	public void setIsMoving (bool _isMoving) {
+		isMoving = _isMoving;
+	}
+
+	public bool getIsAttacking () {
+		return isAttacking;
+	}
+
+	public void setIsAttacking (bool _isAttacking) {
+		isAttacking = _isAttacking;
 	}
 }

@@ -51,6 +51,7 @@ public class GameManager : MonoBehaviour {
 	}
 
 	public static void destroyUnit (UnitContainer _toDestroy, Player _player) {
+		_player.getCurUnitTarget ().Remove (_toDestroy);
 		_player.getUnits ().Remove (_toDestroy);
 		Destroy (_toDestroy.gameObject);
 	}

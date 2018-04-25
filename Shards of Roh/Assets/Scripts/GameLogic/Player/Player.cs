@@ -106,18 +106,22 @@ public class Player {
 
 		//Calculate angle vectors for formations
 		Vector3 unitVec = new Vector3 (0, 0, 0);
+		int unitCount = 0;
 		foreach (var r in GameManager.player.getPlayer ().getCurUnitTarget ()) {
 			//This works well, but I worry about performance issues. Think of a better way!
-			UnityEngine.AI.NavMeshPath path = new UnityEngine.AI.NavMeshPath ();
-			UnityEngine.AI.NavMesh.CalculatePath (r.gameObject.GetComponent<UnityEngine.AI.NavMeshAgent> ().transform.position, targetLoc, UnityEngine.AI.NavMesh.AllAreas, path);
-			r.gameObject.GetComponent<UnityEngine.AI.NavMeshAgent> ().path = path;
-			if (path.corners.Length >= 2) {
-				unitVec = unitVec + path.corners [path.corners.Length - 2];
-			} else {
-				unitVec = unitVec + r.getUnit ().getCurLoc ();
+			if (r.GetComponent<UnityEngine.AI.NavMeshAgent> ().enabled == true) {
+				unitCount++;
+				UnityEngine.AI.NavMeshPath path = new UnityEngine.AI.NavMeshPath ();
+				UnityEngine.AI.NavMesh.CalculatePath (r.gameObject.GetComponent<UnityEngine.AI.NavMeshAgent> ().transform.position, targetLoc, UnityEngine.AI.NavMesh.AllAreas, path);
+				r.gameObject.GetComponent<UnityEngine.AI.NavMeshAgent> ().path = path;
+				if (path.corners.Length >= 2) {
+					unitVec = unitVec + path.corners [path.corners.Length - 2];
+				} else {
+					unitVec = unitVec + r.getUnit ().getCurLoc ();
+				}
 			}
 		}
-		unitVec = unitVec / GameManager.player.getPlayer ().getCurUnitTarget ().Count;
+		unitVec = unitVec / unitCount;
 		unitVec = (unitVec - targetLoc).normalized * 4;
 		Vector3 perpVec = Vector3.Cross (unitVec, new Vector3 (0, 1, 0));
 
