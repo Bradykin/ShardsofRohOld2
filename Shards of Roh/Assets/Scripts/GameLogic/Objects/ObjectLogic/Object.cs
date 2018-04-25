@@ -5,14 +5,14 @@ using UnityEngine;
 public abstract class Object {
 
 	//Variables that must be declared in subclass
-	protected string name;
-	protected string race;
-	protected Player owner;
-	protected int health;
-	protected float curHealth;
-	protected List<Research> neededResearch = new List<Research> ();
-	protected List<Ability> abilities = new List<Ability> ();
-	protected Resource cost;
+	public string name { get; protected set; }
+	public string race { get; protected set; }
+	public Player owner { get; set; }
+	public float health { get; protected set; }
+	public float curHealth { get; protected set; }
+	public List<Research> neededResearch { get; protected set; }
+	public List<Ability> abilities { get; protected set; }
+	public Resource cost { get; protected set; }
 
 	//Variables that will default if not declared
 
@@ -20,45 +20,10 @@ public abstract class Object {
 	public Vector3 curLoc { get; set; }
 	public bool isDead { get; protected set; }
 
-	public Player getOwner () {
-		return owner;
-	}
-
-	public void setOwner (Player _owner) {
-		owner = _owner;
-	}
-
-	public string getName () {
-		return name;
-	}
-
-	public float getCurHealth () {
-		return curHealth;
-	}
-
-	public int getHealth () {
-		return health;
-	}
-
-	public Ability getAbility (int _index) {
-		if (abilities.Count > _index) {
-			return abilities [_index];
-		} else {
-			return null;
-		}
-	}
-
-	public List<Ability> getAbilities () {
-		return abilities;
+	protected void setup () {
+		neededResearch = new List<Research> ();
+		abilities = new List<Ability> ();
 	}
 
 	public abstract string getPrefabPath ();
-
-	public Resource getCost () {
-		return cost;
-	}
-		
-	public List<Research> getNeededResearch () {
-		return neededResearch;
-	}
 }

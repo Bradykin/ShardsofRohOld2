@@ -33,7 +33,7 @@ public class BuildingContainer : ObjectContainer {
 		checkQueues ();
 
 		if (building.getDead () == true) {
-			GameManager.destroyBuilding (this, building.getOwner ());
+			GameManager.destroyBuilding (this, building.owner);
 		}
 
 		if (building.getToBuild () == true) {
@@ -47,7 +47,7 @@ public class BuildingContainer : ObjectContainer {
 			gameObject.GetComponent<UnityEngine.AI.NavMeshObstacle> ().center = gameObject.transform.GetChild (2).GetComponent<UnityEngine.AI.NavMeshObstacle> ().center;
 			gameObject.GetComponent<UnityEngine.AI.NavMeshObstacle> ().size = gameObject.transform.GetChild (2).GetComponent<UnityEngine.AI.NavMeshObstacle> ().size;
 
-			foreach (var r in building.getOwner ().getUnits ()) {
+			foreach (var r in building.owner.getUnits ()) {
 				if (r.getUnit ().getBuildingTarget () == this) {
 					r.getUnit ().dropAttackTarget ();
 				}
@@ -109,7 +109,7 @@ public class BuildingContainer : ObjectContainer {
 		gameObject.GetComponent<UnityEngine.AI.NavMeshObstacle> ().size = gameObject.transform.GetChild (toggleInt).GetComponent<UnityEngine.AI.NavMeshObstacle> ().size;
 
 		if (_built == true) {
-			foreach (var r in building.getOwner ().getUnits ()) {
+			foreach (var r in building.owner.getUnits ()) {
 				if (r.getUnit ().getBuildingTarget () == this) {
 					r.getUnit ().dropAttackTarget ();
 				}

@@ -40,7 +40,7 @@ public class PlayerContainer : MonoBehaviour {
 		if (clicked.GetComponent<UnitContainer> () != null) {
 			targetLoc = clicked.GetComponent<UnitContainer> ().getUnit ().curLoc;
 			foreach (var r in GameManager.player.getPlayer ().getCurUnitTarget ()) {
-				if (GameManager.isEnemies (clicked.GetComponent<UnitContainer> ().getUnit ().getOwner (), GameManager.player.getPlayer ())) {
+				if (GameManager.isEnemies (clicked.GetComponent<UnitContainer> ().getUnit ().owner, GameManager.player.getPlayer ())) {
 					r.getUnit ().setAttackTarget (clicked.GetComponent<UnitContainer> ());
 					r.checkAttackLogic ();
 				}
@@ -55,7 +55,7 @@ public class PlayerContainer : MonoBehaviour {
 					r.getUnit ().setAttackTarget (clicked.GetComponent<BuildingContainer> ());
 				} else {
 					if (clicked.GetComponent<BuildingContainer> ().getBuilding ().getIsResource () == false) {
-						if (GameManager.isEnemies (clicked.GetComponent<BuildingContainer> ().getBuilding ().getOwner (), GameManager.player.getPlayer ())) {
+						if (GameManager.isEnemies (clicked.GetComponent<BuildingContainer> ().getBuilding ().owner, GameManager.player.getPlayer ())) {
 							r.getUnit ().setAttackTarget (clicked.GetComponent<BuildingContainer> ());
 							r.checkAttackLogic ();
 						}

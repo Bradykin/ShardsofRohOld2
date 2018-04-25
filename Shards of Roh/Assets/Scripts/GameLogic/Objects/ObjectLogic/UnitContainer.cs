@@ -24,12 +24,12 @@ public class UnitContainer : ObjectContainer {
 
 		foreach (var r in gameObject.GetComponentsInChildren<MeshRenderer> ()) {
 			if (r.material.name.Contains("WK_Standard")) {
-				r.material = Resources.Load (PlayerMaterial.getMaterial (unit.getOwner ().getName ()), typeof (Material)) as Material;
+				r.material = Resources.Load (PlayerMaterial.getMaterial (unit.owner.getName ()), typeof (Material)) as Material;
 			}
 		}
 		foreach (var r in gameObject.GetComponentsInChildren<SkinnedMeshRenderer> ()) {
 			if (r.material.name.Contains("WK_Standard")) {
-				r.material = Resources.Load (PlayerMaterial.getMaterial (unit.getOwner ().getName ()), typeof (Material)) as Material;
+				r.material = Resources.Load (PlayerMaterial.getMaterial (unit.owner.getName ()), typeof (Material)) as Material;
 			}
 		}
 		unitBehaviours.Add (new Retaliate ());
@@ -48,7 +48,7 @@ public class UnitContainer : ObjectContainer {
 			gameObject.GetComponent<Animator> ().SetBool ("isDead", true);
 			gameObject.GetComponent<Animator> ().SetInteger ("deathAnimation", Random.Range (0, 2));
 			if (gameObject.GetComponent<Animator> ().GetCurrentAnimatorStateInfo (0).IsName ("PostDeath")) {
-				GameManager.destroyUnit (this, unit.getOwner ());
+				GameManager.destroyUnit (this, unit.owner);
 			}
 		}
 	}

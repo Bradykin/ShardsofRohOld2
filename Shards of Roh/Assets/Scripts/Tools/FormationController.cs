@@ -33,7 +33,7 @@ public class FormationController : MonoBehaviour {
 		List <string> unitTypes = new List <string> ();
 
 		for (int i = 0; i < _units.Count; i++) {
-			unitTypes.Add (_units [i].getUnit ().getName ());
+			unitTypes.Add (_units [i].getUnit ().name);
 		}
 		unitTypes.Sort ();
 
@@ -62,7 +62,7 @@ public class FormationController : MonoBehaviour {
 		List <string> unitTypes = new List <string> ();
 
 		for (int i = 0; i < _units.Count; i++) {
-			unitTypes.Add (_units [i].getUnit ().getName ());
+			unitTypes.Add (_units [i].getUnit ().name);
 		}
 		unitTypes.Sort ();
 
@@ -93,7 +93,7 @@ public class FormationController : MonoBehaviour {
 		List <string> unitTypes = new List <string> ();
 
 		for (int i = 0; i < _units.Count; i++) {
-			unitTypes.Add (_units [i].getUnit ().getName ());
+			unitTypes.Add (_units [i].getUnit ().name);
 		}
 		unitTypes.Sort ();
 		Vector3 tempPoint1 = curPoint - (_unitSideVec * 3);
@@ -128,7 +128,7 @@ public class FormationController : MonoBehaviour {
 		List <string> unitTypes = new List <string> ();
 
 		for (int i = 0; i < _units.Count; i++) {
-			unitTypes.Add (_units [i].getUnit ().getName ());
+			unitTypes.Add (_units [i].getUnit ().name);
 		}
 		unitTypes.Sort ();
 

@@ -20,15 +20,15 @@ public class AddToUnitQueue : Ability {
 		Unit newUnit = ObjectFactory.createUnitByName (unitName, GameManager.addPlayerToGame (owner.getName ()));
 		if (source.getIsBuilt ()) {
 			if (owner.hasPopulationSpace (newUnit.getPopulationCost ())) {
-				if (owner.getResource ().hasEnough (newUnit.getCost ())) {
+				if (owner.getResource ().hasEnough (newUnit.cost)) {
 					bool hasResearch = true;
-					foreach (var r in newUnit.getNeededResearch ()) {
+					foreach (var r in newUnit.neededResearch) {
 						if (owner.hasResearch (r) == false) {
 							hasResearch = false;
 						}
 					}
 					if (hasResearch == true) {
-						owner.getResource ().spend (newUnit.getCost ());
+						owner.getResource ().spend (newUnit.cost);
 						source.addToUnitQueue (newUnit);
 					}
 				}

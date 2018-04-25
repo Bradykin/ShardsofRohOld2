@@ -43,8 +43,8 @@ public class MouseController : MonoBehaviour {
 				Ray ray = Camera.main.ScreenPointToRay (getMousePosition());
 				if (Physics.Raycast (ray, out hit, 1000, buildToggleMask)) {
 					Building newBuilding = ObjectFactory.createBuildingByName (GameManager.player.buildToggleSetting, GameManager.addPlayerToGame ("Player"), false);
-					if (GameManager.player.getPlayer ().getResource ().hasEnough (newBuilding.getCost ())) {
-						GameManager.player.getPlayer ().getResource ().spend (newBuilding.getCost ());
+					if (GameManager.player.getPlayer ().getResource ().hasEnough (newBuilding.cost)) {
+						GameManager.player.getPlayer ().getResource ().spend (newBuilding.cost);
 						GameObject instance = Instantiate (Resources.Load (newBuilding.getPrefabPath (), typeof(GameObject)) as GameObject);
 						instance.GetComponent<BuildingContainer> ().setBuilding (newBuilding);
 						if (instance.GetComponent<UnityEngine.AI.NavMeshObstacle> () != null) {
@@ -111,13 +111,13 @@ public class MouseController : MonoBehaviour {
 				Ray ray = Camera.main.ScreenPointToRay (mousePosition1);
 				if (Physics.Raycast (ray, out hit, 1000)) {
 					if (hit.collider.gameObject.GetComponent<UnitContainer> () != null) {
-						if (hit.collider.gameObject.GetComponent<UnitContainer> ().getUnit ().getOwner ().getName () == "Player") {
+						if (hit.collider.gameObject.GetComponent<UnitContainer> ().getUnit ().owner.getName () == "Player") {
 							GameManager.player.getPlayer ().addCurUnitTarget (hit.collider.gameObject.GetComponent<UnitContainer> ());
 						}
 					}
 
 					if (hit.collider.gameObject.GetComponent<BuildingContainer> () != null && GameManager.player.getPlayer ().getCurUnitTarget ().Count == 0) {
-						if (hit.collider.gameObject.GetComponent<BuildingContainer> ().getBuilding ().getOwner ().getName () == "Player") {
+						if (hit.collider.gameObject.GetComponent<BuildingContainer> ().getBuilding ().owner.getName () == "Player") {
 							GameManager.player.getPlayer ().addCurBuildingTarget (hit.collider.gameObject.GetComponent<BuildingContainer> ());
 						}
 					}

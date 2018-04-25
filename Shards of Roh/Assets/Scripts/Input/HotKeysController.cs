@@ -80,13 +80,13 @@ public class HotKeysController : MonoBehaviour {
 		if (Input.GetKeyDown (KeyCode.Alpha1)) {
 			if (GameManager.player.getPlayer ().getCurUnitTarget ().Count > 0) {
 				//This shouldn't check first in list, eventually should use some other logic system
-				if (GameManager.player.getPlayer ().getCurUnitTarget (0).getUnit ().getAbility (0) != null) {
-					GameManager.player.getPlayer ().getCurUnitTarget (0).getUnit ().getAbility (0).enact (GameManager.player.getPlayer ());
+				if (GameManager.player.getPlayer ().getCurUnitTarget (0).getUnit ().abilities [0] != null) {
+					GameManager.player.getPlayer ().getCurUnitTarget (0).getUnit ().abilities [0].enact (GameManager.player.getPlayer ());
 				}
 			} else if (GameManager.player.getPlayer ().getCurBuildingTarget ().Count > 0) {
 				//This shouldn't check first in list, eventually should use some other logic system
-				if (GameManager.player.getPlayer ().getCurBuildingTarget (0).getBuilding ().getAbility (0) != null) {
-					GameManager.player.getPlayer ().getCurBuildingTarget (0).getBuilding ().getAbility (0).enact (GameManager.player.getPlayer ());
+				if (GameManager.player.getPlayer ().getCurBuildingTarget (0).getBuilding ().abilities [0] != null) {
+					GameManager.player.getPlayer ().getCurBuildingTarget (0).getBuilding ().abilities [0].enact (GameManager.player.getPlayer ());
 				}
 			}
 		}
@@ -94,13 +94,13 @@ public class HotKeysController : MonoBehaviour {
 		if (Input.GetKeyDown (KeyCode.Alpha2)) {
 			if (GameManager.player.getPlayer ().getCurUnitTarget ().Count > 0) {
 				//This shouldn't check first in list, eventually should use some other logic system
-				if (GameManager.player.getPlayer ().getCurUnitTarget (0).getUnit ().getAbility (1) != null) {
-					GameManager.player.getPlayer ().getCurUnitTarget (0).getUnit ().getAbility (1).enact (GameManager.player.getPlayer ());
+				if (GameManager.player.getPlayer ().getCurUnitTarget (0).getUnit ().abilities [1] != null) {
+					GameManager.player.getPlayer ().getCurUnitTarget (0).getUnit ().abilities [1].enact (GameManager.player.getPlayer ());
 				}
 			} else if (GameManager.player.getPlayer ().getCurBuildingTarget ().Count > 0) {
 				//This shouldn't check first in list, eventually should use some other logic system
-				if (GameManager.player.getPlayer ().getCurBuildingTarget (0).getBuilding ().getAbility (1) != null) {
-					GameManager.player.getPlayer ().getCurBuildingTarget (0).getBuilding ().getAbility (1).enact (GameManager.player.getPlayer ());
+				if (GameManager.player.getPlayer ().getCurBuildingTarget (0).getBuilding ().abilities [1] != null) {
+					GameManager.player.getPlayer ().getCurBuildingTarget (0).getBuilding ().abilities [1].enact (GameManager.player.getPlayer ());
 				}
 			}
 		}
@@ -108,13 +108,13 @@ public class HotKeysController : MonoBehaviour {
 		if (Input.GetKeyDown (KeyCode.Alpha3)) {
 			if (GameManager.player.getPlayer ().getCurUnitTarget ().Count > 0) {
 				//This shouldn't check first in list, eventually should use some other logic system
-				if (GameManager.player.getPlayer ().getCurUnitTarget (0).getUnit ().getAbility (2) != null) {
-					GameManager.player.getPlayer ().getCurUnitTarget (0).getUnit ().getAbility (2).enact (GameManager.player.getPlayer ());
+				if (GameManager.player.getPlayer ().getCurUnitTarget (0).getUnit ().abilities [2] != null) {
+					GameManager.player.getPlayer ().getCurUnitTarget (0).getUnit ().abilities [2].enact (GameManager.player.getPlayer ());
 				}
 			} else if (GameManager.player.getPlayer ().getCurBuildingTarget ().Count > 0) {
 				//This shouldn't check first in list, eventually should use some other logic system
-				if (GameManager.player.getPlayer ().getCurBuildingTarget (0).getBuilding ().getAbility (2) != null) {
-					GameManager.player.getPlayer ().getCurBuildingTarget (0).getBuilding ().getAbility (2).enact (GameManager.player.getPlayer ());
+				if (GameManager.player.getPlayer ().getCurBuildingTarget (0).getBuilding ().abilities [2] != null) {
+					GameManager.player.getPlayer ().getCurBuildingTarget (0).getBuilding ().abilities [2].enact (GameManager.player.getPlayer ());
 				}
 			}
 		}
@@ -122,13 +122,13 @@ public class HotKeysController : MonoBehaviour {
 		if (Input.GetKeyDown (KeyCode.Alpha4)) {
 			if (GameManager.player.getPlayer ().getCurUnitTarget ().Count > 0) {
 				//This shouldn't check first in list, eventually should use some other logic system
-				if (GameManager.player.getPlayer ().getCurUnitTarget (0).getUnit ().getAbility (3) != null) {
-					GameManager.player.getPlayer ().getCurUnitTarget (0).getUnit ().getAbility (3).enact (GameManager.player.getPlayer ());
+				if (GameManager.player.getPlayer ().getCurUnitTarget (0).getUnit ().abilities [3] != null) {
+					GameManager.player.getPlayer ().getCurUnitTarget (0).getUnit ().abilities [3].enact (GameManager.player.getPlayer ());
 				}
 			} else if (GameManager.player.getPlayer ().getCurBuildingTarget ().Count > 0) {
 				//This shouldn't check first in list, eventually should use some other logic system
-				if (GameManager.player.getPlayer ().getCurBuildingTarget (0).getBuilding ().getAbility (3) != null) {
-					GameManager.player.getPlayer ().getCurBuildingTarget (0).getBuilding ().getAbility (3).enact (GameManager.player.getPlayer ());
+				if (GameManager.player.getPlayer ().getCurBuildingTarget (0).getBuilding ().abilities [3] != null) {
+					GameManager.player.getPlayer ().getCurBuildingTarget (0).getBuilding ().abilities [3].enact (GameManager.player.getPlayer ());
 				}
 			}
 		}
@@ -136,13 +136,13 @@ public class HotKeysController : MonoBehaviour {
 		if (Input.GetKeyDown (KeyCode.Alpha5)) {
 			if (GameManager.player.getPlayer ().getCurUnitTarget ().Count > 0) {
 				//This shouldn't check first in list, eventually should use some other logic system
-				if (GameManager.player.getPlayer ().getCurUnitTarget (0).getUnit ().getAbility (4) != null) {
-					GameManager.player.getPlayer ().getCurUnitTarget (0).getUnit ().getAbility (4).enact (GameManager.player.getPlayer ());
+				if (GameManager.player.getPlayer ().getCurUnitTarget (0).getUnit ().abilities [4] != null) {
+					GameManager.player.getPlayer ().getCurUnitTarget (0).getUnit ().abilities [4].enact (GameManager.player.getPlayer ());
 				}
 			} else if (GameManager.player.getPlayer ().getCurBuildingTarget ().Count > 0) {
 				//This shouldn't check first in list, eventually should use some other logic system
-				if (GameManager.player.getPlayer ().getCurBuildingTarget (0).getBuilding ().getAbility (4) != null) {
-					GameManager.player.getPlayer ().getCurBuildingTarget (0).getBuilding ().getAbility (4).enact (GameManager.player.getPlayer ());
+				if (GameManager.player.getPlayer ().getCurBuildingTarget (0).getBuilding ().abilities [4] != null) {
+					GameManager.player.getPlayer ().getCurBuildingTarget (0).getBuilding ().abilities [4].enact (GameManager.player.getPlayer ());
 				}
 			}
 		}
@@ -150,13 +150,13 @@ public class HotKeysController : MonoBehaviour {
 		if (Input.GetKeyDown (KeyCode.Alpha6)) {
 			if (GameManager.player.getPlayer ().getCurUnitTarget ().Count > 0) {
 				//This shouldn't check first in list, eventually should use some other logic system
-				if (GameManager.player.getPlayer ().getCurUnitTarget (0).getUnit ().getAbility (5) != null) {
-					GameManager.player.getPlayer ().getCurUnitTarget (0).getUnit ().getAbility (5).enact (GameManager.player.getPlayer ());
+				if (GameManager.player.getPlayer ().getCurUnitTarget (0).getUnit ().abilities [5] != null) {
+					GameManager.player.getPlayer ().getCurUnitTarget (0).getUnit ().abilities [5].enact (GameManager.player.getPlayer ());
 				}
 			} else if (GameManager.player.getPlayer ().getCurBuildingTarget ().Count > 0) {
 				//This shouldn't check first in list, eventually should use some other logic system
-				if (GameManager.player.getPlayer ().getCurBuildingTarget (0).getBuilding ().getAbility (5) != null) {
-					GameManager.player.getPlayer ().getCurBuildingTarget (0).getBuilding ().getAbility (5).enact (GameManager.player.getPlayer ());
+				if (GameManager.player.getPlayer ().getCurBuildingTarget (0).getBuilding ().abilities [5] != null) {
+					GameManager.player.getPlayer ().getCurBuildingTarget (0).getBuilding ().abilities [5].enact (GameManager.player.getPlayer ());
 				}
 			}
 		}
@@ -164,13 +164,13 @@ public class HotKeysController : MonoBehaviour {
 		if (Input.GetKeyDown (KeyCode.Q)) {
 			if (GameManager.player.getPlayer ().getCurUnitTarget ().Count > 0) {
 				//This shouldn't check first in list, eventually should use some other logic system
-				if (GameManager.player.getPlayer ().getCurUnitTarget (0).getUnit ().getAbility (6) != null) {
-					GameManager.player.getPlayer ().getCurUnitTarget (0).getUnit ().getAbility (6).enact (GameManager.player.getPlayer ());
+				if (GameManager.player.getPlayer ().getCurUnitTarget (0).getUnit ().abilities [6] != null) {
+					GameManager.player.getPlayer ().getCurUnitTarget (0).getUnit ().abilities [6].enact (GameManager.player.getPlayer ());
 				}
 			} else if (GameManager.player.getPlayer ().getCurBuildingTarget ().Count > 0) {
 				//This shouldn't check first in list, eventually should use some other logic system
-				if (GameManager.player.getPlayer ().getCurBuildingTarget (0).getBuilding ().getAbility (6) != null) {
-					GameManager.player.getPlayer ().getCurBuildingTarget (0).getBuilding ().getAbility (6).enact (GameManager.player.getPlayer ());
+				if (GameManager.player.getPlayer ().getCurBuildingTarget (0).getBuilding ().abilities [6] != null) {
+					GameManager.player.getPlayer ().getCurBuildingTarget (0).getBuilding ().abilities [6].enact (GameManager.player.getPlayer ());
 				}
 			}
 		}
@@ -178,13 +178,13 @@ public class HotKeysController : MonoBehaviour {
 		if (Input.GetKeyDown (KeyCode.E)) {
 			if (GameManager.player.getPlayer ().getCurUnitTarget ().Count > 0) {
 				//This shouldn't check first in list, eventually should use some other logic system
-				if (GameManager.player.getPlayer ().getCurUnitTarget (0).getUnit ().getAbility (7) != null) {
-					GameManager.player.getPlayer ().getCurUnitTarget (0).getUnit ().getAbility (7).enact (GameManager.player.getPlayer ());
+				if (GameManager.player.getPlayer ().getCurUnitTarget (0).getUnit ().abilities [7] != null) {
+					GameManager.player.getPlayer ().getCurUnitTarget (0).getUnit ().abilities [7].enact (GameManager.player.getPlayer ());
 				}
 			} else if (GameManager.player.getPlayer ().getCurBuildingTarget ().Count > 0) {
 				//This shouldn't check first in list, eventually should use some other logic system
-				if (GameManager.player.getPlayer ().getCurBuildingTarget (0).getBuilding ().getAbility (7) != null) {
-					GameManager.player.getPlayer ().getCurBuildingTarget (0).getBuilding ().getAbility (7).enact (GameManager.player.getPlayer ());
+				if (GameManager.player.getPlayer ().getCurBuildingTarget (0).getBuilding ().abilities [7] != null) {
+					GameManager.player.getPlayer ().getCurBuildingTarget (0).getBuilding ().abilities [7].enact (GameManager.player.getPlayer ());
 				}
 			}
 		}
@@ -192,13 +192,13 @@ public class HotKeysController : MonoBehaviour {
 		if (Input.GetKeyDown (KeyCode.R)) {
 			if (GameManager.player.getPlayer ().getCurUnitTarget ().Count > 0) {
 				//This shouldn't check first in list, eventually should use some other logic system
-				if (GameManager.player.getPlayer ().getCurUnitTarget (0).getUnit ().getAbility (8) != null) {
-					GameManager.player.getPlayer ().getCurUnitTarget (0).getUnit ().getAbility (8).enact (GameManager.player.getPlayer ());
+				if (GameManager.player.getPlayer ().getCurUnitTarget (0).getUnit ().abilities [8] != null) {
+					GameManager.player.getPlayer ().getCurUnitTarget (0).getUnit ().abilities [8].enact (GameManager.player.getPlayer ());
 				}
 			} else if (GameManager.player.getPlayer ().getCurBuildingTarget ().Count > 0) {
 				//This shouldn't check first in list, eventually should use some other logic system
-				if (GameManager.player.getPlayer ().getCurBuildingTarget (0).getBuilding ().getAbility (8) != null) {
-					GameManager.player.getPlayer ().getCurBuildingTarget (0).getBuilding ().getAbility (8).enact (GameManager.player.getPlayer ());
+				if (GameManager.player.getPlayer ().getCurBuildingTarget (0).getBuilding ().abilities [8] != null) {
+					GameManager.player.getPlayer ().getCurBuildingTarget (0).getBuilding ().abilities [8].enact (GameManager.player.getPlayer ());
 				}
 			}
 		}
@@ -206,13 +206,13 @@ public class HotKeysController : MonoBehaviour {
 		if (Input.GetKeyDown (KeyCode.T)) {
 			if (GameManager.player.getPlayer ().getCurUnitTarget ().Count > 0) {
 				//This shouldn't check first in list, eventually should use some other logic system
-				if (GameManager.player.getPlayer ().getCurUnitTarget (0).getUnit ().getAbility (9) != null) {
-					GameManager.player.getPlayer ().getCurUnitTarget (0).getUnit ().getAbility (9).enact (GameManager.player.getPlayer ());
+				if (GameManager.player.getPlayer ().getCurUnitTarget (0).getUnit ().abilities [9] != null) {
+					GameManager.player.getPlayer ().getCurUnitTarget (0).getUnit ().abilities [9].enact (GameManager.player.getPlayer ());
 				}
 			} else if (GameManager.player.getPlayer ().getCurBuildingTarget ().Count > 0) {
 				//This shouldn't check first in list, eventually should use some other logic system
-				if (GameManager.player.getPlayer ().getCurBuildingTarget (0).getBuilding ().getAbility (9) != null) {
-					GameManager.player.getPlayer ().getCurBuildingTarget (0).getBuilding ().getAbility (9).enact (GameManager.player.getPlayer ());
+				if (GameManager.player.getPlayer ().getCurBuildingTarget (0).getBuilding ().abilities [9] != null) {
+					GameManager.player.getPlayer ().getCurBuildingTarget (0).getBuilding ().abilities [9].enact (GameManager.player.getPlayer ());
 				}
 			}
 		}

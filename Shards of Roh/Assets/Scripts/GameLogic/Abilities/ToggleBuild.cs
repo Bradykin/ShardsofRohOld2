@@ -28,7 +28,7 @@ public class ToggleBuild : Ability {
 			for (int i = 0; i < GameManager.player.buildToggle.transform.childCount; i++) {
 				if (GameManager.player.buildToggle.transform.GetChild (i).gameObject.name == buildName) {
 					bool hasResearch = true;
-					foreach (var r in ObjectFactory.createBuildingByName (buildName, owner).getNeededResearch ()) {
+					foreach (var r in ObjectFactory.createBuildingByName (buildName, owner).neededResearch) {
 						if (owner.hasResearch (r) == false) {
 							hasResearch = false;
 						}

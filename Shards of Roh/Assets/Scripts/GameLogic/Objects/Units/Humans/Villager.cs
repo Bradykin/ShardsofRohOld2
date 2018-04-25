@@ -5,6 +5,7 @@ using UnityEngine;
 public class Villager : Unit {
 
 	public Villager (Player _owner) {
+		setup ();
 		name = "Villager";
 		race = "Humans";
 		owner = _owner;

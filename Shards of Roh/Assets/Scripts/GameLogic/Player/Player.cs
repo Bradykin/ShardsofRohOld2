@@ -163,7 +163,7 @@ public class Player {
 			foreach (var r in curUnitTarget) {
 				if (_formationPositions.Count > 0) {
 					if (distance == -1 || Vector3.Distance (r.getUnit ().curLoc, _formationPositions [x].getPosition ()) < distance) {
-						if (r.getUnit ().getName () == _formationPositions [x].getUnitType () || _formationPositions [x].getUnitType () == "") {
+						if (r.getUnit ().name == _formationPositions [x].getUnitType () || _formationPositions [x].getUnitType () == "") {
 							lowest = r;
 							distance = Vector3.Distance (r.getUnit ().curLoc, _formationPositions [x].getPosition ());
 						} else {

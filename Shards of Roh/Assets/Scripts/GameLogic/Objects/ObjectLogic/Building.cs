@@ -44,17 +44,17 @@ public abstract class Building : Object {
 	public void getHit (UnitContainer _attacker, int _attack) {
 		if (_attacker.getUnit ().getVillager () == true) {
 			if (getIsResource () == true) {
-				if (getName () == "Food") {
-					_attacker.getUnit ().getOwner ().getResource ().add (new Resource (_attack, 0, 0));
-				} else if (getName () == "Wood") {
-					_attacker.getUnit ().getOwner ().getResource ().add (new Resource (0, _attack, 0));
-				} else if (getName () == "Gold") {
-					_attacker.getUnit ().getOwner ().getResource ().add (new Resource (0, 0, _attack));
+				if (name == "Food") {
+					_attacker.getUnit ().owner.getResource ().add (new Resource (_attack, 0, 0));
+				} else if (name == "Wood") {
+					_attacker.getUnit ().owner.getResource ().add (new Resource (0, _attack, 0));
+				} else if (name == "Gold") {
+					_attacker.getUnit ().owner.getResource ().add (new Resource (0, 0, _attack));
 				} else {
 					GameManager.print ("Unidentified resource - Building");
 				}
 				curHealth -= _attack;
-			} else if (getOwner ().getName () == _attacker.getUnit ().getOwner ().getName ()) {
+			} else if (owner.getName () == _attacker.getUnit ().owner.getName ()) {
 				curHealth += _attack;
 				if (curHealth >= health) {
 					curHealth = health;
@@ -78,14 +78,14 @@ public abstract class Building : Object {
 			if (unitQueue.Count > 0) {
 				//Spawn units according to the size of the next unitQueue
 				for (int i = 0; i < unitQueue [0].getSize (); i++) {
-					Unit newUnit = ObjectFactory.createUnitByName (unitQueue [0].getUnit ().getName (), getOwner ());
+					Unit newUnit = ObjectFactory.createUnitByName (unitQueue [0].getUnit ().name, owner);
 					GameObject instance = GameManager.Instantiate (Resources.Load (newUnit.getPrefabPath (), typeof(GameObject)) as GameObject);
 					instance.GetComponent<UnitContainer> ().setUnit (newUnit);
 					if (instance.GetComponent<UnityEngine.AI.NavMeshAgent> () != null) {
 						instance.GetComponent<UnityEngine.AI.NavMeshAgent> ().Warp (hit.point);
 					}
 
-					GameManager.addPlayerToGame (getOwner ().getName ()).addUnitToPlayer (instance.GetComponent<UnitContainer> ());
+					GameManager.addPlayerToGame (owner.getName ()).addUnitToPlayer (instance.GetComponent<UnitContainer> ());
 				}
 				getUnitQueue ().RemoveAt (0);
 			}
@@ -96,7 +96,7 @@ public abstract class Building : Object {
 		//Gain the next research
 		if (researchQueue.Count > 0) {
 			GameManager.print ("AddResearch: " + researchQueue [0].getResearch ().getName ());
-			GameManager.addPlayerToGame (getOwner ().getName ()).addResearch (researchQueue [0].getResearch ());
+			GameManager.addPlayerToGame (owner.getName ()).addResearch (researchQueue [0].getResearch ());
 			getResearchQueue ().RemoveAt (0);
 		}
 	}
@@ -140,7 +140,7 @@ public abstract class Building : Object {
 	public void addToUnitQueue (Unit _newUnit) {
 		bool insert = false;
 		for (int i = 0; i < unitQueue.Count; i++) {
-			if (unitQueue [i].getUnit ().getName () == _newUnit.getName () && unitQueue [i].getFull () == false && insert == false) {
+			if (unitQueue [i].getUnit ().name == _newUnit.name && unitQueue [i].getFull () == false && insert == false) {
 				unitQueue [i].addSize (1);
 				insert = true;
 			}
