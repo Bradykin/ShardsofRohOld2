@@ -19,7 +19,7 @@ public class AbilityPanelLogic : MonoBehaviour, IPointerClickHandler  {
 
 	public void OnPointerClick (PointerEventData eventData) {
 		if (eventData.button == PointerEventData.InputButton.Left) {
-			GameManager.player.player.useCurTargetAbility (panelIndex);
+			GameManager.playerContainer.player.useCurTargetAbility (panelIndex);
 		}
 	}
 }

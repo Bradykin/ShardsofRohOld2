@@ -34,52 +34,59 @@ public class PlayerContainer : MonoBehaviour {
 	}
 
 	public void processRightClickUnitCommand (Vector3 _targetLoc, GameObject _clicked) {
+
 		//Handle if clicked on unit
 		if (_clicked.GetComponent<UnitContainer> () != null) {
-			UnitContainer targetUnit = _clicked.GetComponent<UnitContainer> ();
-			Vector3 targetLoc = _clicked.GetComponent<UnitContainer> ().unit.curLoc;
-			foreach (var r in GameManager.player.player.curUnitTarget) {
-				if (GameManager.isEnemies (clicked.GetComponent<UnitContainer> ().unit.owner, GameManager.player.player)) {
-					r.unit.setAttackTarget (clicked.GetComponent<UnitContainer> ());
+			UnitContainer targetUnitContainer = _clicked.GetComponent<UnitContainer> ();
+
+			if (GameManager.isEnemies (targetUnitContainer.unit.owner, GameManager.playerContainer.player)) {
+				foreach (var r in GameManager.playerContainer.player.curUnitTarget) {
+					r.unit.setAttackTarget (targetUnitContainer);
 					r.checkAttackLogic ();
 					r.removeBehaviourByType ("Idle");
+				}
+			} else {
+				foreach (var r in GameManager.playerContainer.player.curUnitTarget) {
+					r.moveTowardCollider (targetUnitContainer.GetComponent<CapsuleCollider> ());
 				}
 			}
 		}
 		//Handle is clicked on building
-		else if (clicked.GetComponent<BuildingContainer> () != null) {
-			targetLoc = clicked.GetComponent<BuildingContainer> ().building.curLoc;
-			foreach (var r in GameManager.player.player.curUnitTarget) {
-				if (r.unit.isVillager == true) {
-					//This should have expanded logic
-					if (clicked.GetComponent<BuildingContainer> ().building.isResource) {
-						r.unit.setAttackTarget (clicked.GetComponent<BuildingContainer> ());
+		else if (_clicked.GetComponent<BuildingContainer> () != null) {
+			BuildingContainer targetBuildingContainer = _clicked.GetComponent<BuildingContainer> ();
+
+			if (targetBuildingContainer.building.isResource) {
+				foreach (var r in GameManager.playerContainer.player.curUnitTarget) {
+					if (r.unit.isVillager == true) {
+						r.unit.setAttackTarget (targetBuildingContainer);
 						r.removeBehaviourByType ("Idle");
 						r.unitBehaviours.Add (new IdleGather ());
-					} else if (clicked.GetComponent<BuildingContainer> ().building.owner.name == r.unit.owner.name) {
-						r.unit.setAttackTarget (clicked.GetComponent<BuildingContainer> ());
+					} else {
+						r.moveTowardCollider (targetBuildingContainer.GetComponent<BoxCollider> ());
+					}
+				}
+			} else if (GameManager.isEnemies (targetBuildingContainer.building.owner, GameManager.playerContainer.player)) {
+				foreach (var r in GameManager.playerContainer.player.curUnitTarget) {
+					r.unit.setAttackTarget (targetBuildingContainer);
+					r.checkAttackLogic ();
+					r.removeBehaviourByType ("Idle");
+					r.unitBehaviours.Add (new IdleAttack ());
+				}
+			} else {
+				foreach (var r in GameManager.playerContainer.player.curUnitTarget) {
+					if (r.unit.isVillager == true && targetBuildingContainer.building.owner == r.unit.owner && targetBuildingContainer.building.curHealth < targetBuildingContainer.building.health) {
+						r.unit.setAttackTarget (targetBuildingContainer);
 						r.removeBehaviourByType ("Idle");
 						r.unitBehaviours.Add (new IdleBuild ());
-					} else if (GameManager.isEnemies (clicked.GetComponent<BuildingContainer> ().building.owner, GameManager.player.player) == true) {
-						r.unit.setAttackTarget (clicked.GetComponent<BuildingContainer> ());
-						r.removeBehaviourByType ("Idle");
-						r.unitBehaviours.Add (new IdleAttack ());
-					}
-				} else {
-					if (clicked.GetComponent<BuildingContainer> ().building.isResource == false) {
-						if (GameManager.isEnemies (clicked.GetComponent<BuildingContainer> ().building.owner, GameManager.player.player)) {
-							r.unit.setAttackTarget (clicked.GetComponent<BuildingContainer> ());
-							r.checkAttackLogic ();
-							r.removeBehaviourByType ("Idle");
-							r.unitBehaviours.Add (new IdleAttack ());
-						}
+					} else {
+						r.moveTowardCollider (targetBuildingContainer.GetComponent<BoxCollider> ());
 					}
 				}
 			}
 		}
 		//Handle if clicked on nothing
 		else {
-			player.processFormationMovement (targetLoc);
+			player.processFormationMovement (_targetLoc);
 		}
 	}
 }

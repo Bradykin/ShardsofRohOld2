@@ -88,7 +88,7 @@ public class Player {
 	}
 
 	public void processFormationMovement (Vector3 targetLoc) {
-		foreach (var r in GameManager.player.player.curUnitTarget) {
+		foreach (var r in GameManager.playerContainer.player.curUnitTarget) {
 			r.unit.dropAttackTarget ();
 			r.removeBehaviourByType ("Idle");
 		}
@@ -96,7 +96,7 @@ public class Player {
 		//Calculate angle vectors for formations
 		Vector3 unitVec = new Vector3 (0, 0, 0);
 		int unitCount = 0;
-		foreach (var r in GameManager.player.player.curUnitTarget) {
+		foreach (var r in GameManager.playerContainer.player.curUnitTarget) {
 			//This works well, but I worry about performance issues. Think of a better way!
 			if (r.GetComponent<UnityEngine.AI.NavMeshAgent> ().enabled == true) {
 				unitCount++;
@@ -115,23 +115,17 @@ public class Player {
 		Vector3 perpVec = Vector3.Cross (unitVec, new Vector3 (0, 1, 0));
 
 		//Calculate formation positions and match each unit to a formation spot.
-		List <Formation> formationPositions = FormationController.findFormationPositions (false, GameManager.player.player.curUnitTarget, targetLoc, unitVec, perpVec);
-		GameManager.player.player.sortCurUnitTarget (targetLoc, formationPositions);
+		List <Formation> formationPositions = FormationController.findFormationPositions (false, GameManager.playerContainer.player.curUnitTarget, targetLoc, unitVec, perpVec);
+		GameManager.playerContainer.player.sortCurUnitTarget (targetLoc, formationPositions);
 
 		//Assign each unit to move to it's formation location
-		foreach (var r in GameManager.player.player.curUnitTarget) {
+		foreach (var r in GameManager.playerContainer.player.curUnitTarget) {
 			if (r.gameObject.GetComponent<UnityEngine.AI.NavMeshAgent> () != null) {
 				if (formationPositions.Count > 0) {
-					/*if (clicked.GetComponent<UnitContainer> () != null || clicked.GetComponent<BuildingContainer> () != null) {
-						r.gameObject.GetComponent<UnityEngine.AI.NavMeshAgent> ().destination = formationPositions [0].getPosition ();
-						UnityEngine.AI.NavMeshPath path = new UnityEngine.AI.NavMeshPath ();
-						UnityEngine.AI.NavMesh.CalculatePath (r.gameObject.GetComponent<UnityEngine.AI.NavMeshAgent> ().transform.position, r.gameObject.GetComponent<UnityEngine.AI.NavMeshAgent> ().destination, UnityEngine.AI.NavMesh.AllAreas, path);
-						r.gameObject.GetComponent<UnityEngine.AI.NavMeshAgent> ().path = path;
-					} else {*/
-					UnityEngine.AI.NavMeshPath path = new UnityEngine.AI.NavMeshPath ();
+					r.gameObject.GetComponent<UnityEngine.AI.NavMeshAgent> ().SetDestination (formationPositions [0].getPosition ());
+					/*UnityEngine.AI.NavMeshPath path = new UnityEngine.AI.NavMeshPath ();
 					UnityEngine.AI.NavMesh.CalculatePath (r.gameObject.GetComponent<UnityEngine.AI.NavMeshAgent> ().transform.position, formationPositions [0].getPosition (), UnityEngine.AI.NavMesh.AllAreas, path);
-					r.gameObject.GetComponent<UnityEngine.AI.NavMeshAgent> ().path = path;
-					//}
+					r.gameObject.GetComponent<UnityEngine.AI.NavMeshAgent> ().path = path;*/
 					formationPositions.RemoveAt (0);
 				} else {
 					GameManager.print ("Missing FormationPosition - MouseController");
@@ -173,34 +167,10 @@ public class Player {
 			for (int x = 0; x < _formationPositions.Count; x++) {
 				for (int y = 0; y < _formationPositions.Count; y++) {
 					if (x != y && _formationPositions [x].getUnitType () == _formationPositions [y].getUnitType ()) {
-						//UnityEngine.AI.NavMeshPath pathX = newList [x].GetComponent<UnityEngine.AI.NavMeshAgent> ().path;
-						//UnityEngine.AI.NavMeshPath pathY = newList [y].GetComponent<UnityEngine.AI.NavMeshAgent> ().path;
-						float curDistanceX = 0;
-						float curDistanceY = 0;
-						float newDistanceX = 0;
-						float newDistanceY = 0;
-
-						//Another idea on how to do this
-						curDistanceX = getPathLength (newList [x], _formationPositions [x].getPosition ());
-						curDistanceY = getPathLength (newList [y], _formationPositions [y].getPosition ());
-
-						newDistanceX = getPathLength (newList [x], _formationPositions [y].getPosition ());
-						newDistanceY = getPathLength (newList [y], _formationPositions [x].getPosition ());
-
-						//Old approach
-						/*if (pathX.corners.Length >= 2 && pathY.corners.Length >= 2) {
-							curDistanceX = Vector3.Distance (pathX.corners [pathX.corners.Length - 2], _formationPositions [x].getPosition ());
-							curDistanceY = Vector3.Distance (pathY.corners [pathY.corners.Length - 2], _formationPositions [y].getPosition ());
-
-							newDistanceX = Vector3.Distance (pathX.corners [pathX.corners.Length - 2], _formationPositions [y].getPosition ());
-							newDistanceY = Vector3.Distance (pathY.corners [pathY.corners.Length - 2], _formationPositions [x].getPosition ());
-						} else {
-							curDistanceX = Vector3.Distance (newList [x].getUnit ().getCurLoc (), _formationPositions [x].getPosition ());
-							curDistanceY = Vector3.Distance (newList [y].getUnit ().getCurLoc (), _formationPositions [y].getPosition ());
-
-							newDistanceX = Vector3.Distance (newList [x].getUnit ().getCurLoc (), _formationPositions [y].getPosition ());
-							newDistanceY = Vector3.Distance (newList [y].getUnit ().getCurLoc (), _formationPositions [x].getPosition ());
-						}*/
+						float curDistanceX = getPathLength (newList [x], _formationPositions [x].getPosition ());
+						float curDistanceY = getPathLength (newList [y], _formationPositions [y].getPosition ());
+						float newDistanceX = getPathLength (newList [x], _formationPositions [y].getPosition ());
+						float newDistanceY = getPathLength (newList [y], _formationPositions [x].getPosition ());
 
 						if ((Mathf.Max (curDistanceX, curDistanceY) - Mathf.Min (curDistanceX, curDistanceY)) > (Mathf.Max (newDistanceX, newDistanceY) - Mathf.Min (newDistanceX, newDistanceY))) {
 							if ((curDistanceX + curDistanceY) > (newDistanceX + newDistanceY)) {
@@ -221,47 +191,51 @@ public class Player {
 		}
 
 		setCurUnitTarget (newList);
-
-		//I don't know if this is actually doing anything. Theoretically it should be helping units find attack angles
-		/*for (int i = 0; i < curUnitTarget.Count; i++) {
-			curUnitTarget [i].gameObject.GetComponent<UnityEngine.AI.NavMeshAgent> ().avoidancePriority = 50 - curUnitTarget.Count + i;
-		}*/
 	}
 
 	public void toggleSelectionCircle (bool _toggle, UnitContainer _unit) {
-		if (_unit.gameObject.transform.GetChild (1).name == "TargetRing") {
-			_unit.gameObject.transform.GetChild (1).gameObject.SetActive (_toggle);
+		foreach (Transform child in _unit.gameObject.transform) {
+			if (child.name == "TargetRing") {
+				child.gameObject.SetActive (_toggle);
+			}
 		}
 	}
 
 	public void toggleSelectionCircles (bool _toggle) {
 		foreach (var r in curUnitTarget) {
-			if (r.gameObject.transform.GetChild (1).name == "TargetRing") {
-				r.gameObject.transform.GetChild (1).gameObject.SetActive (_toggle);
+			foreach (Transform child in r.gameObject.transform) {
+				if (child.name == "TargetRing") {
+					child.gameObject.SetActive (_toggle);
+				}
 			}
 		}
 	}
 
-	public void toggleSelectionBox (bool _toggle, BuildingContainer _Building) {
-		if (_Building.gameObject.transform.GetChild (2).name == "TargetRing") {
-			_Building.gameObject.transform.GetChild (2).gameObject.SetActive (_toggle);
+	public void toggleSelectionBox (bool _toggle, BuildingContainer _building) {
+		foreach (Transform child in _building.gameObject.transform) {
+			if (child.name == "TargetRing") {
+				child.gameObject.SetActive (_toggle);
+			}
 		}
 	}
 
 	public void toggleSelectionBoxes (bool _toggle) {
 		foreach (var r in curBuildingTarget) {
-			if (r.gameObject.transform.GetChild (2).name == "TargetRing") {
-				r.gameObject.transform.GetChild (2).gameObject.SetActive (_toggle);
+			foreach (Transform child in r.gameObject.transform) {
+				if (child.name == "TargetRing") {
+					child.gameObject.SetActive (_toggle);
+				}
 			}
 		}
 	}
 
 	public bool hasResearch (Research _research) {
-		for (int i = 0; i < researchList.Count; i++) {
-			if (researchList [i].getName () == _research.getName ()) {
+		foreach (var r in researchList) {
+			if (r.getName () == _research.getName ()) {
 				return true;
 			}
 		}
+
 		return false;
 	}
 
@@ -295,11 +269,11 @@ public class Player {
 		}
 	}
 
-	//Mid development funct ion
 	public float getPathLength (UnitContainer _unit, Vector3 _newPathEnd) {
 		UnityEngine.AI.NavMeshPath path = _unit.GetComponent<UnityEngine.AI.NavMeshAgent> ().path;
 		path.corners [path.corners.Length - 1] = _newPathEnd;
 		float newDist = 0;
+		//This is a potential inefficiency
 		for (int i = 0; i < path.corners.Length - 1; i++) {
 			newDist += Vector3.Distance (path.corners [i], path.corners [i + 1]);
 		}
@@ -308,15 +282,15 @@ public class Player {
 	}
 
 	public void useCurTargetAbility (int _index) {
-		if (GameManager.player.player.curUnitTarget.Count > 0) {
+		if (GameManager.playerContainer.player.curUnitTarget.Count > 0) {
 			//This shouldn't check first in list, eventually should use some other logic system
-			if (GameManager.player.player.curUnitTarget [0].unit.abilities [_index] != null) {
-				GameManager.player.player.curUnitTarget [0].unit.abilities [_index].enact (GameManager.player.player);
+			if (GameManager.playerContainer.player.curUnitTarget [0].unit.abilities [_index] != null) {
+				GameManager.playerContainer.player.curUnitTarget [0].unit.abilities [_index].enact (GameManager.playerContainer.player);
 			}
-		} else if (GameManager.player.player.curBuildingTarget.Count > 0) {
+		} else if (GameManager.playerContainer.player.curBuildingTarget.Count > 0) {
 			//This shouldn't check first in list, eventually should use some other logic system
-			if (GameManager.player.player.curBuildingTarget [0].building.abilities [_index] != null) {
-				GameManager.player.player.curBuildingTarget [0].building.abilities [_index].enact (GameManager.player.player);
+			if (GameManager.playerContainer.player.curBuildingTarget [0].building.abilities [_index] != null) {
+				GameManager.playerContainer.player.curBuildingTarget [0].building.abilities [_index].enact (GameManager.playerContainer.player);
 			}
 		}
 	}

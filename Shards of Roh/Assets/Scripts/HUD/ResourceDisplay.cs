@@ -24,7 +24,7 @@ public class ResourceDisplay : MonoBehaviour
 
 	private void updateResourceDisplay ()
 	{
-		Player player = GameManager.player.player;
+		Player player = GameManager.playerContainer.player;
 		foodText.text = player.resource.getFood ().ToString ();
 		woodText.text = player.resource.getWood ().ToString ();
 		goldText.text = player.resource.getGold ().ToString ();

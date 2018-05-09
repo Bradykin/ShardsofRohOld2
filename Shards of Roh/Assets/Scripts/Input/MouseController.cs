@@ -38,13 +38,13 @@ public class MouseController : MonoBehaviour {
 		
 	public static void handleLeftClick () {
 		//Create selection box while mouse button is held down
-		if (GameManager.player.buildToggleActive == true && Input.GetMouseButtonDown (0) && EventSystem.current.IsPointerOverGameObject () == false) {
+		if (GameManager.playerContainer.buildToggleActive == true && Input.GetMouseButtonDown (0) && EventSystem.current.IsPointerOverGameObject () == false) {
 			RaycastHit hit;
 			Ray ray = Camera.main.ScreenPointToRay (getMousePosition ());
 			if (Physics.Raycast (ray, out hit, 1000, buildToggleMask)) {
-				Building newBuilding = ObjectFactory.createBuildingByName (GameManager.player.buildToggleSetting, GameManager.addPlayerToGame ("Player"), false);
-				if (GameManager.player.player.resource.hasEnough (newBuilding.cost)) {
-					GameManager.player.player.resource.spend (newBuilding.cost);
+				Building newBuilding = ObjectFactory.createBuildingByName (GameManager.playerContainer.buildToggleSetting, GameManager.addPlayerToGame ("Player"), false);
+				if (GameManager.playerContainer.player.resource.hasEnough (newBuilding.cost)) {
+					GameManager.playerContainer.player.resource.spend (newBuilding.cost);
 					GameObject instance = Instantiate (Resources.Load (newBuilding.prefabPath, typeof(GameObject)) as GameObject);
 					instance.GetComponent<BuildingContainer> ().building = newBuilding;
 					if (instance.GetComponent<UnityEngine.AI.NavMeshObstacle> () != null) {
@@ -62,10 +62,10 @@ public class MouseController : MonoBehaviour {
 						print ("Model Child problem - MouseController");
 					}
 				
-					GameManager.player.buildToggleActive = false;
-					GameManager.player.buildToggleSetting = null;
-					for (int i = 0; i < GameManager.player.buildToggle.transform.childCount; i++) {
-						GameManager.player.buildToggle.transform.GetChild (i).gameObject.SetActive (false);
+					GameManager.playerContainer.buildToggleActive = false;
+					GameManager.playerContainer.buildToggleSetting = null;
+					for (int i = 0; i < GameManager.playerContainer.buildToggle.transform.childCount; i++) {
+						GameManager.playerContainer.buildToggle.transform.GetChild (i).gameObject.SetActive (false);
 					}
 
 					GameManager.addPlayerToGame ("Player").buildings.Add (instance.GetComponent<BuildingContainer> ());
@@ -75,8 +75,8 @@ public class MouseController : MonoBehaviour {
 			if (Input.GetMouseButtonDown (0) && EventSystem.current.IsPointerOverGameObject () == false) {
 				isSelecting = true;
 				mousePosition1 = Input.mousePosition;
-				GameManager.player.player.setCurUnitTarget (new List<UnitContainer> ());
-				GameManager.player.player.setCurBuildingTarget (new List<BuildingContainer> ());
+				GameManager.playerContainer.player.setCurUnitTarget (new List<UnitContainer> ());
+				GameManager.playerContainer.player.setCurBuildingTarget (new List<BuildingContainer> ());
 			} else if (Input.GetMouseButtonUp (0)) {
 				isSelecting = false;
 			}
@@ -84,28 +84,28 @@ public class MouseController : MonoBehaviour {
 			//Check if units are inside selection box
 			if (isSelecting == true) {
 				if (Vector3.Distance (Camera.main.ScreenToViewportPoint (mousePosition1), Camera.main.ScreenToViewportPoint (Input.mousePosition)) > 0) {
-					foreach (var r in GameManager.player.player.units) {
+					foreach (var r in GameManager.playerContainer.player.units) {
 						if (r != null) {
 							if (SelectionBox.isInBox (r.gameObject, mousePosition1)) {
-								GameManager.player.player.addCurUnitTarget (r);
+								GameManager.playerContainer.player.addCurUnitTarget (r);
 							} else {
-								GameManager.player.player.remCurUnitTarget (r);
+								GameManager.playerContainer.player.remCurUnitTarget (r);
 							}
 						}
 					}
 
-					if (GameManager.player.player.curUnitTarget.Count == 0) {
-						foreach (var r in GameManager.player.player.buildings) {
+					if (GameManager.playerContainer.player.curUnitTarget.Count == 0) {
+						foreach (var r in GameManager.playerContainer.player.buildings) {
 							if (r != null) {
 								if (SelectionBox.isInBox (r.gameObject, mousePosition1)) {
-									GameManager.player.player.addCurBuildingTarget (r);
+									GameManager.playerContainer.player.addCurBuildingTarget (r);
 								} else {
-									GameManager.player.player.remCurBuildingTarget (r);
+									GameManager.playerContainer.player.remCurBuildingTarget (r);
 								}
 							}
 						}
 					} else {
-						GameManager.player.player.setCurBuildingTarget (new List<BuildingContainer> ());
+						GameManager.playerContainer.player.setCurBuildingTarget (new List<BuildingContainer> ());
 					}
 				}
 
@@ -115,13 +115,13 @@ public class MouseController : MonoBehaviour {
 				if (Physics.Raycast (ray, out hit, 1000, GlobalVariables.defaultMask)) {
 					if (hit.collider.gameObject.GetComponent<UnitContainer> () != null) {
 						if (hit.collider.gameObject.GetComponent<UnitContainer> ().unit.owner.name == "Player") {
-							GameManager.player.player.addCurUnitTarget (hit.collider.gameObject.GetComponent<UnitContainer> ());
+							GameManager.playerContainer.player.addCurUnitTarget (hit.collider.gameObject.GetComponent<UnitContainer> ());
 						}
 					}
 
-					if (hit.collider.gameObject.GetComponent<BuildingContainer> () != null && GameManager.player.player.curUnitTarget.Count == 0) {
+					if (hit.collider.gameObject.GetComponent<BuildingContainer> () != null && GameManager.playerContainer.player.curUnitTarget.Count == 0) {
 						if (hit.collider.gameObject.GetComponent<BuildingContainer> ().building.owner.name == "Player") {
-							GameManager.player.player.addCurBuildingTarget (hit.collider.gameObject.GetComponent<BuildingContainer> ());
+							GameManager.playerContainer.player.addCurBuildingTarget (hit.collider.gameObject.GetComponent<BuildingContainer> ());
 						}
 					}
 				}
@@ -137,16 +137,16 @@ public class MouseController : MonoBehaviour {
 				//Check if rotating camera
 				if (!Input.GetKey (KeyCode.LeftControl)) {
 					//Process for selecting Units
-					if (GameManager.player.player.curUnitTarget.Count > 0) {
+					if (GameManager.playerContainer.player.curUnitTarget.Count > 0) {
 						RaycastHit hit;
 						Ray ray = Camera.main.ScreenPointToRay (Input.mousePosition);
 						if (Physics.Raycast (ray, out hit, 1000, GlobalVariables.defaultMask)) {
 							Vector3 targetLoc = hit.point;
 							GameObject clicked = hit.collider.gameObject;
 
-							GameManager.player.processRightClickUnitCommand (targetLoc, clicked);
+							GameManager.playerContainer.processRightClickUnitCommand (targetLoc, clicked);
 						}
-					} else if (GameManager.player.player.curBuildingTarget.Count > 0) {
+					} else if (GameManager.playerContainer.player.curBuildingTarget.Count > 0) {
 					
 					} else {
 					

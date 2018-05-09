@@ -15,18 +15,18 @@ public class ToggleBuild : Ability {
 
 	//Handle the change of the buildToggle
 	public override void enact (Player owner, Unit targetUnit = null, Building targetBuilding = null, Vector3 targetPos = new Vector3 ()) {
-		if (GameManager.player.buildToggleSetting == buildName) {
+		if (GameManager.playerContainer.buildToggleSetting == buildName) {
 			//If the buildName is equal to the current buildToggleSetting, disable it
-			GameManager.player.buildToggleActive = false;
-			GameManager.player.buildToggleSetting = null;
+			GameManager.playerContainer.buildToggleActive = false;
+			GameManager.playerContainer.buildToggleSetting = null;
 
-			for (int i = 0; i < GameManager.player.buildToggle.transform.childCount; i++) {
-				GameManager.player.buildToggle.transform.GetChild (i).gameObject.SetActive (false);
+			for (int i = 0; i < GameManager.playerContainer.buildToggle.transform.childCount; i++) {
+				GameManager.playerContainer.buildToggle.transform.GetChild (i).gameObject.SetActive (false);
 			}
 		} else {
 			//If you have the required research for the buildName, set buildToggleSetting to it, otherwise disable it
-			for (int i = 0; i < GameManager.player.buildToggle.transform.childCount; i++) {
-				if (GameManager.player.buildToggle.transform.GetChild (i).gameObject.name == buildName) {
+			for (int i = 0; i < GameManager.playerContainer.buildToggle.transform.childCount; i++) {
+				if (GameManager.playerContainer.buildToggle.transform.GetChild (i).gameObject.name == buildName) {
 					bool hasResearch = true;
 					foreach (var r in ObjectFactory.createBuildingByName (buildName, owner).neededResearch) {
 						if (owner.hasResearch (r) == false) {
@@ -34,16 +34,16 @@ public class ToggleBuild : Ability {
 						}
 					}
 					if (hasResearch == true) {
-						GameManager.player.buildToggleActive = true;
-						GameManager.player.buildToggleSetting = buildName;
-						GameManager.player.buildToggle.transform.GetChild (i).gameObject.SetActive (true);
+						GameManager.playerContainer.buildToggleActive = true;
+						GameManager.playerContainer.buildToggleSetting = buildName;
+						GameManager.playerContainer.buildToggle.transform.GetChild (i).gameObject.SetActive (true);
 					} else {
-						GameManager.player.buildToggleActive = false;
-						GameManager.player.buildToggleSetting = null;
-						GameManager.player.buildToggle.transform.GetChild (i).gameObject.SetActive (false);
+						GameManager.playerContainer.buildToggleActive = false;
+						GameManager.playerContainer.buildToggleSetting = null;
+						GameManager.playerContainer.buildToggle.transform.GetChild (i).gameObject.SetActive (false);
 					}
 				} else {
-					GameManager.player.buildToggle.transform.GetChild (i).gameObject.SetActive (false);
+					GameManager.playerContainer.buildToggle.transform.GetChild (i).gameObject.SetActive (false);
 				}
 			}
 		}

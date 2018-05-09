@@ -168,6 +168,10 @@ public class UnitContainer : ObjectContainer {
 		gameObject.GetComponent<UnityEngine.AI.NavMeshAgent> ().SetDestination (targetLoc);
 	}
 
+	public void moveTowardCollider (Collider collider) {
+		moveToLocation (collider.ClosestPoint (unit.curLoc));
+	}
+
 	private void lookDirection (Vector3 _point1, Vector3 _point2) {
 		Vector3 direction = (_point2 - _point1).normalized;
 		direction.y = 0;

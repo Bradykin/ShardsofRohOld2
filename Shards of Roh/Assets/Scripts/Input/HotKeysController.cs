@@ -76,10 +76,10 @@ public class HotKeysController : MonoBehaviour {
 		CameraController.setMoveDirection (key);
 
 		if (Input.GetKeyDown (KeyCode.Space)) {
-			if (GameManager.player.player.curUnitTarget.Count > 0) {
-				CameraController.moveToSelected (GameManager.player.player.curUnitTarget [0].unit);
-			} else if (GameManager.player.player.curBuildingTarget.Count > 0) {
-				CameraController.moveToSelected (GameManager.player.player.curBuildingTarget [0].building);
+			if (GameManager.playerContainer.player.curUnitTarget.Count > 0) {
+				CameraController.moveToSelected (GameManager.playerContainer.player.curUnitTarget [0].unit);
+			} else if (GameManager.playerContainer.player.curBuildingTarget.Count > 0) {
+				CameraController.moveToSelected (GameManager.playerContainer.player.curBuildingTarget [0].building);
 			}
 		}
 	}
@@ -87,43 +87,43 @@ public class HotKeysController : MonoBehaviour {
 	//Activate abilities of whatever is selected
 	private void selectedAbilities () {
 		if (Input.GetKeyDown (KeyCode.Alpha1)) {
-			GameManager.player.player.useCurTargetAbility (0);
+			GameManager.playerContainer.player.useCurTargetAbility (0);
 		}
 
 		if (Input.GetKeyDown (KeyCode.Alpha2)) {
-			GameManager.player.player.useCurTargetAbility (1);
+			GameManager.playerContainer.player.useCurTargetAbility (1);
 		}
 
 		if (Input.GetKeyDown (KeyCode.Alpha3)) {
-			GameManager.player.player.useCurTargetAbility (2);
+			GameManager.playerContainer.player.useCurTargetAbility (2);
 		}
 
 		if (Input.GetKeyDown (KeyCode.Alpha4)) {
-			GameManager.player.player.useCurTargetAbility (3);
+			GameManager.playerContainer.player.useCurTargetAbility (3);
 		}
 
 		if (Input.GetKeyDown (KeyCode.Alpha5)) {
-			GameManager.player.player.useCurTargetAbility (4);
+			GameManager.playerContainer.player.useCurTargetAbility (4);
 		}
 
 		if (Input.GetKeyDown (KeyCode.Alpha6)) {
-			GameManager.player.player.useCurTargetAbility (5);
+			GameManager.playerContainer.player.useCurTargetAbility (5);
 		}
 
 		if (Input.GetKeyDown (KeyCode.Q)) {
-			GameManager.player.player.useCurTargetAbility (6);
+			GameManager.playerContainer.player.useCurTargetAbility (6);
 		}
 
 		if (Input.GetKeyDown (KeyCode.E)) {
-			GameManager.player.player.useCurTargetAbility (7);
+			GameManager.playerContainer.player.useCurTargetAbility (7);
 		}
 
 		if (Input.GetKeyDown (KeyCode.R)) {
-			GameManager.player.player.useCurTargetAbility (8);
+			GameManager.playerContainer.player.useCurTargetAbility (8);
 		}
 
 		if (Input.GetKeyDown (KeyCode.T)) {
-			GameManager.player.player.useCurTargetAbility (9);
+			GameManager.playerContainer.player.useCurTargetAbility (9);
 		}
 	}
 

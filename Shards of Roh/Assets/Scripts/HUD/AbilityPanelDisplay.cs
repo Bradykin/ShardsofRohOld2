@@ -47,7 +47,7 @@ public class AbilityPanelDisplay : MonoBehaviour {
 	}
 
 	private void updateAbilityPanelDisplay () {
-		Player player = GameManager.player.player;
+		Player player = GameManager.playerContainer.player;
 		List<Ability> abilities = new List<Ability> ();
 		if (player.curUnitTarget.Count > 0) {
 			abilities = player.curUnitTarget [0].unit.abilities;
