@@ -4,12 +4,8 @@ using UnityEngine;
 
 public abstract class Behaviours {
 
-	protected string name;
+	public string name { get; protected set; }
+	public bool active { get; set; }
 
 	public abstract void enact(UnitContainer unitInfo);
-
-	public string getName()
-	{
-		return name;
-	}
 }

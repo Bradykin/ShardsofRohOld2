@@ -4,22 +4,14 @@ using UnityEngine;
 
 public class UnitQueue {
 
-	private Unit unit;
-	private int size;
-	private int maxSize;
+	public Unit unit { get; private set; }
+	public int size { get; set; }
+	private int maxSize { get; set; }
 
 	public UnitQueue (Unit _unit, int _size) {
 		unit = _unit;
 		size = _size;
 		maxSize = 5;
-	}
-
-	public Unit getUnit () {
-		return unit;
-	}
-
-	public int getSize () {
-		return size;
 	}
 
 	public bool getFull () {
@@ -28,13 +20,5 @@ public class UnitQueue {
 		} else {
 			return false;
 		}
-	}
-
-	public void addSize (int _add) {
-		size += _add;
-	}
-
-	public void remSize (int _rem) {
-		size -= _rem;
 	}
 }

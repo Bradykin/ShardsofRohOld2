@@ -17,4 +17,5 @@ public class Notes {
 	//Idea 1: Contextual, based on the cost of ability, immediacy, and whether you would use it multiple times in same spot
 
 //Clicking command group when already selected moves camera to it
+	//Catapult continued firing after death
 }

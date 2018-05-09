@@ -5,6 +5,7 @@ using UnityEngine;
 public class CityHall : Building {
 
 	public CityHall (Player _owner) {
+		buildingSetup ();
 		name = "CityHall";
 		race = "Humans";
 		owner = _owner;

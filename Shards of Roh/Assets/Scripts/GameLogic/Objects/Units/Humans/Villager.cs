@@ -5,7 +5,7 @@ using UnityEngine;
 public class Villager : Unit {
 
 	public Villager (Player _owner) {
-		setup ();
+		unitSetup ();
 		name = "Villager";
 		race = "Humans";
 		owner = _owner;
@@ -13,6 +13,7 @@ public class Villager : Unit {
 		attack = 10;
 		attackSpeed = 1.2f;
 		attackRange = 1.0f;
+		sightRadius = 40;
 		cost = new Resource (0, 0, 50);
 
 		isVillager = true;

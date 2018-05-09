@@ -47,12 +47,12 @@ public class AbilityPanelDisplay : MonoBehaviour {
 	}
 
 	private void updateAbilityPanelDisplay () {
-		Player player = GameManager.player.getPlayer ();
+		Player player = GameManager.player.player;
 		List<Ability> abilities = new List<Ability> ();
-		if (player.getCurUnitTarget (0) != null) {
-			abilities = player.getCurUnitTarget (0).getUnit ().abilities;
-		} else if (player.getCurBuildingTarget (0) != null) {
-			abilities = player.getCurBuildingTarget (0).getBuilding ().abilities;
+		if (player.curUnitTarget.Count > 0) {
+			abilities = player.curUnitTarget [0].unit.abilities;
+		} else if (player.curBuildingTarget.Count > 0) {
+			abilities = player.curBuildingTarget [0].building.abilities;
 		} 
 
 		for (int i = 0; i < panels.Count; i++) {

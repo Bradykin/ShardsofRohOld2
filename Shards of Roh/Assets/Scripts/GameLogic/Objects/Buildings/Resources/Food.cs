@@ -5,6 +5,7 @@ using UnityEngine;
 public class Food : Building {
 
 	public Food (Player _owner) {
+		buildingSetup ();
 		name = "Food";
 		race = "Nature";
 		owner = _owner;

@@ -17,10 +17,10 @@ public class AddToUnitQueue : Ability {
 
 	//If you have the required resources and required research for this unit, add it to the queue of the source building
 	public override void enact (Player owner, Unit targetUnit = null, Building targetBuilding = null, Vector3 targetPos = new Vector3 ()) {
-		Unit newUnit = ObjectFactory.createUnitByName (unitName, GameManager.addPlayerToGame (owner.getName ()));
-		if (source.getIsBuilt ()) {
-			if (owner.hasPopulationSpace (newUnit.getPopulationCost ())) {
-				if (owner.getResource ().hasEnough (newUnit.cost)) {
+		Unit newUnit = ObjectFactory.createUnitByName (unitName, GameManager.addPlayerToGame (owner.name));
+		if (source.isBuilt) {
+			if (owner.hasPopulationSpace (newUnit.populationCost)) {
+				if (owner.resource.hasEnough (newUnit.cost)) {
 					bool hasResearch = true;
 					foreach (var r in newUnit.neededResearch) {
 						if (owner.hasResearch (r) == false) {
@@ -28,7 +28,7 @@ public class AddToUnitQueue : Ability {
 						}
 					}
 					if (hasResearch == true) {
-						owner.getResource ().spend (newUnit.cost);
+						owner.resource.spend (newUnit.cost);
 						source.addToUnitQueue (newUnit);
 					}
 				}

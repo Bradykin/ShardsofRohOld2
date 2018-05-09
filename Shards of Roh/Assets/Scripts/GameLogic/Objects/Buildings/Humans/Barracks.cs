@@ -5,7 +5,7 @@ using UnityEngine;
 public class Barracks : Building {
 
 	public Barracks (Player _owner) {
-		setup ();
+		buildingSetup ();
 		name = "Barracks";
 		race = "Humans";
 		owner = _owner;

@@ -5,6 +5,7 @@ using UnityEngine;
 public class Blacksmith : Building {
 
 	public Blacksmith (Player _owner) {
+		buildingSetup ();
 		name = "Blacksmith";
 		race = "Humans";
 		owner = _owner;

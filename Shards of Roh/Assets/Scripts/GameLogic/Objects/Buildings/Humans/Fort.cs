@@ -5,6 +5,7 @@ using UnityEngine;
 public class Fort : Building {
 
 	public Fort (Player _owner) {
+		buildingSetup ();
 		name = "Fort";
 		race = "Humans";
 		owner = _owner;

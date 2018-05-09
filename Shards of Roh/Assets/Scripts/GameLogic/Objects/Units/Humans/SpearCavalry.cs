@@ -5,6 +5,7 @@ using UnityEngine;
 public class SpearCavalry : Unit {
 
 	public SpearCavalry (Player _owner) {
+		unitSetup ();
 		name = "SpearCavalry";
 		race = "Humans";
 		owner = _owner;
@@ -12,6 +13,7 @@ public class SpearCavalry : Unit {
 		attack = 10;
 		attackSpeed = 1;
 		attackRange = 2;
+		sightRadius = 40;
 		cost = new Resource (0, 0, 50);
 	}
 }

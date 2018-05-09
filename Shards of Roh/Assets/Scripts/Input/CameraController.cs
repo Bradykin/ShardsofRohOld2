@@ -30,7 +30,7 @@ public class CameraController : MonoBehaviour {
 	// Update is called once per frame
 	void Update () {
 		moveCamera ();
-		rotateCamera ();
+		//rotateCamera ();
 	}
 
 	//Calculate new camera location using hotkey, mouse location, and mouse wheel zoom
@@ -128,7 +128,7 @@ public class CameraController : MonoBehaviour {
 		Camera.main.transform.position = destination;
 	}
 
-	//Rotate camera using control + mouose movement
+	//Rotate camera using control + mouse movement
 	private void rotateCamera () {
 		if (MouseController.getRotateCamera ()) {
 			Vector3 origin = Camera.main.transform.eulerAngles;
@@ -160,5 +160,15 @@ public class CameraController : MonoBehaviour {
 	//For hotKeyController to set moveDirection
 	public static void setMoveDirection (CameraDirection _moveDirection) {
 		moveDirection = _moveDirection;
+	}
+
+	public static void moveToSelected (Object _selected) {
+		Vector3 destination = new Vector3 (_selected.curLoc.x, Camera.main.transform.position.y, _selected.curLoc.z - (0.7f * Camera.main.transform.position.y));
+		Camera.main.transform.position = destination;
+	}
+
+	public static void moveToMinimapLocation (Vector2 _location) {
+		Vector3 destination = new Vector3 (_location.x, Camera.main.transform.position.y - Terrain.activeTerrain.SampleHeight (Camera.main.transform.position) + Terrain.activeTerrain.SampleHeight (new Vector3 (_location.x, Camera.main.transform.position.y, _location.y - (0.7f * Camera.main.transform.position.y))), _location.y - (0.7f * Camera.main.transform.position.y));
+		Camera.main.transform.position = destination;
 	}
 }

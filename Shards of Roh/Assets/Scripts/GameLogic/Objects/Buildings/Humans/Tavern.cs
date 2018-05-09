@@ -5,6 +5,7 @@ using UnityEngine;
 public class Tavern : Building {
 
 	public Tavern (Player _owner) {
+		buildingSetup ();
 		name = "Tavern";
 		race = "Humans";
 		owner = _owner;

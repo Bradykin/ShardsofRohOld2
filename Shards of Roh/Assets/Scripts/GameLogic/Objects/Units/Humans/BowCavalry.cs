@@ -5,6 +5,7 @@ using UnityEngine;
 public class BowCavalry : Unit {
 
 	public BowCavalry (Player _owner) {
+		unitSetup ();
 		name = "BowCavalry";
 		race = "Humans";
 		owner = _owner;
@@ -12,6 +13,7 @@ public class BowCavalry : Unit {
 		attack = 10;
 		attackSpeed = 1;
 		attackRange = 50;
+		sightRadius = 40;
 		cost = new Resource (0, 0, 50);
 	}
 }

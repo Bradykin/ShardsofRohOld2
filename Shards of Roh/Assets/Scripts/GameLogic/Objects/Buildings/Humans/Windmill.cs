@@ -5,6 +5,7 @@ using UnityEngine;
 public class Windmill : Building {
 
 	public Windmill (Player _owner) {
+		buildingSetup ();
 		name = "Windmill";
 		race = "Humans";
 		owner = _owner;

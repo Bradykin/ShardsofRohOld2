@@ -5,6 +5,7 @@ using UnityEngine;
 public class WatchTower : Building {
 
 	public WatchTower (Player _owner) {
+		buildingSetup ();
 		name = "WatchTower";
 		race = "Humans";
 		owner = _owner;

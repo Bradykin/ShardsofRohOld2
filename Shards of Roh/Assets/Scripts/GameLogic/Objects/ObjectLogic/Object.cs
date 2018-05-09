@@ -13,6 +13,7 @@ public abstract class Object {
 	public List<Research> neededResearch { get; protected set; }
 	public List<Ability> abilities { get; protected set; }
 	public Resource cost { get; protected set; }
+	public string prefabPath { get; protected set; }
 
 	//Variables that will default if not declared
 
@@ -23,7 +24,6 @@ public abstract class Object {
 	protected void setup () {
 		neededResearch = new List<Research> ();
 		abilities = new List<Ability> ();
+		isDead = false;
 	}
-
-	public abstract string getPrefabPath ();
 }

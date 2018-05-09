@@ -4,21 +4,32 @@ using UnityEngine;
 
 public class Player {
 
-	private string name;
-	private int population;
-	private int maxPopulation;
+	public string name { get; set; }
+	public int population { get; private set; }
+	public int maxPopulation { get; private set; }
 
-	private List<UnitContainer> units = new List<UnitContainer> ();
-	private List<BuildingContainer> buildings = new List<BuildingContainer> ();
-	private List<UnitContainer> curUnitTarget = new List<UnitContainer> ();
-	private List<BuildingContainer> curBuildingTarget = new List<BuildingContainer> ();
-	private List<Research> researchList = new List<Research> ();
-	private Resource resource = new Resource (0, 0, 0);
-
+	public List<UnitContainer> units { get; private set; }
+	public List<BuildingContainer> buildings { get; private set; }
+	public List<UnitContainer> curUnitTarget { get; private set; }
+	public List<BuildingContainer> curBuildingTarget { get; private set; }
+	public List<Research> researchList { get; set; }
+	public Resource resource { get; set; }
+		
 	public Player (string _name) {
 		name = _name;
+		units = new List<UnitContainer> ();
+		buildings = new List<BuildingContainer> ();
+		curUnitTarget = new List<UnitContainer> ();
+		curBuildingTarget = new List<BuildingContainer> ();
+		researchList = new List<Research> ();
+		resource = new Resource (0, 0, 0);
 		updatePopulation ();
-		updatemaxPopulation ();
+		updateMaxPopulation ();
+	}
+
+	public void update () {
+		updatePopulation ();
+		updateMaxPopulation ();
 	}
 
 	public void addCurUnitTarget (UnitContainer _curUnitTarget) {
@@ -44,20 +55,9 @@ public class Player {
 
 	public void setCurUnitTarget (List<UnitContainer> _curUnitTarget) {
 		toggleSelectionCircles (false);
+		curUnitTarget.Clear ();
 		curUnitTarget = _curUnitTarget;
 		toggleSelectionCircles (true);
-	}
-
-	public List<UnitContainer> getCurUnitTarget () {
-		return curUnitTarget;
-	}
-
-	public UnitContainer getCurUnitTarget (int _index) {
-		if (curUnitTarget.Count > _index) {
-			return curUnitTarget [_index];
-		} else {
-			return null;
-		}
 	}
 
 	public void addCurBuildingTarget (BuildingContainer _curBuildingTarget) {
@@ -87,27 +87,16 @@ public class Player {
 		toggleSelectionBoxes (true);
 	}
 
-	public List<BuildingContainer> getCurBuildingTarget () {
-		return curBuildingTarget;
-	}
-
-	public BuildingContainer getCurBuildingTarget (int _index) {
-		if (curBuildingTarget.Count > _index) {
-			return curBuildingTarget [_index];
-		} else {
-			return null;
-		}
-	}
-
 	public void processFormationMovement (Vector3 targetLoc) {
-		foreach (var r in GameManager.player.getPlayer ().getCurUnitTarget ()) {
-			r.getUnit ().dropAttackTarget ();
+		foreach (var r in GameManager.player.player.curUnitTarget) {
+			r.unit.dropAttackTarget ();
+			r.removeBehaviourByType ("Idle");
 		}
 
 		//Calculate angle vectors for formations
 		Vector3 unitVec = new Vector3 (0, 0, 0);
 		int unitCount = 0;
-		foreach (var r in GameManager.player.getPlayer ().getCurUnitTarget ()) {
+		foreach (var r in GameManager.player.player.curUnitTarget) {
 			//This works well, but I worry about performance issues. Think of a better way!
 			if (r.GetComponent<UnityEngine.AI.NavMeshAgent> ().enabled == true) {
 				unitCount++;
@@ -117,7 +106,7 @@ public class Player {
 				if (path.corners.Length >= 2) {
 					unitVec = unitVec + path.corners [path.corners.Length - 2];
 				} else {
-					unitVec = unitVec + r.getUnit ().curLoc;
+					unitVec = unitVec + r.unit.curLoc;
 				}
 			}
 		}
@@ -126,11 +115,11 @@ public class Player {
 		Vector3 perpVec = Vector3.Cross (unitVec, new Vector3 (0, 1, 0));
 
 		//Calculate formation positions and match each unit to a formation spot.
-		List <Formation> formationPositions = FormationController.findFormationPositions (false, GameManager.player.getPlayer ().getCurUnitTarget (), targetLoc, unitVec, perpVec);
-		GameManager.player.getPlayer ().sortCurUnitTarget (targetLoc, formationPositions);
+		List <Formation> formationPositions = FormationController.findFormationPositions (false, GameManager.player.player.curUnitTarget, targetLoc, unitVec, perpVec);
+		GameManager.player.player.sortCurUnitTarget (targetLoc, formationPositions);
 
 		//Assign each unit to move to it's formation location
-		foreach (var r in GameManager.player.getPlayer ().getCurUnitTarget ()) {
+		foreach (var r in GameManager.player.player.curUnitTarget) {
 			if (r.gameObject.GetComponent<UnityEngine.AI.NavMeshAgent> () != null) {
 				if (formationPositions.Count > 0) {
 					/*if (clicked.GetComponent<UnitContainer> () != null || clicked.GetComponent<BuildingContainer> () != null) {
@@ -158,14 +147,14 @@ public class Player {
 
 		for (int x = 0; x < _formationPositions.Count; x++) {
 			float distance = -1;
-			UnitContainer lowest = getCurUnitTarget (0);
+			UnitContainer lowest = curUnitTarget [0];
 
 			foreach (var r in curUnitTarget) {
 				if (_formationPositions.Count > 0) {
-					if (distance == -1 || Vector3.Distance (r.getUnit ().curLoc, _formationPositions [x].getPosition ()) < distance) {
-						if (r.getUnit ().name == _formationPositions [x].getUnitType () || _formationPositions [x].getUnitType () == "") {
+					if (distance == -1 || Vector3.Distance (r.unit.curLoc, _formationPositions [x].getPosition ()) < distance) {
+						if (r.unit.name == _formationPositions [x].getUnitType () || _formationPositions [x].getUnitType () == "") {
 							lowest = r;
-							distance = Vector3.Distance (r.getUnit ().curLoc, _formationPositions [x].getPosition ());
+							distance = Vector3.Distance (r.unit.curLoc, _formationPositions [x].getPosition ());
 						} else {
 							//GameManager.print ("Wrong unit");
 						}
@@ -240,67 +229,31 @@ public class Player {
 	}
 
 	public void toggleSelectionCircle (bool _toggle, UnitContainer _unit) {
-		if (_unit.gameObject.transform.GetChild (0).name == "TargetRing") {
-			_unit.gameObject.transform.GetChild (0).gameObject.SetActive (_toggle);
+		if (_unit.gameObject.transform.GetChild (1).name == "TargetRing") {
+			_unit.gameObject.transform.GetChild (1).gameObject.SetActive (_toggle);
 		}
 	}
 
 	public void toggleSelectionCircles (bool _toggle) {
 		foreach (var r in curUnitTarget) {
-			if (r.gameObject.transform.GetChild (0).name == "TargetRing") {
-				r.gameObject.transform.GetChild (0).gameObject.SetActive (_toggle);
+			if (r.gameObject.transform.GetChild (1).name == "TargetRing") {
+				r.gameObject.transform.GetChild (1).gameObject.SetActive (_toggle);
 			}
 		}
 	}
 
 	public void toggleSelectionBox (bool _toggle, BuildingContainer _Building) {
-		if (_Building.gameObject.transform.GetChild (0).name == "TargetRing") {
-			_Building.gameObject.transform.GetChild (0).gameObject.SetActive (_toggle);
+		if (_Building.gameObject.transform.GetChild (2).name == "TargetRing") {
+			_Building.gameObject.transform.GetChild (2).gameObject.SetActive (_toggle);
 		}
 	}
 
 	public void toggleSelectionBoxes (bool _toggle) {
 		foreach (var r in curBuildingTarget) {
-			if (r.gameObject.transform.GetChild (0).name == "TargetRing") {
-				r.gameObject.transform.GetChild (0).gameObject.SetActive (_toggle);
+			if (r.gameObject.transform.GetChild (2).name == "TargetRing") {
+				r.gameObject.transform.GetChild (2).gameObject.SetActive (_toggle);
 			}
 		}
-	}
-
-	public void addUnitToPlayer (UnitContainer _unitContainer) {
-		units.Add (_unitContainer);
-	}
-
-	public void addBuildingToPlayer (BuildingContainer _buildingContainer) {
-		buildings.Add (_buildingContainer);
-	}
-
-	public List<UnitContainer> getUnits () {
-		return units;
-	}
-
-	public List<BuildingContainer> getBuildings () {
-		return buildings;
-	}
-
-	public void setName (string _name) {
-		name = _name;
-	}
-
-	public string getName () {
-		return name;
-	}
-
-	public Resource getResource () {
-		return resource;
-	}
-
-	public void addResearch (Research _research) {
-		researchList.Add (_research);
-	}
-
-	public List<Research> getResearch () {
-		return researchList;
 	}
 
 	public bool hasResearch (Research _research) {
@@ -312,32 +265,24 @@ public class Player {
 		return false;
 	}
 
-	public int getpopulation () {
-		return population;
-	}
-
-	public int getmaxPopulation () {
-		return maxPopulation;
-	}
-
 	public void updatePopulation () {
 		population = 0;
-		foreach (var r in getUnits ()) {
-			population += r.getUnit ().getPopulationCost ();
+		foreach (var r in units) {
+			population += r.unit.populationCost;
 		}
 
-		foreach (var r in getBuildings ()) {
-			foreach (var u in r.getBuilding ().getUnitQueue ()) {
-				population += u.getSize ();
+		foreach (var r in buildings) {
+			foreach (var u in r.building.unitQueue) {
+				population += u.size;
 			}
 		}
 	}
 
-	public void updatemaxPopulation () {
+	public void updateMaxPopulation () {
 		maxPopulation = 0;
-		foreach (var r in getBuildings ()) {
-			if (r.getBuilding ().getIsBuilt ()) {
-				maxPopulation += r.getBuilding ().getPopulationValue ();
+		foreach (var r in buildings) {
+			if (r.building.isBuilt) {
+				maxPopulation += r.building.populationValue;
 			}
 		}
 	}
@@ -360,5 +305,19 @@ public class Player {
 		}
 
 		return newDist;
+	}
+
+	public void useCurTargetAbility (int _index) {
+		if (GameManager.player.player.curUnitTarget.Count > 0) {
+			//This shouldn't check first in list, eventually should use some other logic system
+			if (GameManager.player.player.curUnitTarget [0].unit.abilities [_index] != null) {
+				GameManager.player.player.curUnitTarget [0].unit.abilities [_index].enact (GameManager.player.player);
+			}
+		} else if (GameManager.player.player.curBuildingTarget.Count > 0) {
+			//This shouldn't check first in list, eventually should use some other logic system
+			if (GameManager.player.player.curBuildingTarget [0].building.abilities [_index] != null) {
+				GameManager.player.player.curBuildingTarget [0].building.abilities [_index].enact (GameManager.player.player);
+			}
+		}
 	}
 }

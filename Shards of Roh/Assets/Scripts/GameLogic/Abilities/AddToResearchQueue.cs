@@ -18,13 +18,13 @@ public class AddToResearchQueue : Ability {
 	//If you have the required resources and required research for this research, add it to the queue of the source building
 	public override void enact (Player owner, Unit targetUnit = null, Building targetBuilding = null, Vector3 targetPos = new Vector3 ()) {
 		Research newResearch = ResearchFactory.createResearchByName (researchName, owner);
-		if (source.getIsBuilt ()) {
+		if (source.isBuilt) {
 			if (owner.hasResearch (newResearch) == false) {
-				if (owner.getResource ().hasEnough (newResearch.getCost ())) {
+				if (owner.resource.hasEnough (newResearch.getCost ())) {
 					bool isQueued = false;
-					foreach (var r in owner.getBuildings ()) {
-						foreach (var u in r.getBuilding ().getResearchQueue ()) {
-							if (u.getResearch ().getName () == newResearch.getName ()) {
+					foreach (var r in owner.buildings) {
+						foreach (var u in r.building.researchQueue) {
+							if (u.research.getName () == newResearch.getName ()) {
 								isQueued = true;
 							}
 						}
@@ -37,8 +37,8 @@ public class AddToResearchQueue : Ability {
 							}
 						}
 						if (hasResearch == true) {
-							owner.getResource ().spend (newResearch.getCost ());
-							source.addToResearchQueue (newResearch);
+							owner.resource.spend (newResearch.getCost ());
+							source.researchQueue.Add (new ResearchQueue (newResearch));
 						}
 					}
 				}

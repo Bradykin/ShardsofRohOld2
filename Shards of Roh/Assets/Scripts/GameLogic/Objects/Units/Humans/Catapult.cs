@@ -5,6 +5,7 @@ using UnityEngine;
 public class Catapult : Unit {
 
 	public Catapult (Player _owner) {
+		unitSetup ();
 		name = "Catapult";
 		race = "Humans";
 		owner = _owner;
@@ -12,6 +13,7 @@ public class Catapult : Unit {
 		attack = 10;
 		attackSpeed = 0.6f;
 		attackRange = 50;
+		sightRadius = 40;
 		cost = new Resource (0, 0, 50);
 	}
 }

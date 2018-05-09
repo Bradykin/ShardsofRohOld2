@@ -24,11 +24,10 @@ public class ResourceDisplay : MonoBehaviour
 
 	private void updateResourceDisplay ()
 	{
-		Player player = GameManager.player.getPlayer ();
-		Resource playerResource = player.getResource ();
-		foodText.text = playerResource.getFood ().ToString ();
-		woodText.text = playerResource.getWood ().ToString ();
-		goldText.text = playerResource.getGold ().ToString ();
-		populationText.text = player.getpopulation () + "/" + player.getmaxPopulation ();
+		Player player = GameManager.player.player;
+		foodText.text = player.resource.getFood ().ToString ();
+		woodText.text = player.resource.getWood ().ToString ();
+		goldText.text = player.resource.getGold ().ToString ();
+		populationText.text = player.population + "/" + player.maxPopulation;
 	}
 }

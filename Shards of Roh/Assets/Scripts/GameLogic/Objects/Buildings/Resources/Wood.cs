@@ -5,6 +5,7 @@ using UnityEngine;
 public class Wood : Building {
 
 	public Wood (Player _owner) {
+		buildingSetup ();
 		name = "Wood";
 		race = "Nature";
 		owner = _owner;

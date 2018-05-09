@@ -5,6 +5,7 @@ using UnityEngine;
 public class Gold : Building {
 
 	public Gold (Player _owner) {
+		buildingSetup ();
 		name = "Gold";
 		race = "Nature";
 		owner = _owner;

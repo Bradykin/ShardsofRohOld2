@@ -5,26 +5,32 @@ using UnityEngine;
 public abstract class Unit : Object {
 
 	//Variables that must be declared in subclass
-	protected int attack;
-	//Number of attacks per second
-	protected float attackSpeed;
-
-	//Variables that will default if not declared
-	protected int populationCost = 1;
-	protected float attackRange = 2.0f;
-	protected float damageCheck = 0.5f;
-	protected bool isVillager = false;
+	public int attack { get; protected set; }
+	protected float attackSpeed { get; set; } 	//Number of attacks per second
+	public int populationCost { get; protected set; }
+	public float attackRange { get; protected set; }
+	protected float damageCheck { get; set; }
+	public bool isVillager { get; protected set; }
+	public int sightRadius { get; protected set; }
 
 	//Variables that adjust during gameplay
-	protected UnitContainer unitTarget;
-	protected BuildingContainer buildingTarget;
+	public UnitContainer unitTarget { get; protected set; }
+	public BuildingContainer buildingTarget { get; protected set; }
 	protected float attackTimer { get; set; }
-	protected bool hasHit { get; set; }
+	public bool hasHit { get; protected set; }
 	public float isCombatTimer { get; private set; }
 	public bool isMoving { get; set; }
 	public bool isAttacking { get; set; }
 	public bool gotHit { get; set; }
 	public UnitContainer gotHitBy  { get; set; }
+
+	public void unitSetup () {
+		setup ();
+		populationCost = 1;
+		attackRange = 2.0f;
+		damageCheck = 0.5f;
+		isVillager = false;
+	}
 
 	public void initPostCreate () {
 		curHealth = health;
@@ -33,6 +39,7 @@ public abstract class Unit : Object {
 		isAttacking = false;
 		gotHit = false;
 		gotHitBy = null;
+		prefabPath = "Prefabs/" + race + "/Units/" + name;
 	}
 
 	public void update () {
@@ -103,27 +110,7 @@ public abstract class Unit : Object {
 		gotHitBy = _attacker;
 		isCombatTimer = 5.0f;
 		curHealth -= _attack;
-		//GameManager.print ("gotHit: " + curHealth + "/" + health);
-	}
-
-	public override string getPrefabPath () {
-		return "Prefabs/" + race + "/Units/" + name;
-	}
-
-	public UnitContainer getUnitTarget () {
-		return unitTarget;
-	}
-
-	public BuildingContainer getBuildingTarget () {
-		return buildingTarget;
-	}
-
-	public int getAttack () {
-		return attack;
-	}
-
-	public float getAttackRange () {
-		return attackRange;
+		GameManager.print ("gotHit: " + curHealth + "/" + health);
 	}
 
 	public void setAttackTarget (UnitContainer _unitTarget) {
@@ -139,13 +126,5 @@ public abstract class Unit : Object {
 	public void dropAttackTarget () {
 		unitTarget = null;
 		buildingTarget = null;
-	}
-
-	public bool getVillager () {
-		return isVillager;
-	}
-
-	public int getPopulationCost () {
-		return populationCost;
 	}
 }

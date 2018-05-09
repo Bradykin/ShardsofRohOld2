@@ -5,12 +5,11 @@ using UnityEngine;
 public class PlayerContainer : MonoBehaviour {
 
 	public string playerName;
-	public GameObject buildToggle;
-	public bool buildToggleActive;
-	public string buildToggleSetting;
-	LayerMask buildToggleMask;
-
-	private Player player;
+	public Player player { get; set; }
+	public GameObject buildToggle { get; private set; }
+	public bool buildToggleActive { get; set; }
+	public string buildToggleSetting { get; set; }
+	private LayerMask buildToggleMask { get; set; }
 
 	// Use this for initialization
 	void Awake () {
@@ -31,33 +30,48 @@ public class PlayerContainer : MonoBehaviour {
 			}
 		}
 
-		player.updatePopulation ();
-		player.updatemaxPopulation ();
+		player.update ();
 	}
 
-	public void processRightClickUnitCommand (Vector3 targetLoc, GameObject clicked) {
+	public void processRightClickUnitCommand (Vector3 _targetLoc, GameObject _clicked) {
 		//Handle if clicked on unit
-		if (clicked.GetComponent<UnitContainer> () != null) {
-			targetLoc = clicked.GetComponent<UnitContainer> ().getUnit ().curLoc;
-			foreach (var r in GameManager.player.getPlayer ().getCurUnitTarget ()) {
-				if (GameManager.isEnemies (clicked.GetComponent<UnitContainer> ().getUnit ().owner, GameManager.player.getPlayer ())) {
-					r.getUnit ().setAttackTarget (clicked.GetComponent<UnitContainer> ());
+		if (_clicked.GetComponent<UnitContainer> () != null) {
+			UnitContainer targetUnit = _clicked.GetComponent<UnitContainer> ();
+			Vector3 targetLoc = _clicked.GetComponent<UnitContainer> ().unit.curLoc;
+			foreach (var r in GameManager.player.player.curUnitTarget) {
+				if (GameManager.isEnemies (clicked.GetComponent<UnitContainer> ().unit.owner, GameManager.player.player)) {
+					r.unit.setAttackTarget (clicked.GetComponent<UnitContainer> ());
 					r.checkAttackLogic ();
+					r.removeBehaviourByType ("Idle");
 				}
 			}
 		}
 		//Handle is clicked on building
 		else if (clicked.GetComponent<BuildingContainer> () != null) {
-			targetLoc = clicked.GetComponent<BuildingContainer> ().getBuilding ().curLoc;
-			foreach (var r in GameManager.player.getPlayer ().getCurUnitTarget ()) {
-				if (r.getUnit ().getVillager () == true) {
+			targetLoc = clicked.GetComponent<BuildingContainer> ().building.curLoc;
+			foreach (var r in GameManager.player.player.curUnitTarget) {
+				if (r.unit.isVillager == true) {
 					//This should have expanded logic
-					r.getUnit ().setAttackTarget (clicked.GetComponent<BuildingContainer> ());
+					if (clicked.GetComponent<BuildingContainer> ().building.isResource) {
+						r.unit.setAttackTarget (clicked.GetComponent<BuildingContainer> ());
+						r.removeBehaviourByType ("Idle");
+						r.unitBehaviours.Add (new IdleGather ());
+					} else if (clicked.GetComponent<BuildingContainer> ().building.owner.name == r.unit.owner.name) {
+						r.unit.setAttackTarget (clicked.GetComponent<BuildingContainer> ());
+						r.removeBehaviourByType ("Idle");
+						r.unitBehaviours.Add (new IdleBuild ());
+					} else if (GameManager.isEnemies (clicked.GetComponent<BuildingContainer> ().building.owner, GameManager.player.player) == true) {
+						r.unit.setAttackTarget (clicked.GetComponent<BuildingContainer> ());
+						r.removeBehaviourByType ("Idle");
+						r.unitBehaviours.Add (new IdleAttack ());
+					}
 				} else {
-					if (clicked.GetComponent<BuildingContainer> ().getBuilding ().getIsResource () == false) {
-						if (GameManager.isEnemies (clicked.GetComponent<BuildingContainer> ().getBuilding ().owner, GameManager.player.getPlayer ())) {
-							r.getUnit ().setAttackTarget (clicked.GetComponent<BuildingContainer> ());
+					if (clicked.GetComponent<BuildingContainer> ().building.isResource == false) {
+						if (GameManager.isEnemies (clicked.GetComponent<BuildingContainer> ().building.owner, GameManager.player.player)) {
+							r.unit.setAttackTarget (clicked.GetComponent<BuildingContainer> ());
 							r.checkAttackLogic ();
+							r.removeBehaviourByType ("Idle");
+							r.unitBehaviours.Add (new IdleAttack ());
 						}
 					}
 				}
@@ -65,11 +79,7 @@ public class PlayerContainer : MonoBehaviour {
 		}
 		//Handle if clicked on nothing
 		else {
-			getPlayer ().processFormationMovement (targetLoc);
+			player.processFormationMovement (targetLoc);
 		}
-	}
-
-	public Player getPlayer () {
-		return player;
 	}
 }
