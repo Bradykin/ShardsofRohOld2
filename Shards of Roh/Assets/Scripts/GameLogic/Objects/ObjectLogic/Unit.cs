@@ -6,18 +6,23 @@ public abstract class Unit : Object {
 
 	//Variables that must be declared in subclass
 	public int attack { get; protected set; }
-	protected float attackSpeed { get; set; } 	//Number of attacks per second
-	public int populationCost { get; protected set; }
 	public float attackRange { get; protected set; }
-	protected float damageCheck { get; set; }
-	public bool isVillager { get; protected set; }
+	protected float attackSpeed { get; set; } 			//Number of attacks per second
+	protected float damageCheck { get; set; }			//Percentage of the way through attack animation that the damage is dealt
+	public int moveSpeed { get; protected set; }
+	public int populationCost { get; protected set; }
 	public int sightRadius { get; protected set; }
+	public bool isVillager { get; protected set; }
+	public float queueTime { get; protected set; }
+	public int batchSize { get; protected set; }
+	public int avoidanceValue { get; set; }
 
 	//Variables that adjust during gameplay
 	public UnitContainer unitTarget { get; protected set; }
 	public BuildingContainer buildingTarget { get; protected set; }
 	protected float attackTimer { get; set; }
 	public bool hasHit { get; protected set; }
+	public bool isCombat { get; private set; }
 	public float isCombatTimer { get; private set; }
 	public bool isMoving { get; set; }
 	public bool isAttacking { get; set; }
@@ -26,20 +31,19 @@ public abstract class Unit : Object {
 
 	public void unitSetup () {
 		setup ();
-		populationCost = 1;
-		attackRange = 2.0f;
-		damageCheck = 0.5f;
-		isVillager = false;
 	}
 
 	public void initPostCreate () {
+		//Variables from inherited class
+		prefabPath = "Prefabs/" + race + "/Units/" + name;
+
+		//Variables from current class
 		curHealth = health;
 		isCombatTimer = 0;
 		isMoving = false;
 		isAttacking = false;
 		gotHit = false;
 		gotHitBy = null;
-		prefabPath = "Prefabs/" + race + "/Units/" + name;
 	}
 
 	public void update () {
@@ -67,7 +71,9 @@ public abstract class Unit : Object {
 
 	public bool attackUnit () {
 		bool shouldHit = false;
-		isCombatTimer = 5.0f;
+		if (unitTarget.unit.owner.name != "Nature") {
+			isCombatTimer = 5.0f;
+		}
 		attackTimer += Time.deltaTime;
 		if ((attackTimer * (1.0f / damageCheck)) >= (1.0f / attackSpeed) && hasHit == false) {
 			if (unitTarget != null) {
@@ -87,7 +93,9 @@ public abstract class Unit : Object {
 
 	public bool attackBuilding () {	
 		bool shouldHit = false;
-		isCombatTimer = 5.0f;
+		if (buildingTarget.building.owner.name != "Nature" || buildingTarget.building.owner.name == owner.name) {
+			isCombatTimer = 5.0f;
+		}
 		attackTimer += Time.deltaTime;
 		if ((attackTimer * (1.0f / damageCheck)) >= (1.0f / attackSpeed) && hasHit == false) {
 			if (buildingTarget != null) {
@@ -110,7 +118,6 @@ public abstract class Unit : Object {
 		gotHitBy = _attacker;
 		isCombatTimer = 5.0f;
 		curHealth -= _attack;
-		GameManager.print ("gotHit: " + curHealth + "/" + health);
 	}
 
 	public void setAttackTarget (UnitContainer _unitTarget) {

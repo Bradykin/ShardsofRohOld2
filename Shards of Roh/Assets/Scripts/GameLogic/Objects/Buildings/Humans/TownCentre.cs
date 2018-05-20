@@ -13,7 +13,7 @@ public class TownCentre : Building {
 		cost = new Resource (0, 0, 50);
 		populationValue = 10;
 
-		abilities.Add (new AddToUnitQueue ("Villager", this));
+		abilities.Add (new AddToUnitQueue ("Worker", this));
 		abilities.Add (new AddToResearchQueue ("Age2", this));
 	}
 }

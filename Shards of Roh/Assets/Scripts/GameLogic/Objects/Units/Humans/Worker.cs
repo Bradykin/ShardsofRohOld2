@@ -2,22 +2,31 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Villager : Unit {
+public class Worker : Unit {
 
-	public Villager (Player _owner) {
+	public Worker (Player _owner) {
 		unitSetup ();
-		name = "Villager";
+
+		//Variables from inherited class
+		name = "Worker";
 		race = "Humans";
 		owner = _owner;
 		health = 100;
-		attack = 10;
-		attackSpeed = 1.2f;
-		attackRange = 1.0f;
-		sightRadius = 40;
 		cost = new Resource (0, 0, 50);
 
+		//Variables from current class
+		attack = 1	;
+		attackRange = 1.0f;
+		attackSpeed = 1.2f;
+		damageCheck = 0.5f;
+		moveSpeed = 6;
+		populationCost = 1;
+		sightRadius = 15;
 		isVillager = true;
+		queueTime = 5.0f;
+		batchSize = 1;
 
+		//Unit Abilities
 		abilities.Add (new ToggleBuild ("TownCentre"));
 		//abilities.Add (new ToggleBuild ("House"));
 		//abilities.Add (new ToggleBuild ("Wall"));
@@ -32,5 +41,7 @@ public class Villager : Unit {
 		abilities.Add (new ToggleBuild ("Fort"));
 		abilities.Add (new ToggleBuild ("Cathedral"));
 		abilities.Add (new ToggleBuild ("CityHall"));
+
+		//Unit Research Required
 	}
 }

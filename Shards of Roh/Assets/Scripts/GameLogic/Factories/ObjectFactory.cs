@@ -4,8 +4,8 @@ using UnityEngine;
 
 public class ObjectFactory : MonoBehaviour {
 
-	public static Villager createVillager (Player _owner) {
-		Villager unit = new Villager (_owner);
+	public static Worker createWorker (Player _owner) {
+		Worker unit = new Worker (_owner);
 		unit.initPostCreate ();
 		return unit;
 	}
@@ -180,8 +180,8 @@ public class ObjectFactory : MonoBehaviour {
 	}
 
 	public static Unit createUnitByName (string _name, Player _owner) {
-		if (_name == "Villager" || _name == "Villager(Clone)") {
-			return createVillager (_owner);
+		if (_name == "Worker" || _name == "Worker(Clone)") {
+			return createWorker (_owner);
 		} else if (_name == "Axeman" || _name == "Axeman(Clone)") {
 			return createAxeman (_owner);
 		} else if (_name == "Spearman" || _name == "Spearman(Clone)") {

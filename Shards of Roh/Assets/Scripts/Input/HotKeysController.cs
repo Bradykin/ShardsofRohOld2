@@ -146,7 +146,7 @@ public class HotKeysController : MonoBehaviour {
 			RaycastHit hit;
 			Ray ray = Camera.main.ScreenPointToRay (MouseController.getMousePosition());
 			if (Physics.Raycast (ray, out hit, 1000, GlobalVariables.defaultMask)) {
-				Unit newUnit = ObjectFactory.createUnitByName ("Villager", GameManager.addPlayerToGame("Player"));
+				Unit newUnit = ObjectFactory.createUnitByName ("Worker", GameManager.addPlayerToGame("Player"));
 				GameObject instance = Instantiate (Resources.Load (newUnit.prefabPath, typeof(GameObject)) as GameObject);
 
 				instance.GetComponent<UnitContainer> ().unit = newUnit;

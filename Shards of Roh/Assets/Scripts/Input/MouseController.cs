@@ -42,33 +42,12 @@ public class MouseController : MonoBehaviour {
 			RaycastHit hit;
 			Ray ray = Camera.main.ScreenPointToRay (getMousePosition ());
 			if (Physics.Raycast (ray, out hit, 1000, buildToggleMask)) {
-				Building newBuilding = ObjectFactory.createBuildingByName (GameManager.playerContainer.buildToggleSetting, GameManager.addPlayerToGame ("Player"), false);
-				if (GameManager.playerContainer.player.resource.hasEnough (newBuilding.cost)) {
-					GameManager.playerContainer.player.resource.spend (newBuilding.cost);
-					GameObject instance = Instantiate (Resources.Load (newBuilding.prefabPath, typeof(GameObject)) as GameObject);
-					instance.GetComponent<BuildingContainer> ().building = newBuilding;
-					if (instance.GetComponent<UnityEngine.AI.NavMeshObstacle> () != null) {
-						instance.GetComponent<UnityEngine.AI.NavMeshObstacle> ().transform.position = (new Vector3 (hit.point.x, Terrain.activeTerrain.SampleHeight (hit.point), hit.point.z));
-					}
-							
-					if (instance.transform.GetChild (0).gameObject.name == "Model" && instance.transform.GetChild (1).gameObject.name == "Foundation") {
-						instance.transform.GetChild (0).gameObject.SetActive (false);
-						instance.transform.GetChild (1).gameObject.SetActive (true);
-						instance.GetComponent<BoxCollider> ().center = instance.transform.GetChild (1).GetComponent <BoxCollider> ().center;
-						instance.GetComponent<BoxCollider> ().size = instance.transform.GetChild (1).GetComponent <BoxCollider> ().size;
-						instance.GetComponent<UnityEngine.AI.NavMeshObstacle> ().center = instance.transform.GetChild (1).GetComponent<UnityEngine.AI.NavMeshObstacle> ().center;
-						instance.GetComponent<UnityEngine.AI.NavMeshObstacle> ().size = instance.transform.GetChild (1).GetComponent<UnityEngine.AI.NavMeshObstacle> ().size;
-					} else {
-						print ("Model Child problem - MouseController");
-					}
-				
-					GameManager.playerContainer.buildToggleActive = false;
-					GameManager.playerContainer.buildToggleSetting = null;
-					for (int i = 0; i < GameManager.playerContainer.buildToggle.transform.childCount; i++) {
-						GameManager.playerContainer.buildToggle.transform.GetChild (i).gameObject.SetActive (false);
-					}
+				GameManager.getPlayer ().player.createBuildingFoundation (GameManager.playerContainer.buildToggleSetting, hit.point);
 
-					GameManager.addPlayerToGame ("Player").buildings.Add (instance.GetComponent<BuildingContainer> ());
+				GameManager.playerContainer.buildToggleActive = false;
+				GameManager.playerContainer.buildToggleSetting = null;
+				for (int i = 0; i < GameManager.playerContainer.buildToggle.transform.childCount; i++) {
+					GameManager.playerContainer.buildToggle.transform.GetChild (i).gameObject.SetActive (false);
 				}
 			}
 		} else {
@@ -131,26 +110,31 @@ public class MouseController : MonoBehaviour {
 
 	public static void handleRightClick () {
 		//Check if clicked on minimap or UI
-		if (EventSystem.current.IsPointerOverGameObject () == false) {
-			//Move currently selected units to clicked location
-			if (Input.GetMouseButtonDown (1)) {
-				//Check if rotating camera
-				if (!Input.GetKey (KeyCode.LeftControl)) {
-					//Process for selecting Units
-					if (GameManager.playerContainer.player.curUnitTarget.Count > 0) {
-						RaycastHit hit;
-						Ray ray = Camera.main.ScreenPointToRay (Input.mousePosition);
-						if (Physics.Raycast (ray, out hit, 1000, GlobalVariables.defaultMask)) {
-							Vector3 targetLoc = hit.point;
-							GameObject clicked = hit.collider.gameObject;
-
+		//Move currently selected units to clicked location
+		if (Input.GetMouseButtonDown (1)) {
+			//Check if rotating camera
+			if (!Input.GetKey (KeyCode.LeftControl)) {
+				//Process for selecting Units
+				if (GameManager.playerContainer.player.curUnitTarget.Count > 0) {
+					RaycastHit hit;
+					Ray ray = Camera.main.ScreenPointToRay (Input.mousePosition);
+					if (Physics.Raycast (ray, out hit, 1000, GlobalVariables.defaultMask)) {
+						Vector3 targetLoc = hit.point;
+						GameObject clicked = hit.collider.gameObject;
+						if (EventSystem.current.IsPointerOverGameObject () == false) {
 							GameManager.playerContainer.processRightClickUnitCommand (targetLoc, clicked);
+						} else if (clicked.layer == 11) {
+							RaycastHit hit2;
+							if (Physics.Raycast (ray, out hit2, 1000, GlobalVariables.healthbarMask)) {
+								Vector3 targetLoc2 = hit2.point;
+								GameManager.playerContainer.processRightClickUnitCommand (targetLoc2, Terrain.activeTerrain.gameObject);
+							}
 						}
-					} else if (GameManager.playerContainer.player.curBuildingTarget.Count > 0) {
-					
-					} else {
-					
 					}
+				} else if (GameManager.playerContainer.player.curBuildingTarget.Count > 0) {
+					
+				} else {
+					
 				}
 			}
 		}

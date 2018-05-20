@@ -14,6 +14,8 @@ public class Player {
 	public List<BuildingContainer> curBuildingTarget { get; private set; }
 	public List<Research> researchList { get; set; }
 	public Resource resource { get; set; }
+
+	public VisibleObjectsToPlayer visibleObjects { get; protected set; }
 		
 	public Player (string _name) {
 		name = _name;
@@ -23,11 +25,13 @@ public class Player {
 		curBuildingTarget = new List<BuildingContainer> ();
 		researchList = new List<Research> ();
 		resource = new Resource (0, 0, 0);
+		visibleObjects = new VisibleObjectsToPlayer (this);
 		updatePopulation ();
 		updateMaxPopulation ();
 	}
 
 	public void update () {
+		visibleObjects.updateVisible ();
 		updatePopulation ();
 		updateMaxPopulation ();
 	}
@@ -123,9 +127,6 @@ public class Player {
 			if (r.gameObject.GetComponent<UnityEngine.AI.NavMeshAgent> () != null) {
 				if (formationPositions.Count > 0) {
 					r.gameObject.GetComponent<UnityEngine.AI.NavMeshAgent> ().SetDestination (formationPositions [0].getPosition ());
-					/*UnityEngine.AI.NavMeshPath path = new UnityEngine.AI.NavMeshPath ();
-					UnityEngine.AI.NavMesh.CalculatePath (r.gameObject.GetComponent<UnityEngine.AI.NavMeshAgent> ().transform.position, formationPositions [0].getPosition (), UnityEngine.AI.NavMesh.AllAreas, path);
-					r.gameObject.GetComponent<UnityEngine.AI.NavMeshAgent> ().path = path;*/
 					formationPositions.RemoveAt (0);
 				} else {
 					GameManager.print ("Missing FormationPosition - MouseController");
@@ -145,12 +146,11 @@ public class Player {
 
 			foreach (var r in curUnitTarget) {
 				if (_formationPositions.Count > 0) {
-					if (distance == -1 || Vector3.Distance (r.unit.curLoc, _formationPositions [x].getPosition ()) < distance) {
+					float distanceToPosition = Vector3.Distance (r.unit.curLoc, _formationPositions [x].getPosition ());
+					if (distance == -1 || distanceToPosition < distance) {
 						if (r.unit.name == _formationPositions [x].getUnitType () || _formationPositions [x].getUnitType () == "") {
 							lowest = r;
-							distance = Vector3.Distance (r.unit.curLoc, _formationPositions [x].getPosition ());
-						} else {
-							//GameManager.print ("Wrong unit");
+							distance = distanceToPosition;
 						}
 					}
 				} else {
@@ -175,15 +175,10 @@ public class Player {
 						if ((Mathf.Max (curDistanceX, curDistanceY) - Mathf.Min (curDistanceX, curDistanceY)) > (Mathf.Max (newDistanceX, newDistanceY) - Mathf.Min (newDistanceX, newDistanceY))) {
 							if ((curDistanceX + curDistanceY) > (newDistanceX + newDistanceY)) {
 								findBetter = true;
-								//GameManager.print ((Mathf.Max (curDistanceX, curDistanceY) - Mathf.Min (curDistanceX, curDistanceY)) + " / " + (Mathf.Max (newDistanceX, newDistanceY) - Mathf.Min (newDistanceX, newDistanceY)));
 								UnitContainer temp = newList [x];
 								newList [x] = newList [y];
 								newList [y] = temp;
-							} else {
-								//GameManager.print ("Miss2: " + (curDistanceX + curDistanceY) + " / " + (newDistanceX + newDistanceY));
 							}
-						} else {
-							//GameManager.print ("Miss: " + (Mathf.Max (curDistanceX, curDistanceY) - Mathf.Min (curDistanceX, curDistanceY)) + " / " + (Mathf.Max (newDistanceX, newDistanceY) - Mathf.Min (newDistanceX, newDistanceY)));
 						}
 					}
 				}
@@ -293,5 +288,33 @@ public class Player {
 				GameManager.playerContainer.player.curBuildingTarget [0].building.abilities [_index].enact (GameManager.playerContainer.player);
 			}
 		}
+	}
+
+	public void createBuildingFoundation (string _buildingName, Vector3 _location) {
+		Building newBuilding = ObjectFactory.createBuildingByName (_buildingName, this, false);
+
+		if (resource.hasEnough (newBuilding.cost)) {
+			resource.spend (newBuilding.cost);
+			GameObject instance = GameManager.Instantiate (Resources.Load (newBuilding.prefabPath, typeof(GameObject)) as GameObject);
+			instance.GetComponent<BuildingContainer> ().building = newBuilding;
+			if (instance.GetComponent<UnityEngine.AI.NavMeshObstacle> () != null) {
+				instance.GetComponent<UnityEngine.AI.NavMeshObstacle> ().transform.position = (new Vector3 (_location.x, Terrain.activeTerrain.SampleHeight (_location), _location.z));
+			}
+
+			if (instance.transform.GetChild (0).gameObject.name == "Model" && instance.transform.GetChild (1).gameObject.name == "Foundation") {
+				instance.transform.GetChild (0).gameObject.SetActive (false);
+				instance.transform.GetChild (1).gameObject.SetActive (true);
+				instance.GetComponent<BoxCollider> ().center = instance.transform.GetChild (1).GetComponent <BoxCollider> ().center;
+				instance.GetComponent<BoxCollider> ().size = instance.transform.GetChild (1).GetComponent <BoxCollider> ().size;
+				instance.GetComponent<UnityEngine.AI.NavMeshObstacle> ().center = instance.transform.GetChild (1).GetComponent<UnityEngine.AI.NavMeshObstacle> ().center;
+				instance.GetComponent<UnityEngine.AI.NavMeshObstacle> ().size = instance.transform.GetChild (1).GetComponent<UnityEngine.AI.NavMeshObstacle> ().size;
+			} else {
+				GameManager.print ("Model Child problem - MouseController");
+			}
+
+			GameManager.addPlayerToGame (name).buildings.Add (instance.GetComponent<BuildingContainer> ());
+		}
+
+
 	}
 }

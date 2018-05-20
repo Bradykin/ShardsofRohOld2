@@ -11,7 +11,7 @@ public class UnitQueue {
 	public UnitQueue (Unit _unit, int _size) {
 		unit = _unit;
 		size = _size;
-		maxSize = 5;
+		maxSize = _unit.batchSize;
 	}
 
 	public bool getFull () {

@@ -14,6 +14,9 @@ public class GameManager : MonoBehaviour {
 		SelectionBox.initPostCreate ();
 		GlobalVariables.setup ();
 
+		//UnityEngine.AI.NavMesh.avoidancePredictionTime = 5.0f;
+		//UnityEngine.AI.NavMesh.pathfindingIterationsPerFrame = 200;
+
 		GameObject instance = Instantiate (Resources.Load ("Player", typeof (GameObject)) as GameObject);
 		playerContainer = instance.GetComponent<PlayerContainer> ();
 		playersInGame.Add (playerContainer.player);

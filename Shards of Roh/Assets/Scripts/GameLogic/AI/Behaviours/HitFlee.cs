@@ -6,13 +6,15 @@ public class HitFlee : Behaviours {
 
 	UnitContainer fleeing;
 
-	public HitFlee () {
+	public HitFlee (UnitContainer _unitInfo) {
 		name = "HitFlee";
 		fleeing = null;
+		active = true;
+		unitInfo = _unitInfo;
 	}
 	
-	public override void enact (UnitContainer unitInfo) {
-		if (unitInfo.unit.gotHit == true) {
+	public override void enact () {
+		if (unitInfo.unit.gotHit == true && unitInfo.unit.isMoving == false) {
 			fleeing = unitInfo.unit.gotHitBy;
 			Vector3 fleeTo = unitInfo.unit.curLoc + ((unitInfo.unit.curLoc - fleeing.unit.curLoc).normalized * 8);
 			unitInfo.moveToLocation (fleeTo);

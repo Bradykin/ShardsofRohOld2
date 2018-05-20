@@ -12,6 +12,7 @@ public class Resource {
 		food = _food;
 		wood = _wood;
 		gold = _gold;
+
 	}
 
 	//Add the value of another Resource to this Resource
@@ -27,15 +28,15 @@ public class Resource {
 		wood -= _cost.wood;
 		gold -= _cost.gold;
 
-		if (food <= 0) {
+		if (food < 0) {
 			food = 0;
 			GameManager.print ("Overspent food");
 		}
-		if (wood <= 0) {
+		if (wood < 0) {
 			wood = 0;
 			GameManager.print ("Overspent wood");
 		}
-		if (gold <= 0) {
+		if (gold < 0) {
 			gold = 0;
 			GameManager.print ("Overspent gold");
 		}
@@ -48,6 +49,10 @@ public class Resource {
 		} else {
 			return false;
 		}
+	}
+
+	public Vector3 getResources () {
+		return new Vector3 (food, wood, gold);
 	}
 
 	//Get food value

@@ -56,11 +56,11 @@ public abstract class Building : Object {
 	public void getHit (UnitContainer _attacker, int _attack) {
 		if (_attacker.unit.isVillager == true) {
 			if (isResource == true) {
-				if (name == "Food") {
+				if (resourceType == ResourceType.Food) {
 					_attacker.unit.owner.resource.add (new Resource (_attack, 0, 0));
-				} else if (name == "Wood") {
+				} else if (resourceType == ResourceType.Wood) {
 					_attacker.unit.owner.resource.add (new Resource (0, _attack, 0));
-				} else if (name == "Gold") {
+				} else if (resourceType == ResourceType.Gold) {
 					_attacker.unit.owner.resource.add (new Resource (0, 0, _attack));
 				} else {
 					GameManager.print ("Unidentified resource - Building");

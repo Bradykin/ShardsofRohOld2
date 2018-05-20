@@ -7,6 +7,7 @@ public abstract class Research {
 
 	protected string name;
 	protected Resource cost;
+	public float queueTime { get; protected set; }
 	protected List<Research> neededResearch = new List<Research> ();
 
 	public string getName () {

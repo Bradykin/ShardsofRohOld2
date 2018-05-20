@@ -79,26 +79,30 @@ public class BuildingContainer : ObjectContainer {
 	protected void checkQueues () {
 		//Update the progress of the building's unitQueue
 		if (building.unitQueue.Count > 0) {
-			unitQueueTimer -= Time.deltaTime;
+			unitQueueTimer += Time.deltaTime;
 		} else {
-			unitQueueTimer = 5.0f;
+			unitQueueTimer = 0.0f;
 		}
 
-		if (unitQueueTimer <= 0.0f && building.unitQueue.Count > 0) {
-			building.createUnit ();
-			unitQueueTimer = 5.0f;
+		if (building.unitQueue.Count > 0) {
+			if (unitQueueTimer >= building.unitQueue [0].unit.queueTime) {
+				building.createUnit ();
+				unitQueueTimer = 0.0f;
+			}
 		}
 
 		//Update the progress of the building's researchQueue
 		if (building.researchQueue.Count > 0) {
-			researchQueueTimer -= Time.deltaTime;
+			researchQueueTimer += Time.deltaTime;
 		} else {
-			researchQueueTimer = 5.0f;
+			researchQueueTimer = 0.0f;
 		}
 
-		if (researchQueueTimer <= 0.0f && building.researchQueue.Count > 0) {
-			building.createResearch ();
-			researchQueueTimer = 5.0f;
+		if (building.researchQueue.Count > 0) {
+			if (researchQueueTimer >= building.researchQueue [0].research.queueTime) {
+				building.createResearch ();
+				researchQueueTimer = 0.0f;
+			}
 		}
 	}
 

@@ -4,12 +4,13 @@ using UnityEngine;
 
 public class Retaliate : Behaviours {
 
-	public Retaliate () {
+	public Retaliate (UnitContainer _unitInfo) {
 		name = "Retaliate";
 		active = true;
+		unitInfo = _unitInfo;
 	}
 
-	public override void enact (UnitContainer unitInfo) {
+	public override void enact () {
 		if (unitInfo.unit.gotHit == true) {
 			if (unitInfo.unit.unitTarget == null && unitInfo.unit.buildingTarget == null && unitInfo.unit.isMoving == false && unitInfo.unit.isAttacking == false) {
 				if (unitInfo.unit.gotHitBy != null) {

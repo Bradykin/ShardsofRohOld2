@@ -34,6 +34,9 @@ public class PlayerContainer : MonoBehaviour {
 	}
 
 	public void processRightClickUnitCommand (Vector3 _targetLoc, GameObject _clicked) {
+		foreach (var r in player.curUnitTarget) {
+			r.navMeshToggle ("Agent");
+		}
 
 		//Handle if clicked on unit
 		if (_clicked.GetComponent<UnitContainer> () != null) {
@@ -44,6 +47,9 @@ public class PlayerContainer : MonoBehaviour {
 					r.unit.setAttackTarget (targetUnitContainer);
 					r.checkAttackLogic ();
 					r.removeBehaviourByType ("Idle");
+					if (r.unit.isVillager == true) {
+						r.unitBehaviours.Add (new IdleAttack (r));
+					}
 				}
 			} else {
 				foreach (var r in GameManager.playerContainer.player.curUnitTarget) {
@@ -60,7 +66,7 @@ public class PlayerContainer : MonoBehaviour {
 					if (r.unit.isVillager == true) {
 						r.unit.setAttackTarget (targetBuildingContainer);
 						r.removeBehaviourByType ("Idle");
-						r.unitBehaviours.Add (new IdleGather ());
+						r.unitBehaviours.Add (new IdleGather (r));
 					} else {
 						r.moveTowardCollider (targetBuildingContainer.GetComponent<BoxCollider> ());
 					}
@@ -70,14 +76,16 @@ public class PlayerContainer : MonoBehaviour {
 					r.unit.setAttackTarget (targetBuildingContainer);
 					r.checkAttackLogic ();
 					r.removeBehaviourByType ("Idle");
-					r.unitBehaviours.Add (new IdleAttack ());
+					if (r.unit.isVillager == true) {
+						r.unitBehaviours.Add (new IdleAttack (r));
+					}
 				}
 			} else {
 				foreach (var r in GameManager.playerContainer.player.curUnitTarget) {
-					if (r.unit.isVillager == true && targetBuildingContainer.building.owner == r.unit.owner && targetBuildingContainer.building.curHealth < targetBuildingContainer.building.health) {
+					if (r.unit.isVillager == true && targetBuildingContainer.building.owner == r.unit.owner && targetBuildingContainer.building.isBuilt == false) {
 						r.unit.setAttackTarget (targetBuildingContainer);
 						r.removeBehaviourByType ("Idle");
-						r.unitBehaviours.Add (new IdleBuild ());
+						r.unitBehaviours.Add (new IdleBuild (r));
 					} else {
 						r.moveTowardCollider (targetBuildingContainer.GetComponent<BoxCollider> ());
 					}

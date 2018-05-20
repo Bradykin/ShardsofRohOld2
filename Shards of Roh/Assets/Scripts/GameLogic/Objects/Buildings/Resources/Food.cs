@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Enum;
 
 public class Food : Building {
 
@@ -13,6 +14,6 @@ public class Food : Building {
 		cost = new Resource (10000, 10000, 10000);
 
 		isResource = true;
-		resourceType = Enum.ResourceType.Food;
+		resourceType = ResourceType.Food;
 	}
 }
