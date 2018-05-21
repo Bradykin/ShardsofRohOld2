@@ -148,33 +148,12 @@ public class HotKeysController : MonoBehaviour {
 			if (Physics.Raycast (ray, out hit, 1000, GlobalVariables.defaultMask)) {
 				Unit newUnit = ObjectFactory.createUnitByName ("Worker", GameManager.addPlayerToGame("Player"));
 				GameObject instance = Instantiate (Resources.Load (newUnit.prefabPath, typeof(GameObject)) as GameObject);
+				instance.transform.position = new Vector3 (hit.point.x, Terrain.activeTerrain.SampleHeight (hit.point), hit.point.z);
 
 				instance.GetComponent<UnitContainer> ().unit = newUnit;
-				if (instance.GetComponent<UnityEngine.AI.NavMeshAgent> () != null) {
-					instance.GetComponent<UnityEngine.AI.NavMeshAgent> ().Warp (new Vector3 (hit.point.x, Terrain.activeTerrain.SampleHeight(hit.point), hit.point.z));
-				}
 
 				GameManager.addPlayerToGame ("Player").units.Add (instance.GetComponent<UnitContainer> ());
-
-			} else {
-				print ("Click off map - HotKeysController");
-			}
-		}
-
-		if (Input.GetKeyDown (KeyCode.L)) {
-			RaycastHit hit;
-			Ray ray = Camera.main.ScreenPointToRay (MouseController.getMousePosition());
-			if (Physics.Raycast (ray, out hit, 1000, GlobalVariables.defaultMask)) {
-				Unit newUnit = ObjectFactory.createUnitByName ("Spearman", GameManager.addPlayerToGame("Player"));
-				GameObject instance = Instantiate (Resources.Load (newUnit.prefabPath, typeof(GameObject)) as GameObject);
-
-				instance.GetComponent<UnitContainer> ().unit = newUnit;
-				if (instance.GetComponent<UnityEngine.AI.NavMeshAgent> () != null) {
-					instance.GetComponent<UnityEngine.AI.NavMeshAgent> ().Warp (new Vector3 (hit.point.x, Terrain.activeTerrain.SampleHeight(hit.point), hit.point.z));
-				}
-
-				GameManager.addPlayerToGame ("Player").units.Add (instance.GetComponent<UnitContainer> ());
-
+					
 			} else {
 				print ("Click off map - HotKeysController");
 			}
@@ -232,6 +211,17 @@ public class HotKeysController : MonoBehaviour {
 			} else {
 				print ("Click off map - HotKeysController");
 			}
+		}
+
+		if (Input.GetKeyDown (KeyCode.N)) {
+			StartCoroutine ("Test");
+		}
+	}
+
+	IEnumerator Test () {
+		for (int i = 0; i < 20000; i++) {
+			GameManager.print ("Number: " + i);
+			yield return null;
 		}
 	}
 }

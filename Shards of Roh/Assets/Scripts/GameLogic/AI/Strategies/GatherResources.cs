@@ -144,6 +144,7 @@ public class GatherResources : Strategies {
 				unitsToAdd [index].unit.setAttackTarget (unitsToAdd [index].unit.visibleObjects.closestResourceFood);
 				unitsToAdd [index].unitBehaviours.Add (new IdleGather (unitsToAdd [index], ResourceType.Food));
 				currentAllocation.x = currentAllocation.x + 1;
+				GameManager.print ("1");
 				whichUnitsAreSet [index] = true;
 			} else if (resourceToGather == ResourceType.Wood) {
 				unitsToAdd [index].removeBehaviourByType ("Idle");
@@ -151,12 +152,14 @@ public class GatherResources : Strategies {
 				unitsToAdd [index].unitBehaviours.Add (new IdleGather (unitsToAdd [index], ResourceType.Wood));
 				currentAllocation.y = currentAllocation.y + 1;
 				whichUnitsAreSet [index] = true;
+				GameManager.print ("2");
 			} else if (resourceToGather == ResourceType.Gold) {
 				unitsToAdd [index].removeBehaviourByType ("Idle");
 				unitsToAdd [index].unit.setAttackTarget (unitsToAdd [index].unit.visibleObjects.closestResourceGold);
 				unitsToAdd [index].unitBehaviours.Add (new IdleGather (unitsToAdd [index], ResourceType.Gold));
 				currentAllocation.z = currentAllocation.z + 1;
 				whichUnitsAreSet [index] = true;
+				GameManager.print ("3");
 			}
 		}
 	}

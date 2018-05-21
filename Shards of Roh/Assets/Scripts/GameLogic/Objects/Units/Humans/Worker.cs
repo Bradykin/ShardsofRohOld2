@@ -15,7 +15,7 @@ public class Worker : Unit {
 		cost = new Resource (0, 0, 50);
 
 		//Variables from current class
-		attack = 1	;
+		attack = 10;
 		attackRange = 1.0f;
 		attackSpeed = 1.2f;
 		damageCheck = 0.5f;

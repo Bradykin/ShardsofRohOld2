@@ -92,10 +92,9 @@ public abstract class Building : Object {
 				for (int i = 0; i < unitQueue [0].size; i++) {
 					Unit newUnit = ObjectFactory.createUnitByName (unitQueue [0].unit.name, owner);
 					GameObject instance = GameManager.Instantiate (Resources.Load (newUnit.prefabPath, typeof(GameObject)) as GameObject);
+					instance.transform.position = new Vector3 (hit.point.x, Terrain.activeTerrain.SampleHeight (hit.point), hit.point.z);
+
 					instance.GetComponent<UnitContainer> ().unit = newUnit;
-					if (instance.GetComponent<UnityEngine.AI.NavMeshAgent> () != null) {
-						instance.GetComponent<UnityEngine.AI.NavMeshAgent> ().Warp (hit.point);
-					}
 
 					GameManager.addPlayerToGame (owner.name).units.Add (instance.GetComponent<UnitContainer> ());
 				}

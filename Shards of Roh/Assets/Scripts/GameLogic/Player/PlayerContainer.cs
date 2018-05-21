@@ -33,9 +33,32 @@ public class PlayerContainer : MonoBehaviour {
 		player.update ();
 	}
 
+	public static IEnumerator WaitFrames (int _frames) {
+		while (_frames > 0) {
+			_frames--;
+			yield return null;
+		}
+
+
+	}
+
 	public void processRightClickUnitCommand (Vector3 _targetLoc, GameObject _clicked) {
+		StartCoroutine (processRightClickUnitEnumerator (_targetLoc, _clicked));
+	}
+
+	IEnumerator processRightClickUnitEnumerator (Vector3 _targetLoc, GameObject _clicked) {
 		foreach (var r in player.curUnitTarget) {
-			r.navMeshToggle ("Agent");
+			if (r.obstacle.enabled == true) {
+				r.obstacle.enabled = false;
+			}
+		}
+
+		yield return null;
+
+		foreach (var r in player.curUnitTarget) {
+			if (r.agent.enabled == false) {
+				r.agent.enabled = true;
+			}
 		}
 
 		//Handle if clicked on unit
@@ -96,5 +119,7 @@ public class PlayerContainer : MonoBehaviour {
 		else {
 			player.processFormationMovement (_targetLoc);
 		}
+
+		yield return null;
 	}
 }

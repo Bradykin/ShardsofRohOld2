@@ -102,11 +102,11 @@ public class Player {
 		int unitCount = 0;
 		foreach (var r in GameManager.playerContainer.player.curUnitTarget) {
 			//This works well, but I worry about performance issues. Think of a better way!
-			if (r.GetComponent<UnityEngine.AI.NavMeshAgent> ().enabled == true) {
+			if (r.agent.enabled == true) {
 				unitCount++;
 				UnityEngine.AI.NavMeshPath path = new UnityEngine.AI.NavMeshPath ();
-				UnityEngine.AI.NavMesh.CalculatePath (r.gameObject.GetComponent<UnityEngine.AI.NavMeshAgent> ().transform.position, targetLoc, UnityEngine.AI.NavMesh.AllAreas, path);
-				r.gameObject.GetComponent<UnityEngine.AI.NavMeshAgent> ().path = path;
+				UnityEngine.AI.NavMesh.CalculatePath (r.agent.transform.position, targetLoc, UnityEngine.AI.NavMesh.AllAreas, path);
+				r.agent.path = path;
 				if (path.corners.Length >= 2) {
 					unitVec = unitVec + path.corners [path.corners.Length - 2];
 				} else {
@@ -124,9 +124,10 @@ public class Player {
 
 		//Assign each unit to move to it's formation location
 		foreach (var r in GameManager.playerContainer.player.curUnitTarget) {
-			if (r.gameObject.GetComponent<UnityEngine.AI.NavMeshAgent> () != null) {
+			if (r.agent != null) {
 				if (formationPositions.Count > 0) {
-					r.gameObject.GetComponent<UnityEngine.AI.NavMeshAgent> ().SetDestination (formationPositions [0].getPosition ());
+					r.navMeshToggle ("Agent");
+					r.moveToLocation (formationPositions [0].getPosition ());
 					formationPositions.RemoveAt (0);
 				} else {
 					GameManager.print ("Missing FormationPosition - MouseController");
@@ -265,7 +266,7 @@ public class Player {
 	}
 
 	public float getPathLength (UnitContainer _unit, Vector3 _newPathEnd) {
-		UnityEngine.AI.NavMeshPath path = _unit.GetComponent<UnityEngine.AI.NavMeshAgent> ().path;
+		UnityEngine.AI.NavMeshPath path = _unit.agent.path;
 		path.corners [path.corners.Length - 1] = _newPathEnd;
 		float newDist = 0;
 		//This is a potential inefficiency
