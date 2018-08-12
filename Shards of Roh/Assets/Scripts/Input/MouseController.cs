@@ -122,17 +122,22 @@ public class MouseController : MonoBehaviour {
 						Vector3 targetLoc = hit.point;
 						GameObject clicked = hit.collider.gameObject;
 						if (EventSystem.current.IsPointerOverGameObject () == false) {
-							GameManager.playerContainer.processRightClickUnitCommand (targetLoc, clicked);
+							GameManager.playerContainer.processRightClickUnitCommand (targetLoc, clicked, Input.GetKey (KeyCode.LeftShift));
 						} else if (clicked.layer == 11) {
 							RaycastHit hit2;
 							if (Physics.Raycast (ray, out hit2, 1000, GlobalVariables.healthbarMask)) {
 								Vector3 targetLoc2 = hit2.point;
-								GameManager.playerContainer.processRightClickUnitCommand (targetLoc2, Terrain.activeTerrain.gameObject);
+								GameManager.playerContainer.processRightClickUnitCommand (targetLoc2, Terrain.activeTerrain.gameObject, Input.GetKey (KeyCode.LeftShift));
 							}
 						}
 					}
 				} else if (GameManager.playerContainer.player.curBuildingTarget.Count > 0) {
-					
+					RaycastHit hit;
+					Ray ray = Camera.main.ScreenPointToRay (Input.mousePosition);
+					if (Physics.Raycast (ray, out hit, 1000, GlobalVariables.defaultMask)) {
+						GameObject clicked = hit.collider.gameObject;
+						GameManager.playerContainer.processRightClickBuildingCommand (hit.point, clicked);
+					}
 				} else {
 					
 				}

@@ -10,6 +10,8 @@ public class BuildingContainer : ObjectContainer {
 
 	// Use this for initialization
 	void Start () {
+		setup ();
+
 		unitQueueTimer = 5.0f;
 		researchQueueTimer = 5.0f;
 
@@ -60,10 +62,6 @@ public class BuildingContainer : ObjectContainer {
 			if (gameObject.transform.GetChild (0).gameObject.name == "Model" && gameObject.transform.GetChild (1).gameObject.name == "Foundation") {
 				gameObject.transform.GetChild (0).gameObject.SetActive (true);
 				gameObject.transform.GetChild (1).gameObject.SetActive (false);
-				gameObject.GetComponent<BoxCollider> ().center = gameObject.transform.GetChild (0).GetComponent <BoxCollider> ().center;
-				gameObject.GetComponent<BoxCollider> ().size = gameObject.transform.GetChild (0).GetComponent <BoxCollider> ().size;
-				gameObject.GetComponent<UnityEngine.AI.NavMeshObstacle> ().center = gameObject.transform.GetChild (0).GetComponent<UnityEngine.AI.NavMeshObstacle> ().center;
-				gameObject.GetComponent<UnityEngine.AI.NavMeshObstacle> ().size = gameObject.transform.GetChild (0).GetComponent<UnityEngine.AI.NavMeshObstacle> ().size;
 			} else {
 				GameManager.print ("Model Child Problem - BuildingContainer-1");
 			}
@@ -86,7 +84,7 @@ public class BuildingContainer : ObjectContainer {
 
 		if (building.unitQueue.Count > 0) {
 			if (unitQueueTimer >= building.unitQueue [0].unit.queueTime) {
-				building.createUnit ();
+				createUnit ();
 				unitQueueTimer = 0.0f;
 			}
 		}
@@ -103,6 +101,82 @@ public class BuildingContainer : ObjectContainer {
 				building.createResearch ();
 				researchQueueTimer = 0.0f;
 			}
+		}
+	}
+
+	public void createUnit () {
+		//Set unit spawn location
+		RaycastHit hit;
+		Ray ray = Camera.main.ScreenPointToRay (Camera.main.WorldToScreenPoint (building.wayPoint));
+		if (Physics.Raycast (ray, out hit, 1000, GlobalVariables.defaultMask)) {
+			if (building.unitQueue.Count > 0) {
+				//Spawn units according to the size of the next unitQueue
+				for (int i = 0; i < building.unitQueue [0].size; i++) {
+					Unit newUnit = ObjectFactory.createUnitByName (building.unitQueue [0].unit.name, building.owner);
+					GameManager.print (newUnit.prefabPath);
+					GameObject instance = GameManager.Instantiate (Resources.Load (newUnit.prefabPath, typeof(GameObject)) as GameObject);
+
+					instance.transform.position = GetComponent<BoxCollider> ().ClosestPoint (building.wayPoint);
+					instance.GetComponent<UnitContainer> ().unit = newUnit;
+					StartCoroutine (sendUnitToDestination (instance.GetComponent<UnitContainer> (), building.wayPoint, hit.collider.gameObject));
+
+					GameManager.addPlayerToGame (building.owner.name).units.Add (instance.GetComponent<UnitContainer> ());
+				}
+				building.unitQueue.RemoveAt (0);
+			}
+		}
+	}
+
+	IEnumerator sendUnitToDestination (UnitContainer _unit, Vector3 _targetLoc, GameObject _target) {
+		yield return null;
+
+		//Handle if waypoint on unit
+		if (building.unitWayPointTarget != null) {
+			if (GameManager.isEnemies (building.unitWayPointTarget.unit.owner, GameManager.playerContainer.player)) {
+				_unit.unit.setAttackTarget (building.unitWayPointTarget);
+				_unit.checkAttackLogic ();
+				_unit.removeBehaviourByType ("Idle");
+				if (_unit.unit.isVillager == true) {
+					_unit.unitBehaviours.Add (new IdleAttack (_unit));
+				}
+			} else {
+				_unit.moveTowardCollider (building.unitWayPointTarget.GetComponent<CapsuleCollider> ());
+			}
+		}
+		//Handle if waypoint on building
+		else if (building.buildingWayPointTarget != null) {
+			//CURRENTLY THIS DOESNT WORK. UNIT SPAWNS INSIDE BUILDING WHEN WAYPOINTED TO BUILD SOMETHING. INVESTIGATIONS
+			//FIX IS TWOFOLD:
+			//A: WHY IS UNIT SPAWNING INSIDE BUILDING WHEN WAYPOINTED TO BUILD SOMETHING
+			//B: NEED A CATCH ALL FOR IF A UNIT IS SPAWNED INSIDE A BUILDING
+			if (building.buildingWayPointTarget.building.isResource) {
+				if (_unit.unit.isVillager == true) {
+					_unit.unit.setAttackTarget (building.buildingWayPointTarget);
+					_unit.removeBehaviourByType ("Idle");
+					_unit.unitBehaviours.Add (new IdleGather (_unit));
+				} else {
+					_unit.moveTowardCollider (building.buildingWayPointTarget.GetComponent<BoxCollider> ());
+				}
+			} else if (GameManager.isEnemies (building.buildingWayPointTarget.building.owner, GameManager.playerContainer.player)) {
+				_unit.unit.setAttackTarget (building.buildingWayPointTarget);
+				_unit.checkAttackLogic ();
+				_unit.removeBehaviourByType ("Idle");
+				if (_unit.unit.isVillager == true) {
+					_unit.unitBehaviours.Add (new IdleAttack (_unit));
+				}
+			} else {
+				if (_unit.unit.isVillager == true && building.buildingWayPointTarget.building.owner == _unit.unit.owner && building.buildingWayPointTarget.building.isBuilt == false) {
+					_unit.unit.setAttackTarget (building.buildingWayPointTarget);
+					_unit.removeBehaviourByType ("Idle");
+					_unit.unitBehaviours.Add (new IdleBuild (_unit));
+				} else {
+					_unit.moveTowardCollider (building.buildingWayPointTarget.GetComponent<BoxCollider> ());
+				}
+			}
+		}
+		//Handle if waypoint on nothing 
+		else {
+			_unit.moveToLocation (building.wayPoint);
 		}
 	}
 

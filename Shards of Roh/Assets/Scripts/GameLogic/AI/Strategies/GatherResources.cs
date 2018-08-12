@@ -79,31 +79,6 @@ public class GatherResources : Strategies {
 				}
 			}
 		}
-
-		/*for (int i = 0; i < unitsToAdd.Count; i++) {
-
-			if (unitsToAdd [i].unit.isVillager == true && whichUnitsAreSet [i] == false) {
-				if (currentAllocation.x < villagerAllocation.x) {
-					unitsToAdd [i].removeBehaviourByType ("Idle");
-					//unitsToAdd [i].unit.setAttackTarget (unitsToAdd [i].unit.visibleObjects.closestResourceFood);
-					unitsToAdd [i].unitBehaviours.Add (new IdleGather (unitsToAdd [i], ResourceType.Food));
-					currentAllocation.x = currentAllocation.x + 1;
-					whichUnitsAreSet [i] = true;
-				} else if (currentAllocation.y < villagerAllocation.y) {
-					unitsToAdd [i].removeBehaviourByType ("Idle");
-					//unitsToAdd [i].unit.setAttackTarget (unitsToAdd [i].unit.visibleObjects.closestResourceWood);
-					unitsToAdd [i].unitBehaviours.Add (new IdleGather (unitsToAdd [i], ResourceType.Wood));
-					currentAllocation.y = currentAllocation.y + 1;
-					whichUnitsAreSet [i] = true;
-				} else if (currentAllocation.z < villagerAllocation.z) {
-					unitsToAdd [i].removeBehaviourByType ("Idle");
-					//unitsToAdd [i].unit.setAttackTarget (unitsToAdd [i].unit.visibleObjects.closestResourceGold);
-					unitsToAdd [i].unitBehaviours.Add (new IdleGather (unitsToAdd [i], ResourceType.Gold));
-					currentAllocation.z = currentAllocation.z + 1;
-					whichUnitsAreSet [i] = true;
-				}
-			}
-		}*/
 			
 		while (currentAllocation.x + currentAllocation.y + currentAllocation.z < villagerAllocation.x + villagerAllocation.y + villagerAllocation.z) {
 			float distanceFromClosestToFarthestSqr = 0;
@@ -144,7 +119,6 @@ public class GatherResources : Strategies {
 				unitsToAdd [index].unit.setAttackTarget (unitsToAdd [index].unit.visibleObjects.closestResourceFood);
 				unitsToAdd [index].unitBehaviours.Add (new IdleGather (unitsToAdd [index], ResourceType.Food));
 				currentAllocation.x = currentAllocation.x + 1;
-				GameManager.print ("1");
 				whichUnitsAreSet [index] = true;
 			} else if (resourceToGather == ResourceType.Wood) {
 				unitsToAdd [index].removeBehaviourByType ("Idle");
@@ -152,14 +126,12 @@ public class GatherResources : Strategies {
 				unitsToAdd [index].unitBehaviours.Add (new IdleGather (unitsToAdd [index], ResourceType.Wood));
 				currentAllocation.y = currentAllocation.y + 1;
 				whichUnitsAreSet [index] = true;
-				GameManager.print ("2");
 			} else if (resourceToGather == ResourceType.Gold) {
 				unitsToAdd [index].removeBehaviourByType ("Idle");
 				unitsToAdd [index].unit.setAttackTarget (unitsToAdd [index].unit.visibleObjects.closestResourceGold);
 				unitsToAdd [index].unitBehaviours.Add (new IdleGather (unitsToAdd [index], ResourceType.Gold));
 				currentAllocation.z = currentAllocation.z + 1;
 				whichUnitsAreSet [index] = true;
-				GameManager.print ("3");
 			}
 		}
 	}

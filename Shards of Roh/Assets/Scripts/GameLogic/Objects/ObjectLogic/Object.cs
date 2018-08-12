@@ -21,13 +21,13 @@ public abstract class Object {
 	public float curHealth { get; protected set; }
 	public Vector3 curLoc { get; set; }
 	public bool isDead { get; protected set; }
-
 	public VisibleObjectsToObject visibleObjects { get; protected set; }
 
 	protected void setup () {
 		neededResearch = new List<Research> ();
 		abilities = new List<Ability> ();
 		healthbarDimensions = new Vector4 (1.0f, 1.0f, 2.0f, 0.2f);
+
 		isDead = false;
 		visibleObjects = new VisibleObjectsToObject ();
 	}

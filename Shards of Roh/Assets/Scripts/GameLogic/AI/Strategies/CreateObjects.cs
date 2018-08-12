@@ -14,8 +14,9 @@ public class CreateObjects : Strategies {
 		if (AI.objectCreationPriorities.Count > 0) {
 			if (AI.player.resource.hasEnough (AI.objectCreationPriorities [0].cost)) {
 				if (AI.objectCreationPriorities [0] is Building) {
-					AI.player.createBuildingFoundation (AI.objectCreationPriorities [0].name, chooseBuildingLocation ());
-					AI.objectCreationPriorities.RemoveAt (0);
+					if (AI.player.createBuildingFoundation (AI.objectCreationPriorities [0].name, chooseBuildingLocation ()) == true) {
+						AI.objectCreationPriorities.RemoveAt (0);
+					}
 				} else if (AI.objectCreationPriorities [0] is Unit) {
 
 				} else {

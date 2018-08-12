@@ -9,5 +9,4 @@ public abstract class ObjectContainer : MonoBehaviour {
 	protected void setup () {
 		
 	}
-
 }

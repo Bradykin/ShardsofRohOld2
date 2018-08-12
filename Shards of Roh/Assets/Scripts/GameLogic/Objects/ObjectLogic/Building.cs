@@ -16,6 +16,9 @@ public abstract class Building : Object {
 	public Vector3 navColliderSize { get; set; }
 	public List<UnitQueue> unitQueue { get; protected set; }
 	public List<ResearchQueue> researchQueue { get; protected set; }
+	public Vector3 wayPoint { get; set; }
+	public UnitContainer unitWayPointTarget { get; set; }
+	public BuildingContainer buildingWayPointTarget { get; set; }
 
 	//Variables that adjust during gameplay
 
@@ -29,6 +32,12 @@ public abstract class Building : Object {
 		navColliderSize = new Vector3 ();
 		unitQueue = new List<UnitQueue> ();
 		researchQueue = new List<ResearchQueue> ();
+
+		//Temporary
+		Vector3 targetLoc = curLoc;
+		targetLoc.x += navColliderSize.x;
+		targetLoc.z -= navColliderSize.z;
+		wayPoint = targetLoc;
 	}
 
 	public void initPostCreate (bool _isBuilt = true) {
@@ -76,30 +85,6 @@ public abstract class Building : Object {
 			}
 		} else {
 			curHealth -= _attack;
-		}
-	}
-
-	public void createUnit () {
-		//Set unit spawn location
-		Vector3 targetLoc = curLoc;
-		targetLoc.x += navColliderSize.x / 2;
-		targetLoc.z -= navColliderSize.z / 2;
-		RaycastHit hit;
-		Ray ray = Camera.main.ScreenPointToRay (Camera.main.WorldToScreenPoint (targetLoc));
-		if (Physics.Raycast (ray, out hit, 1000, GlobalVariables.defaultMask)) {
-			if (unitQueue.Count > 0) {
-				//Spawn units according to the size of the next unitQueue
-				for (int i = 0; i < unitQueue [0].size; i++) {
-					Unit newUnit = ObjectFactory.createUnitByName (unitQueue [0].unit.name, owner);
-					GameObject instance = GameManager.Instantiate (Resources.Load (newUnit.prefabPath, typeof(GameObject)) as GameObject);
-					instance.transform.position = new Vector3 (hit.point.x, Terrain.activeTerrain.SampleHeight (hit.point), hit.point.z);
-
-					instance.GetComponent<UnitContainer> ().unit = newUnit;
-
-					GameManager.addPlayerToGame (owner.name).units.Add (instance.GetComponent<UnitContainer> ());
-				}
-				unitQueue.RemoveAt (0);
-			}
 		}
 	}
 

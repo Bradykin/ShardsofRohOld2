@@ -33,7 +33,7 @@ public class MinimapLogic : MonoBehaviour, IPointerClickHandler {
 					Vector2 _location = new Vector2 ((actDist.x / bounds.x) * 250.0f, (actDist.y / bounds.y) * 250.0f);
 
 					Vector3 destination = new Vector3 (_location.x, Terrain.activeTerrain.SampleHeight (new Vector3 (_location.x, Camera.main.transform.position.y, _location.y)), _location.y);
-					GameManager.playerContainer.processRightClickUnitCommand (destination, Terrain.activeTerrain.gameObject);
+					GameManager.playerContainer.processRightClickUnitCommand (destination, Terrain.activeTerrain.gameObject, Input.GetKey (KeyCode.LeftShift));
 					}
 			} else if (GameManager.playerContainer.player.curBuildingTarget.Count > 0) {
 

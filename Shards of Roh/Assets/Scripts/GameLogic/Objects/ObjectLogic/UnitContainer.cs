@@ -99,8 +99,18 @@ public class UnitContainer : ObjectContainer {
 			unit.curLoc = gameObject.GetComponent<CapsuleCollider> ().transform.position;
 			if (gameObject.GetComponent<Animator> () != null) {
 				if (Vector3.Distance (unit.curLoc, agent.destination) <= 0.1 || agent.enabled == false) {
-					gameObject.GetComponent<Animator> ().SetBool ("isMoving", false);
-					unit.isMoving = false;
+					if (unit.moveDestinations.Count > 0) {
+						unit.moveDestinations.RemoveAt (0);
+						if (unit.moveDestinations.Count > 0) {
+							agent.SetDestination (unit.moveDestinations [0]);
+						} else {
+							gameObject.GetComponent<Animator> ().SetBool ("isMoving", false);
+							unit.isMoving = false;
+						}
+					} else {
+						gameObject.GetComponent<Animator> ().SetBool ("isMoving", false);
+						unit.isMoving = false;
+					}
 				} else {
 					gameObject.GetComponent<Animator> ().SetBool ("isMoving", true);
 					navMeshToggle ("Agent");
@@ -203,27 +213,45 @@ public class UnitContainer : ObjectContainer {
 		unit.gotHitBy = null;
 	}
 
-	public void moveTowardCollider (Collider collider) {
-		//moveToLocation (collider.ClosestPoint (unit.curLoc));
-		moveToLocation (collider.transform.position);
+	public void moveTowardCollider (Collider collider, bool _isWayPointing = false) {
+		//Using closestPoint has units actually go to the closest point on the collider,
+		//but provides much worse results for pathing around other units who are also going
+		//for that same point compared to just targeting the object. Think of a middle ground!
+
+		moveToLocation (collider.ClosestPoint (unit.curLoc), _isWayPointing);
+		//moveToLocation (collider.transform.position, _isWayPointing);
 	}
 
-	public void moveToLocation (Vector3 targetLoc) {
+	public void moveToLocation (Vector3 targetLoc, bool _isWayPointing = false) {
 		if (agent.enabled == true && obstacle.enabled == false) {
-			agent.SetDestination (targetLoc);
+			if (_isWayPointing == true) {
+				unit.moveDestinations.Add (targetLoc);
+				agent.SetDestination (unit.moveDestinations [0]);
+			} else {
+				unit.moveDestinations.Clear ();
+				unit.moveDestinations.Add (targetLoc);
+				agent.SetDestination (targetLoc);
+			}
 		} else {
-			StartCoroutine (moveAfterBeingObstacle (targetLoc));
+			StartCoroutine (moveAfterBeingObstacle (targetLoc, _isWayPointing));
 		}
 	}
 
-	IEnumerator moveAfterBeingObstacle (Vector3 _targetLoc) {
+	IEnumerator moveAfterBeingObstacle (Vector3 _targetLoc, bool _isWayPointing = false) {
 		obstacle.enabled = false;
 
 		yield return null; 
 
 		agent.enabled = true;
 
-		agent.SetDestination (_targetLoc);
+		if (_isWayPointing == true) {
+			unit.moveDestinations.Add (_targetLoc);
+			agent.SetDestination (unit.moveDestinations [0]);
+		} else {
+			unit.moveDestinations.Clear ();
+			unit.moveDestinations.Add (_targetLoc);
+			agent.SetDestination (_targetLoc);
+		}
 
 		yield return null;
 	}

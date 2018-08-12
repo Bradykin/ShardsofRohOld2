@@ -5,7 +5,6 @@ using UnityEngine;
 public class Worker : Unit {
 
 	public Worker (Player _owner) {
-		unitSetup ();
 
 		//Variables from inherited class
 		name = "Worker";
@@ -13,6 +12,8 @@ public class Worker : Unit {
 		owner = _owner;
 		health = 100;
 		cost = new Resource (0, 0, 50);
+
+		unitSetup ();	
 
 		//Variables from current class
 		attack = 10;

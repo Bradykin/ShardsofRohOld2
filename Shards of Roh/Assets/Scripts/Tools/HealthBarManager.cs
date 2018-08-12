@@ -12,9 +12,14 @@ public class HealthBarManager : MonoBehaviour {
 	private float startPosY;
 	private float startWidth;
 	private float startHeight;
+	private bool setupCheck { get; set; }
 
 	// Use this for initialization
 	void Start () {
+		setupCheck = false;
+	}
+
+	public void setup () {
 		mainCamera = GameObject.FindGameObjectWithTag ("MainCamera").GetComponent<Camera> ();
 		curHealth = gameObject.transform.GetChild (1).GetComponent<RectTransform> ();
 		health = gameObject.transform.GetChild (0).GetComponent<RectTransform> ();
@@ -31,6 +36,10 @@ public class HealthBarManager : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
+		if (setupCheck == false) {
+			setup ();
+		}
+
 		gameObject.transform.LookAt (gameObject.transform.position + mainCamera.transform.rotation * Vector3.forward, mainCamera.transform.rotation * Vector3.up);
 		curHealth.anchoredPosition = new Vector2 (startPosX * ((float) unit.curHealth / (float) unit.health), startPosY);
 		curHealth.sizeDelta = new Vector2 (startWidth * ((float)unit.curHealth / (float)unit.health), startHeight);

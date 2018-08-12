@@ -28,15 +28,19 @@ public abstract class Unit : Object {
 	public bool isAttacking { get; set; }
 	public bool gotHit { get; set; }
 	public UnitContainer gotHitBy  { get; set; }
+	public List<Vector3> moveDestinations { get; private set; } 
 
 	public void unitSetup () {
 		setup ();
-	}
 
-	public void initPostCreate () {
 		//Variables from inherited class
 		prefabPath = "Prefabs/" + race + "/Units/" + name;
 
+		//Variables from current class
+		moveDestinations = new List<Vector3> ();
+	}
+
+	public void initPostCreate () {
 		//Variables from current class
 		curHealth = health;
 		isCombatTimer = 0;
@@ -47,7 +51,6 @@ public abstract class Unit : Object {
 	}
 
 	public void update () {
-
 		if (isCombatTimer > 0) {
 			isCombatTimer -= Time.deltaTime;
 		}

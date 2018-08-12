@@ -42,11 +42,34 @@ public class PlayerContainer : MonoBehaviour {
 
 	}
 
-	public void processRightClickUnitCommand (Vector3 _targetLoc, GameObject _clicked) {
-		StartCoroutine (processRightClickUnitEnumerator (_targetLoc, _clicked));
+	public void processRightClickBuildingCommand (Vector3 _targetLoc, GameObject _clicked) {
+		foreach (var r in player.curBuildingTarget) {
+			//Handle if clicked on unit
+			if (_clicked.GetComponent<UnitContainer> () != null) {
+				r.building.wayPoint = _clicked.GetComponent<CapsuleCollider> ().ClosestPoint (r.building.curLoc);
+				r.building.unitWayPointTarget = _clicked.GetComponent<UnitContainer> ();
+				r.building.buildingWayPointTarget = null;
+			}
+			//Handle if clicked on building
+			else if (_clicked.GetComponent<BuildingContainer> () != null) {
+				r.building.wayPoint = _clicked.GetComponent<BoxCollider> ().ClosestPoint (r.building.curLoc);
+				r.building.unitWayPointTarget = null;
+				r.building.buildingWayPointTarget = _clicked.GetComponent<BuildingContainer> ();
+			}
+			//Handle if clicked on nothing
+			else {
+				r.building.wayPoint = _targetLoc;
+				r.building.unitWayPointTarget = null;
+				r.building.buildingWayPointTarget = null;
+			}
+		}
 	}
 
-	IEnumerator processRightClickUnitEnumerator (Vector3 _targetLoc, GameObject _clicked) {
+	public void processRightClickUnitCommand (Vector3 _targetLoc, GameObject _clicked, bool _isWayPointing) {
+		StartCoroutine (processRightClickUnitEnumerator (_targetLoc, _clicked, _isWayPointing));
+	}
+
+	IEnumerator processRightClickUnitEnumerator (Vector3 _targetLoc, GameObject _clicked, bool _isWayPointing) {
 		foreach (var r in player.curUnitTarget) {
 			if (r.obstacle.enabled == true) {
 				r.obstacle.enabled = false;
@@ -80,7 +103,7 @@ public class PlayerContainer : MonoBehaviour {
 				}
 			}
 		}
-		//Handle is clicked on building
+		//Handle if clicked on building
 		else if (_clicked.GetComponent<BuildingContainer> () != null) {
 			BuildingContainer targetBuildingContainer = _clicked.GetComponent<BuildingContainer> ();
 
@@ -117,7 +140,7 @@ public class PlayerContainer : MonoBehaviour {
 		}
 		//Handle if clicked on nothing
 		else {
-			player.processFormationMovement (_targetLoc);
+			player.processFormationMovement (_targetLoc, _isWayPointing);
 		}
 
 		yield return null;

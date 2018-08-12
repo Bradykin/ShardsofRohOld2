@@ -91,7 +91,7 @@ public class Player {
 		toggleSelectionBoxes (true);
 	}
 
-	public void processFormationMovement (Vector3 targetLoc) {
+	public void processFormationMovement (Vector3 targetLoc, bool _isWayPointing = false) {
 		foreach (var r in GameManager.playerContainer.player.curUnitTarget) {
 			r.unit.dropAttackTarget ();
 			r.removeBehaviourByType ("Idle");
@@ -127,7 +127,7 @@ public class Player {
 			if (r.agent != null) {
 				if (formationPositions.Count > 0) {
 					r.navMeshToggle ("Agent");
-					r.moveToLocation (formationPositions [0].getPosition ());
+					r.moveToLocation (formationPositions [0].getPosition (), _isWayPointing);
 					formationPositions.RemoveAt (0);
 				} else {
 					GameManager.print ("Missing FormationPosition - MouseController");
@@ -291,12 +291,12 @@ public class Player {
 		}
 	}
 
-	public void createBuildingFoundation (string _buildingName, Vector3 _location) {
+	public bool createBuildingFoundation (string _buildingName, Vector3 _location) {
 		Building newBuilding = ObjectFactory.createBuildingByName (_buildingName, this, false);
 
 		if (resource.hasEnough (newBuilding.cost)) {
-			resource.spend (newBuilding.cost);
 			GameObject instance = GameManager.Instantiate (Resources.Load (newBuilding.prefabPath, typeof(GameObject)) as GameObject);
+
 			instance.GetComponent<BuildingContainer> ().building = newBuilding;
 			if (instance.GetComponent<UnityEngine.AI.NavMeshObstacle> () != null) {
 				instance.GetComponent<UnityEngine.AI.NavMeshObstacle> ().transform.position = (new Vector3 (_location.x, Terrain.activeTerrain.SampleHeight (_location), _location.z));
@@ -305,17 +305,31 @@ public class Player {
 			if (instance.transform.GetChild (0).gameObject.name == "Model" && instance.transform.GetChild (1).gameObject.name == "Foundation") {
 				instance.transform.GetChild (0).gameObject.SetActive (false);
 				instance.transform.GetChild (1).gameObject.SetActive (true);
-				instance.GetComponent<BoxCollider> ().center = instance.transform.GetChild (1).GetComponent <BoxCollider> ().center;
-				instance.GetComponent<BoxCollider> ().size = instance.transform.GetChild (1).GetComponent <BoxCollider> ().size;
-				instance.GetComponent<UnityEngine.AI.NavMeshObstacle> ().center = instance.transform.GetChild (1).GetComponent<UnityEngine.AI.NavMeshObstacle> ().center;
-				instance.GetComponent<UnityEngine.AI.NavMeshObstacle> ().size = instance.transform.GetChild (1).GetComponent<UnityEngine.AI.NavMeshObstacle> ().size;
 			} else {
 				GameManager.print ("Model Child problem - MouseController");
 			}
 
+			Collider[] hitColliders = Physics.OverlapBox (instance.transform.position, instance.GetComponent<BoxCollider> ().size / 2, new Quaternion (0.9240f, 0.0f, 0.383f, 0.0f));
+			foreach (var r in hitColliders) {
+				if (r.gameObject != instance) {
+					if (r.gameObject.GetComponent<UnitContainer> () != null) {
+						GameManager.Destroy (instance);
+						return false;
+					}
+
+					if (r.gameObject.GetComponent<BuildingContainer> () != null) {
+						GameManager.Destroy (instance);
+						return false;
+					}
+				}
+			}
+
+			resource.spend (newBuilding.cost);
 			GameManager.addPlayerToGame (name).buildings.Add (instance.GetComponent<BuildingContainer> ());
+
+			return true;
 		}
 
-
+		return false;
 	}
 }
