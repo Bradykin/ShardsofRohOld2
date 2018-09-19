@@ -4,11 +4,17 @@ using UnityEngine;
 using Enum;
 
 public class HotKeysController : MonoBehaviour {
-
+	
+	public GameObject escapeMenu;
 
 	// Use this for initialization
 	void Start () {
-		
+		escapeMenu = GameObject.Find ("EscapeMenu");
+		if (escapeMenu == null) {
+			print ("CANT FIND ESCAPE MENU");
+		} else {
+			escapeMenu.SetActive (false);
+		}
 	}
 	
 	// Update is called once per frame
@@ -129,6 +135,14 @@ public class HotKeysController : MonoBehaviour {
 
 	//Any test hotkeys or mid-implementation features go here as to not get interwoven with other systems
 	private void testKeys () {
+
+		if (Input.GetKeyDown (KeyCode.Escape)) {
+			if (escapeMenu.activeSelf == false) {
+				escapeMenu.SetActive (true);
+			} else {
+				escapeMenu.SetActive (false);
+			}
+		}
 
 		if (Input.GetKeyDown (KeyCode.I)) {
 			FormationController.formationMode = 0;

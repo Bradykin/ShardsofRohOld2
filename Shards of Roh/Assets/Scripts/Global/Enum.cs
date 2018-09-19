@@ -11,5 +11,5 @@ namespace Enum {
 	public enum TargetType {None, Unit, Building, Ground}
 
 	//Type of resource
-	public enum ResourceType {None, Food, Wood, Gold}
+	public enum ResourceType {None, Food, Wood, Gold, Build}
 }

@@ -2,6 +2,9 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+//PassiveAttack Behaviour gives a unit the behaviour of "If not attacking or moving, and there is an enemy unit nearby, set them as attack target
+//Similar to IdleAttack except doesn't disable itself idling
+//Unlike Idle behaviours, Passive behaviours have multiple various criteria for triggering, based on what the unit is currently doing, and are permanent
 public class PassiveAttack : Behaviours {
 
 	float timer = 1.0f;
@@ -21,23 +24,11 @@ public class PassiveAttack : Behaviours {
 			if (timer >= checkAt) {
 				if (unitInfo.unit.isMoving == false && unitInfo.unit.unitTarget == null && unitInfo.unit.buildingTarget == null) {
 
-					float distanceToCollider = unitInfo.unit.sightRadius * unitInfo.unit.sightRadius;
-					List<UnitContainer> units = unitInfo.unit.visibleObjects.visibleEnemyUnits;
 					UnitContainer target = null;
 
-					for (int i = 0; i < units.Count; i++) {
-						float xPos = Mathf.Abs (unitInfo.unit.curLoc.x - units [i].unit.curLoc.x);
-						float zPos = Mathf.Abs (unitInfo.unit.curLoc.z - units [i].unit.curLoc.z);
-
-						if (xPos < unitInfo.unit.sightRadius && zPos < unitInfo.unit.sightRadius) {
-							float distance = Vector3.SqrMagnitude (unitInfo.unit.curLoc - units [i].unit.curLoc);
-							if (distance <= distanceToCollider) {
-								distanceToCollider = distance;
-								target = units [i];
-							}
-						}
+					if (unitInfo.unit.visibleObjects.visibleEnemyUnits.Count > 0) {
+						target = unitInfo.unit.visibleObjects.closestEnemyUnit;
 					}
-
 
 					if (target != null) {
 						timer = 0.0f;

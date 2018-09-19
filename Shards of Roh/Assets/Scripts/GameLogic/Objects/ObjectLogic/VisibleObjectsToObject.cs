@@ -38,7 +38,7 @@ public class VisibleObjectsToObject {
 	public float distanceToClosestEnemyUnitSqr { get; protected set; }
 	public float distanceToClosestEnemyBuildingSqr { get; protected set; }
 
-	public float distanceToClosestPlayerUnbuilt { get; protected set; }
+	public float distanceToClosestPlayerUnbuiltSqr { get; protected set; }
 
 	public float distanceToClosestResourceFoodSqr { get; protected set; }
 	public float distanceToClosestResourceWoodSqr { get; protected set; }
@@ -90,7 +90,7 @@ public class VisibleObjectsToObject {
 		distanceToClosestEnemyUnitSqr = 1000000;
 		distanceToClosestEnemyBuildingSqr = 1000000;
 
-		distanceToClosestPlayerUnbuilt = 1000000;
+		distanceToClosestPlayerUnbuiltSqr = 1000000;
 
 		distanceToClosestResourceFoodSqr = 1000000;
 		distanceToClosestResourceWoodSqr = 1000000;
@@ -124,8 +124,8 @@ public class VisibleObjectsToObject {
 
 		if (_playerBuilding.building.isBuilt == false) {
 			visiblePlayerUnbuilt.Add (_playerBuilding);
-			if (_sqrDistance <= distanceToClosestPlayerUnbuilt) {
-				distanceToClosestPlayerUnbuilt = _sqrDistance;
+			if (_sqrDistance <= distanceToClosestPlayerUnbuiltSqr) {
+				distanceToClosestPlayerUnbuiltSqr = _sqrDistance;
 				closestPlayerUnbuilt = _playerBuilding;
 			}
 		}

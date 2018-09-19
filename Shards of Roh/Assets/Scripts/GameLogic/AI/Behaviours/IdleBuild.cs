@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+//IdleBuild Behaviour gives a unit the behaviour of "If not attacking or moving, and there is an unbuilt friendly building nearby, set it as attack target.
+//Disables after idling for 5 seconds
 public class IdleBuild : Behaviours {
 
 	float timer = 0.0f;
@@ -9,7 +11,9 @@ public class IdleBuild : Behaviours {
 	public IdleBuild (UnitContainer _unitInfo) {
 		name = "IdleBuild";
 		active = true;
+		behaviourType = "Idle";
 		unitInfo = _unitInfo;
+		unitInfo.removeBehaviourByType (behaviourType, this);
 	}
 
 	public override void enact () {
@@ -20,7 +24,7 @@ public class IdleBuild : Behaviours {
 				BuildingContainer target = null;
 
 				if (unitInfo.unit.visibleObjects.closestPlayerUnbuilt != null) {
-					if (unitInfo.unit.visibleObjects.distanceToClosestPlayerUnbuilt <= (unitInfo.unit.sightRadius * unitInfo.unit.sightRadius)) {
+					if (unitInfo.unit.visibleObjects.distanceToClosestPlayerUnbuiltSqr <= (unitInfo.unit.sightRadius * unitInfo.unit.sightRadius)) {
 						target = unitInfo.unit.visibleObjects.closestPlayerUnbuilt;
 					}
 				}

@@ -22,7 +22,7 @@ public class Worker : Unit {
 		damageCheck = 0.5f;
 		moveSpeed = 6;
 		populationCost = 1;
-		sightRadius = 15;
+		sightRadius = 50;
 		isVillager = true;
 		queueTime = 5.0f;
 		batchSize = 1;

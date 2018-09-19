@@ -9,7 +9,7 @@ public class Barracks : Building {
 		name = "Barracks";
 		race = "Humans";
 		owner = _owner;
-		health = 1000;
+		health = 200;
 		cost = new Resource (0, 0, 50);
 
 		abilities.Add (new AddToUnitQueue ("Axeman", this));

@@ -49,19 +49,28 @@ public class PlayerContainer : MonoBehaviour {
 				r.building.wayPoint = _clicked.GetComponent<CapsuleCollider> ().ClosestPoint (r.building.curLoc);
 				r.building.unitWayPointTarget = _clicked.GetComponent<UnitContainer> ();
 				r.building.buildingWayPointTarget = null;
+				r.setWaypointFlagActive (true);
 			}
 			//Handle if clicked on building
 			else if (_clicked.GetComponent<BuildingContainer> () != null) {
 				r.building.wayPoint = _clicked.GetComponent<BoxCollider> ().ClosestPoint (r.building.curLoc);
 				r.building.unitWayPointTarget = null;
 				r.building.buildingWayPointTarget = _clicked.GetComponent<BuildingContainer> ();
+				if (r == _clicked.GetComponent<BuildingContainer> ()) {
+					r.setWaypointFlagActive (false);
+				} else {
+					r.setWaypointFlagActive (true);
+				}
 			}
 			//Handle if clicked on nothing
 			else {
 				r.building.wayPoint = _targetLoc;
 				r.building.unitWayPointTarget = null;
 				r.building.buildingWayPointTarget = null;
+				r.setWaypointFlagActive (true);
 			}
+
+			r.setWaypointFlagLocation (r.building.wayPoint);
 		}
 	}
 
@@ -92,7 +101,6 @@ public class PlayerContainer : MonoBehaviour {
 				foreach (var r in GameManager.playerContainer.player.curUnitTarget) {
 					r.unit.setAttackTarget (targetUnitContainer);
 					r.checkAttackLogic ();
-					r.removeBehaviourByType ("Idle");
 					if (r.unit.isVillager == true) {
 						r.unitBehaviours.Add (new IdleAttack (r));
 					}
@@ -111,7 +119,6 @@ public class PlayerContainer : MonoBehaviour {
 				foreach (var r in GameManager.playerContainer.player.curUnitTarget) {
 					if (r.unit.isVillager == true) {
 						r.unit.setAttackTarget (targetBuildingContainer);
-						r.removeBehaviourByType ("Idle");
 						r.unitBehaviours.Add (new IdleGather (r));
 					} else {
 						r.moveTowardCollider (targetBuildingContainer.GetComponent<BoxCollider> ());
@@ -121,7 +128,6 @@ public class PlayerContainer : MonoBehaviour {
 				foreach (var r in GameManager.playerContainer.player.curUnitTarget) {
 					r.unit.setAttackTarget (targetBuildingContainer);
 					r.checkAttackLogic ();
-					r.removeBehaviourByType ("Idle");
 					if (r.unit.isVillager == true) {
 						r.unitBehaviours.Add (new IdleAttack (r));
 					}
@@ -130,7 +136,6 @@ public class PlayerContainer : MonoBehaviour {
 				foreach (var r in GameManager.playerContainer.player.curUnitTarget) {
 					if (r.unit.isVillager == true && targetBuildingContainer.building.owner == r.unit.owner && targetBuildingContainer.building.isBuilt == false) {
 						r.unit.setAttackTarget (targetBuildingContainer);
-						r.removeBehaviourByType ("Idle");
 						r.unitBehaviours.Add (new IdleBuild (r));
 					} else {
 						r.moveTowardCollider (targetBuildingContainer.GetComponent<BoxCollider> ());

@@ -12,9 +12,10 @@ public class UnitContainer : ObjectContainer {
 	public UnityEngine.AI.NavMeshObstacle obstacle { get; private set; }
 
 	void Start () {
+		//GameManager.print ("Start Worker");
 		//Set values for preset units
 		setup ();
-		unitBehaviours = new List<Behaviours> ();
+		setCleanUnitBehaviours ();
 
 		//Set values of preset units on map
 		if (presetOwnerName != "") {
@@ -34,19 +35,7 @@ public class UnitContainer : ObjectContainer {
 			}
 		}
 
-		//Set values of NavMeshAgent
-		if (gameObject.GetComponent<UnityEngine.AI.NavMeshAgent> () != null) {
-			agent = gameObject.GetComponent<UnityEngine.AI.NavMeshAgent> ();
-			agent.speed = unit.moveSpeed;
-			unit.avoidanceValue = Random.Range (10, 90);
-			agent.avoidancePriority = unit.avoidanceValue;
-			unit.curLoc = agent.transform.position;
-		}
-
-		if (gameObject.GetComponent<UnityEngine.AI.NavMeshObstacle> () != null) {
-			obstacle = gameObject.GetComponent<UnityEngine.AI.NavMeshObstacle> ();
-			obstacle.transform.position = gameObject.transform.position;
-		}
+		setNavMeshProperties ();
 
 		//Set values of Textures
 		foreach (var r in gameObject.GetComponentsInChildren<MeshRenderer> ()) {
@@ -68,13 +57,15 @@ public class UnitContainer : ObjectContainer {
 
 		//Set values of Behaviours
 		if (unit.isVillager == true) {
-			unitBehaviours.Add (new HitFlee (this));
+			unitBehaviours.Add (new PassiveFlee (this));
 		} else {
 			unitBehaviours.Add (new PassiveAttack (this));
+			unitBehaviours.Add (new PassiveRetaliate (this));
 		}
 	}
 
 	void Update () {
+
 		unit.update ();
 
 		checkMoveLogic ();
@@ -111,10 +102,13 @@ public class UnitContainer : ObjectContainer {
 						gameObject.GetComponent<Animator> ().SetBool ("isMoving", false);
 						unit.isMoving = false;
 					}
+
+					setWaypointFlagActive (false);
 				} else {
 					gameObject.GetComponent<Animator> ().SetBool ("isMoving", true);
 					navMeshToggle ("Agent");
 					unit.isMoving = true;
+					//setWaypointFlagActive (true);
 				}
 
 				if (agent.enabled == true && unit.isMoving == false && ((unit.unitTarget == null && unit.buildingTarget == null) || unit.isAttacking == true)) {
@@ -129,6 +123,8 @@ public class UnitContainer : ObjectContainer {
 			} else {
 				print ("Missing Animator - UnitContainer");
 			}
+				
+			setWaypointFlagLocation (unit.flagPosition);
 		} else {
 			print ("Missing NavMeshAgent - UnitContainer");
 		}
@@ -292,9 +288,9 @@ public class UnitContainer : ObjectContainer {
 		}
 	}
 
-	public void removeBehaviourByType (string _type) {
+	public void removeBehaviourByType (string _type, Behaviours _exception = null) {
 		foreach (var r in unitBehaviours) {
-			if (r.name.Contains (_type)) {
+			if (r.behaviourType == _type && r != _exception) {
 				r.active = false;
 			}
 		}
@@ -304,6 +300,26 @@ public class UnitContainer : ObjectContainer {
 				unitBehaviours.RemoveAt (i);
 				i--;
 			}
+		}
+	}
+
+	public void setCleanUnitBehaviours () {
+		unitBehaviours = new List<Behaviours> ();
+	}
+
+	public void setNavMeshProperties () {
+		//Set values of NavMeshAgent
+		if (gameObject.GetComponent<UnityEngine.AI.NavMeshAgent> () != null) {
+			agent = gameObject.GetComponent<UnityEngine.AI.NavMeshAgent> ();
+			agent.speed = unit.moveSpeed;
+			unit.avoidanceValue = Random.Range (10, 90);
+			agent.avoidancePriority = unit.avoidanceValue;
+			unit.curLoc = agent.transform.position;
+		}
+
+		if (gameObject.GetComponent<UnityEngine.AI.NavMeshObstacle> () != null) {
+			obstacle = gameObject.GetComponent<UnityEngine.AI.NavMeshObstacle> ();
+			obstacle.transform.position = gameObject.transform.position;
 		}
 	}
 }

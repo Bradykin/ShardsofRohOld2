@@ -44,10 +44,16 @@ public class BuildingContainer : ObjectContainer {
 				r.material = Resources.Load (PlayerMaterial.getMinimapColour (building.owner.name), typeof(Material)) as Material;
 			}
 		}
+
+		building.wayPoint = building.curLoc;
 	}
 
 	// Update is called once per frame
 	void Update () {
+		if (building.wayPoint == building.curLoc) {
+			setWaypointFlagActive (false);
+		}
+
 		building.update ();
 		checkQueues ();
 
@@ -113,11 +119,15 @@ public class BuildingContainer : ObjectContainer {
 				//Spawn units according to the size of the next unitQueue
 				for (int i = 0; i < building.unitQueue [0].size; i++) {
 					Unit newUnit = ObjectFactory.createUnitByName (building.unitQueue [0].unit.name, building.owner);
-					GameManager.print (newUnit.prefabPath);
+					//GameManager.print (newUnit.prefabPath);
 					GameObject instance = GameManager.Instantiate (Resources.Load (newUnit.prefabPath, typeof(GameObject)) as GameObject);
 
 					instance.transform.position = GetComponent<BoxCollider> ().ClosestPoint (building.wayPoint);
 					instance.GetComponent<UnitContainer> ().unit = newUnit;
+					if (instance.GetComponent<UnitContainer> ().started == false) {
+						instance.GetComponent<UnitContainer> ().setCleanUnitBehaviours ();
+						instance.GetComponent<UnitContainer> ().setNavMeshProperties ();
+					}
 					StartCoroutine (sendUnitToDestination (instance.GetComponent<UnitContainer> (), building.wayPoint, hit.collider.gameObject));
 
 					GameManager.addPlayerToGame (building.owner.name).units.Add (instance.GetComponent<UnitContainer> ());
@@ -135,7 +145,6 @@ public class BuildingContainer : ObjectContainer {
 			if (GameManager.isEnemies (building.unitWayPointTarget.unit.owner, GameManager.playerContainer.player)) {
 				_unit.unit.setAttackTarget (building.unitWayPointTarget);
 				_unit.checkAttackLogic ();
-				_unit.removeBehaviourByType ("Idle");
 				if (_unit.unit.isVillager == true) {
 					_unit.unitBehaviours.Add (new IdleAttack (_unit));
 				}
@@ -145,14 +154,9 @@ public class BuildingContainer : ObjectContainer {
 		}
 		//Handle if waypoint on building
 		else if (building.buildingWayPointTarget != null) {
-			//CURRENTLY THIS DOESNT WORK. UNIT SPAWNS INSIDE BUILDING WHEN WAYPOINTED TO BUILD SOMETHING. INVESTIGATIONS
-			//FIX IS TWOFOLD:
-			//A: WHY IS UNIT SPAWNING INSIDE BUILDING WHEN WAYPOINTED TO BUILD SOMETHING
-			//B: NEED A CATCH ALL FOR IF A UNIT IS SPAWNED INSIDE A BUILDING
 			if (building.buildingWayPointTarget.building.isResource) {
 				if (_unit.unit.isVillager == true) {
 					_unit.unit.setAttackTarget (building.buildingWayPointTarget);
-					_unit.removeBehaviourByType ("Idle");
 					_unit.unitBehaviours.Add (new IdleGather (_unit));
 				} else {
 					_unit.moveTowardCollider (building.buildingWayPointTarget.GetComponent<BoxCollider> ());
@@ -160,14 +164,12 @@ public class BuildingContainer : ObjectContainer {
 			} else if (GameManager.isEnemies (building.buildingWayPointTarget.building.owner, GameManager.playerContainer.player)) {
 				_unit.unit.setAttackTarget (building.buildingWayPointTarget);
 				_unit.checkAttackLogic ();
-				_unit.removeBehaviourByType ("Idle");
 				if (_unit.unit.isVillager == true) {
 					_unit.unitBehaviours.Add (new IdleAttack (_unit));
 				}
 			} else {
 				if (_unit.unit.isVillager == true && building.buildingWayPointTarget.building.owner == _unit.unit.owner && building.buildingWayPointTarget.building.isBuilt == false) {
 					_unit.unit.setAttackTarget (building.buildingWayPointTarget);
-					_unit.removeBehaviourByType ("Idle");
 					_unit.unitBehaviours.Add (new IdleBuild (_unit));
 				} else {
 					_unit.moveTowardCollider (building.buildingWayPointTarget.GetComponent<BoxCollider> ());

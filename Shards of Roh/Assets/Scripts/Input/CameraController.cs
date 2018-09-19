@@ -19,6 +19,7 @@ public class CameraController : MonoBehaviour {
 
 	// Use this for initialization
 	void Start () {
+		boundsSet = false;
 		scrollSpeed = 50.0f;
 		zoomSpeed = -375000.0f;
 		scrollBorder = 25.0f;
@@ -30,6 +31,7 @@ public class CameraController : MonoBehaviour {
 	// Update is called once per frame
 	void Update () {
 		moveCamera ();
+
 		//rotateCamera ();
 	}
 
@@ -113,6 +115,7 @@ public class CameraController : MonoBehaviour {
 				print ("Missing Terrain - CameraController.checkBounds");
 			}
 		}
+
 		return _destination;
 	}
 
@@ -162,7 +165,7 @@ public class CameraController : MonoBehaviour {
 		moveDirection = _moveDirection;
 	}
 
-	public static void moveToSelected (Object _selected) {
+	public static void moveToSelected (ObjectBase _selected) {
 		Vector3 destination = new Vector3 (_selected.curLoc.x, Camera.main.transform.position.y, _selected.curLoc.z - (0.7f * Camera.main.transform.position.y));
 		Camera.main.transform.position = destination;
 	}

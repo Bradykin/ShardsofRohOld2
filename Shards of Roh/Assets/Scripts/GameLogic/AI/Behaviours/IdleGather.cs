@@ -3,6 +3,9 @@ using System.Collections.Generic;
 using UnityEngine;
 using Enum;
 
+//IdleGather Behaviour gives a unit the behaviour of "If not attacking or moving, and the preset resource type is nearby, set it as attack target.
+//Cannot be swapped between resource types - instead, the behaviour is removed and a new one is added.
+//Disables after idling for 5 seconds
 public class IdleGather : Behaviours {
 
 	float timer = 0.0f;
@@ -11,8 +14,10 @@ public class IdleGather : Behaviours {
 	public IdleGather (UnitContainer _unitInfo, ResourceType _resourceType = ResourceType.None) {
 		name = "IdleGather";
 		active = true;
+		behaviourType = "Idle";
 		unitInfo = _unitInfo;
 		resourceType = _resourceType;
+		unitInfo.removeBehaviourByType (behaviourType, this);
 	}
 
 	public override void enact () {

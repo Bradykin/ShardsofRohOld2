@@ -2,6 +2,9 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+//IdleAttack Behaviour gives a unit the behaviour of "If not attacking or moving, and there is an enemy unit nearby, set them as attack target
+//Might extend this to include idle attacking buildings, haven't decided.
+//Disables after idling for 5 seconds
 public class IdleAttack : Behaviours {
 
 	float timer = 0.0f;
@@ -9,7 +12,9 @@ public class IdleAttack : Behaviours {
 	public IdleAttack (UnitContainer _unitInfo) {
 		name = "IdleAttack";
 		active = true;
+		behaviourType = "Idle";
 		unitInfo = _unitInfo;
+		unitInfo.removeBehaviourByType (behaviourType, this);
 	}
 
 	public override void enact () {
@@ -32,7 +37,7 @@ public class IdleAttack : Behaviours {
 				if (timer >= 5.0f) {
 					active = false;
 				}
-			} else {
+			} else {	
 				timer = 0;
 			}
 		}

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using Enum;
 
-public abstract class Building : Object {
+public abstract class Building : ObjectBase {
 
 	//Variables that must be declared in subclass
 

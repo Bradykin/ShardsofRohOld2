@@ -5,7 +5,6 @@ using UnityEngine;
 public class Spearman : Unit {
 
 	public Spearman (Player _owner) {
-		unitSetup ();
 
 		//Variables from inherited class
 		name = "Spearman";
@@ -13,6 +12,8 @@ public class Spearman : Unit {
 		owner = _owner;
 		health = 100;
 		cost = new Resource (0, 0, 50);
+
+		unitSetup ();
 
 		//Variables from current class
 		attack = 10;

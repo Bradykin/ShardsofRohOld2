@@ -57,7 +57,7 @@ public class VisibleObjectsToPlayer {
 								visibleEnemyUnits.Add (r.units [k]);
 							}
 						} else {
-							if (visiblePlayerUnits.Contains (r.units [k]) == false && distance <= sightRadiusSqr) {
+							if (visiblePlayerUnits.Contains (r.units [k]) == false) {
 								visiblePlayerUnits.Add (r.units [k]);
 							}
 						}
@@ -74,7 +74,7 @@ public class VisibleObjectsToPlayer {
 								visibleEnemyBuildings.Add (r.buildings [k]);
 							}
 						} else {
-							if (visiblePlayerBuildings.Contains (r.buildings [k]) == false && distance <= sightRadiusSqr) {
+							if (visiblePlayerBuildings.Contains (r.buildings [k]) == false) {
 								visiblePlayerBuildings.Add (r.buildings [k]);
 							}
 						}

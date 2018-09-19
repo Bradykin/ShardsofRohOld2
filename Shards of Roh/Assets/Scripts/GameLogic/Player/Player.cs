@@ -94,7 +94,9 @@ public class Player {
 	public void processFormationMovement (Vector3 targetLoc, bool _isWayPointing = false) {
 		foreach (var r in GameManager.playerContainer.player.curUnitTarget) {
 			r.unit.dropAttackTarget ();
-			r.removeBehaviourByType ("Idle");
+			if (r.unit.isVillager) {
+				r.removeBehaviourByType ("Idle");
+			}
 		}
 
 		//Calculate angle vectors for formations
@@ -186,12 +188,16 @@ public class Player {
 			}
 		}
 
+		foreach (var r in newList) {
+			r.unit.flagPosition = _formationPositions [0].getPosition ();
+		}
+
 		setCurUnitTarget (newList);
 	}
 
 	public void toggleSelectionCircle (bool _toggle, UnitContainer _unit) {
 		foreach (Transform child in _unit.gameObject.transform) {
-			if (child.name == "TargetRing") {
+			if (child.name == "TargetRing" || child.name == "Waypoint") {
 				child.gameObject.SetActive (_toggle);
 			}
 		}
@@ -200,7 +206,7 @@ public class Player {
 	public void toggleSelectionCircles (bool _toggle) {
 		foreach (var r in curUnitTarget) {
 			foreach (Transform child in r.gameObject.transform) {
-				if (child.name == "TargetRing") {
+				if (child.name == "TargetRing" || child.name == "Waypoint") {
 					child.gameObject.SetActive (_toggle);
 				}
 			}
@@ -209,7 +215,7 @@ public class Player {
 
 	public void toggleSelectionBox (bool _toggle, BuildingContainer _building) {
 		foreach (Transform child in _building.gameObject.transform) {
-			if (child.name == "TargetRing") {
+			if (child.name == "TargetRing" || child.name == "Waypoint") {
 				child.gameObject.SetActive (_toggle);
 			}
 		}
@@ -218,7 +224,7 @@ public class Player {
 	public void toggleSelectionBoxes (bool _toggle) {
 		foreach (var r in curBuildingTarget) {
 			foreach (Transform child in r.gameObject.transform) {
-				if (child.name == "TargetRing") {
+				if (child.name == "TargetRing" || child.name == "Waypoint") {
 					child.gameObject.SetActive (_toggle);
 				}
 			}
@@ -308,6 +314,8 @@ public class Player {
 			} else {
 				GameManager.print ("Model Child problem - MouseController");
 			}
+
+			instance.GetComponent<BuildingContainer> ().setWaypointFlagActive (false);
 
 			Collider[] hitColliders = Physics.OverlapBox (instance.transform.position, instance.GetComponent<BoxCollider> ().size / 2, new Quaternion (0.9240f, 0.0f, 0.383f, 0.0f));
 			foreach (var r in hitColliders) {

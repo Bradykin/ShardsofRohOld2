@@ -1,8 +1,8 @@
-﻿	using System.Collections;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public abstract class Object {
+public abstract class ObjectBase {
 
 	//Variables that must be declared in subclass
 	public string name { get; protected set; }
@@ -30,5 +30,37 @@ public abstract class Object {
 
 		isDead = false;
 		visibleObjects = new VisibleObjectsToObject ();
+	}
+
+	public bool useAbility (string _abilityName) {
+		foreach (var r in abilities) {
+			if (r.getName () == _abilityName) {
+				//GameManager.print ("MakeUnitEnact: " + _abilityName);
+				r.enact (owner);
+				return true;
+			}
+		}
+
+		return false;
+	}
+
+	public bool hasAbility (string _abilityName) {
+		foreach (var r in abilities) {
+			if (r.getName () == _abilityName) {
+				return true;
+			}
+		}
+
+		return false;
+	}
+
+	public bool hasResearch () {
+		foreach (var r in neededResearch) {
+			if (owner.hasResearch (r) == false) {
+				return false;
+			}
+		}
+
+		return true;
 	}
 }

@@ -13,7 +13,7 @@ public class TestMapManager : MonoBehaviour {
 	}
 
 	void onEnable () {
-		
+		print ("ENABLE");
 	}
 
 	// Update is called once per frame

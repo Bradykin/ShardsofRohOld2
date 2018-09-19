@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public abstract class Unit : Object {
+public abstract class Unit : ObjectBase {
 
 	//Variables that must be declared in subclass
 	public int attack { get; protected set; }
@@ -28,7 +28,8 @@ public abstract class Unit : Object {
 	public bool isAttacking { get; set; }
 	public bool gotHit { get; set; }
 	public UnitContainer gotHitBy  { get; set; }
-	public List<Vector3> moveDestinations { get; private set; } 
+	public List<Vector3> moveDestinations { get; private set; }
+	public Vector3 flagPosition { get; set; }
 
 	public void unitSetup () {
 		setup ();

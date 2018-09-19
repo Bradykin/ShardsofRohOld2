@@ -1,18 +1,22 @@
-﻿using System.Collections;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class HitFlee : Behaviours {
+//PassiveAttack Behaviour gives a unit the behaviour of "If not attacking or moving, and there is an enemy unit nearby, set them as attack target
+//Similar to IdleAttack except doesn't disable itself idling
+//Unlike Idle behaviours, Passive behaviours have multiple various criteria for triggering, based on what the unit is currently doing, and are permanent
+public class PassiveFlee : Behaviours {
 
 	UnitContainer fleeing;
 
-	public HitFlee (UnitContainer _unitInfo) {
-		name = "HitFlee";
+	public PassiveFlee (UnitContainer _unitInfo) {
+		name = "PassiveFlee";
 		fleeing = null;
 		active = true;
+		behaviourType = "Passive";
 		unitInfo = _unitInfo;
 	}
-	
+
 	public override void enact () {
 		if (unitInfo.unit.gotHit == true && unitInfo.unit.isMoving == false) {
 			fleeing = unitInfo.unit.gotHitBy;
