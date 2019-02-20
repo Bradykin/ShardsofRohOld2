@@ -25,6 +25,9 @@ public abstract class ObjectContainer : MonoBehaviour {
 	public void setWaypointFlagActive (bool _toggle) {
 		foreach (Transform child in gameObject.transform) {
 			if (child.name == "Waypoint") {
+				if (_toggle == false) {
+					setWaypointFlagLocation (new Vector3 (0, -1000, 0));
+				}
 				child.gameObject.SetActive (_toggle);
 			}
 		}

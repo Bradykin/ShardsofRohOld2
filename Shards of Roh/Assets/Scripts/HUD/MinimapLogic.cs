@@ -5,7 +5,6 @@ using UnityEngine.EventSystems;
 
 public class MinimapLogic : MonoBehaviour, IPointerClickHandler {
 
-
 	// Use this for initialization
 	void Start () {
 		

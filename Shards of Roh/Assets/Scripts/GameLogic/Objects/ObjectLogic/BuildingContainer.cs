@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Enum;
 
 public class BuildingContainer : ObjectContainer {
 
@@ -142,43 +143,46 @@ public class BuildingContainer : ObjectContainer {
 
 		//Handle if waypoint on unit
 		if (building.unitWayPointTarget != null) {
+			_unit.unit.flagPosition = building.unitWayPointTarget.unit.curLoc;
 			if (GameManager.isEnemies (building.unitWayPointTarget.unit.owner, GameManager.playerContainer.player)) {
 				_unit.unit.setAttackTarget (building.unitWayPointTarget);
 				_unit.checkAttackLogic ();
-				if (_unit.unit.isVillager == true) {
+				if (_unit.unit.unitType == UnitType.Villager) {
 					_unit.unitBehaviours.Add (new IdleAttack (_unit));
 				}
 			} else {
-				_unit.moveTowardCollider (building.unitWayPointTarget.GetComponent<CapsuleCollider> ());
+				_unit.moveTowardCollider (false, building.unitWayPointTarget.GetComponent<CapsuleCollider> ());
 			}
 		}
 		//Handle if waypoint on building
 		else if (building.buildingWayPointTarget != null) {
+			_unit.unit.flagPosition = building.buildingWayPointTarget.building.curLoc;
 			if (building.buildingWayPointTarget.building.isResource) {
-				if (_unit.unit.isVillager == true) {
+				if (_unit.unit.unitType == UnitType.Villager) {
 					_unit.unit.setAttackTarget (building.buildingWayPointTarget);
 					_unit.unitBehaviours.Add (new IdleGather (_unit));
 				} else {
-					_unit.moveTowardCollider (building.buildingWayPointTarget.GetComponent<BoxCollider> ());
+					_unit.moveTowardCollider (false, building.buildingWayPointTarget.GetComponent<BoxCollider> ());
 				}
 			} else if (GameManager.isEnemies (building.buildingWayPointTarget.building.owner, GameManager.playerContainer.player)) {
 				_unit.unit.setAttackTarget (building.buildingWayPointTarget);
 				_unit.checkAttackLogic ();
-				if (_unit.unit.isVillager == true) {
+				if (_unit.unit.unitType == UnitType.Villager) {
 					_unit.unitBehaviours.Add (new IdleAttack (_unit));
 				}
 			} else {
-				if (_unit.unit.isVillager == true && building.buildingWayPointTarget.building.owner == _unit.unit.owner && building.buildingWayPointTarget.building.isBuilt == false) {
+				if (_unit.unit.unitType == UnitType.Villager && building.buildingWayPointTarget.building.owner == _unit.unit.owner && building.buildingWayPointTarget.building.isBuilt == false) {
 					_unit.unit.setAttackTarget (building.buildingWayPointTarget);
 					_unit.unitBehaviours.Add (new IdleBuild (_unit));
 				} else {
-					_unit.moveTowardCollider (building.buildingWayPointTarget.GetComponent<BoxCollider> ());
+					_unit.moveTowardCollider (false, building.buildingWayPointTarget.GetComponent<BoxCollider> ());
 				}
 			}
 		}
 		//Handle if waypoint on nothing 
 		else {
-			_unit.moveToLocation (building.wayPoint);
+			_unit.unit.flagPosition = building.wayPoint;
+			_unit.moveToLocation (false, building.wayPoint);
 		}
 	}
 

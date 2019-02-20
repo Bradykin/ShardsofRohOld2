@@ -1,47 +1,45 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Enum;
 
 public class PlayerContainer : MonoBehaviour {
 
 	public string playerName;
-	public Player player { get; set; }
-	public GameObject buildToggle { get; private set; }
-	public bool buildToggleActive { get; set; }
 	public string buildToggleSetting { get; set; }
+	public bool buildToggleActive { get; set; }
+	public Player player { get; private set; }
+	public GameObject buildToggle { get; private set; }
+	public ObjectBase tooltipTarget { get; set; }
 	private LayerMask buildToggleMask { get; set; }
 
-	// Use this for initialization
+	//Establish all playerContainer variables
 	void Awake () {
-		player = new Player (playerName);
+		player = new Player (playerName, "Humans");
 		buildToggle = Instantiate (Resources.Load ("Prefabs/Miscellaneous/BuildToggle", typeof(GameObject)) as GameObject);
 		buildToggleActive = false;
 		buildToggleMask = 1 << LayerMask.NameToLayer ("Terrain");
 	}
 	
-	// Update is called once per frame
+	//Calls various update functions
 	void Update () {
+		buildToggleUpdate ();
+		player.update ();
+	}
+
+	//Updates the location of the hovered building placement if buildToggle isn't null
+	private void buildToggleUpdate () {
 		if (buildToggle != null) {
-			
+
 			RaycastHit hit;
 			Ray ray = Camera.main.ScreenPointToRay (MouseController.getMousePosition ());
 			if (Physics.Raycast (ray, out hit, 1000, buildToggleMask)) {
 				buildToggle.transform.position = (new Vector3 (hit.point.x, Terrain.activeTerrain.SampleHeight(hit.point), hit.point.z));
 			}
 		}
-
-		player.update ();
 	}
 
-	public static IEnumerator WaitFrames (int _frames) {
-		while (_frames > 0) {
-			_frames--;
-			yield return null;
-		}
-
-
-	}
-
+	//Process if a right click command is sent while buildings are selected
 	public void processRightClickBuildingCommand (Vector3 _targetLoc, GameObject _clicked) {
 		foreach (var r in player.curBuildingTarget) {
 			//Handle if clicked on unit
@@ -69,17 +67,22 @@ public class PlayerContainer : MonoBehaviour {
 				r.building.buildingWayPointTarget = null;
 				r.setWaypointFlagActive (true);
 			}
-
+				
 			r.setWaypointFlagLocation (r.building.wayPoint);
 		}
 	}
 
+	//Start Coroutine for processRightClickUnitEnumerator
 	public void processRightClickUnitCommand (Vector3 _targetLoc, GameObject _clicked, bool _isWayPointing) {
+
 		StartCoroutine (processRightClickUnitEnumerator (_targetLoc, _clicked, _isWayPointing));
 	}
 
+	//Process if a right click command is sent while units are selected
 	IEnumerator processRightClickUnitEnumerator (Vector3 _targetLoc, GameObject _clicked, bool _isWayPointing) {
 		foreach (var r in player.curUnitTarget) {
+			r.unit.isCommandedRecently = 0.25f;
+
 			if (r.obstacle.enabled == true) {
 				r.obstacle.enabled = false;
 			}
@@ -97,17 +100,21 @@ public class PlayerContainer : MonoBehaviour {
 		if (_clicked.GetComponent<UnitContainer> () != null) {
 			UnitContainer targetUnitContainer = _clicked.GetComponent<UnitContainer> ();
 
+			foreach (var r in GameManager.playerContainer.player.curUnitTarget) {
+				r.unit.flagPosition = targetUnitContainer.unit.curLoc;
+			}
+
 			if (GameManager.isEnemies (targetUnitContainer.unit.owner, GameManager.playerContainer.player)) {
 				foreach (var r in GameManager.playerContainer.player.curUnitTarget) {
 					r.unit.setAttackTarget (targetUnitContainer);
 					r.checkAttackLogic ();
-					if (r.unit.isVillager == true) {
+					if (r.unit.unitType == UnitType.Villager) {
 						r.unitBehaviours.Add (new IdleAttack (r));
 					}
 				}
 			} else {
 				foreach (var r in GameManager.playerContainer.player.curUnitTarget) {
-					r.moveTowardCollider (targetUnitContainer.GetComponent<CapsuleCollider> ());
+					r.moveTowardCollider (true, targetUnitContainer.GetComponent<CapsuleCollider> ());
 				}
 			}
 		}
@@ -115,30 +122,34 @@ public class PlayerContainer : MonoBehaviour {
 		else if (_clicked.GetComponent<BuildingContainer> () != null) {
 			BuildingContainer targetBuildingContainer = _clicked.GetComponent<BuildingContainer> ();
 
+			foreach (var r in GameManager.playerContainer.player.curUnitTarget) {
+				r.unit.flagPosition = targetBuildingContainer.building.curLoc;
+			}
+
 			if (targetBuildingContainer.building.isResource) {
 				foreach (var r in GameManager.playerContainer.player.curUnitTarget) {
-					if (r.unit.isVillager == true) {
+					if (r.unit.unitType == UnitType.Villager) {
 						r.unit.setAttackTarget (targetBuildingContainer);
 						r.unitBehaviours.Add (new IdleGather (r));
 					} else {
-						r.moveTowardCollider (targetBuildingContainer.GetComponent<BoxCollider> ());
+						r.moveTowardCollider (true, targetBuildingContainer.GetComponent<BoxCollider> ());
 					}
 				}
 			} else if (GameManager.isEnemies (targetBuildingContainer.building.owner, GameManager.playerContainer.player)) {
 				foreach (var r in GameManager.playerContainer.player.curUnitTarget) {
 					r.unit.setAttackTarget (targetBuildingContainer);
 					r.checkAttackLogic ();
-					if (r.unit.isVillager == true) {
+					if (r.unit.unitType == UnitType.Villager) {
 						r.unitBehaviours.Add (new IdleAttack (r));
 					}
 				}
 			} else {
 				foreach (var r in GameManager.playerContainer.player.curUnitTarget) {
-					if (r.unit.isVillager == true && targetBuildingContainer.building.owner == r.unit.owner && targetBuildingContainer.building.isBuilt == false) {
+					if (r.unit.unitType == UnitType.Villager && targetBuildingContainer.building.owner == r.unit.owner && targetBuildingContainer.building.isBuilt == false) {
 						r.unit.setAttackTarget (targetBuildingContainer);
 						r.unitBehaviours.Add (new IdleBuild (r));
 					} else {
-						r.moveTowardCollider (targetBuildingContainer.GetComponent<BoxCollider> ());
+						r.moveTowardCollider (true, targetBuildingContainer.GetComponent<BoxCollider> ());
 					}
 				}
 			}

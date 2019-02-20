@@ -11,6 +11,7 @@ public abstract class Building : ObjectBase {
 	public int populationValue { get; protected set; }
 	public bool isResource { get; protected set; }
 	public ResourceType resourceType { get; protected set; }
+	public FoodType foodType { get; protected set; }
 	public bool isBuilt { get; set; }
 	public bool toBuild { get; set; }
 	public Vector3 navColliderSize { get; set; }
@@ -27,6 +28,7 @@ public abstract class Building : ObjectBase {
 		populationValue = 0;
 		isResource = false;
 		resourceType = ResourceType.None;
+		foodType = FoodType.None;
 		isBuilt = true;
 		toBuild = false;
 		navColliderSize = new Vector3 ();
@@ -60,23 +62,37 @@ public abstract class Building : ObjectBase {
 				toBuild = true;
 			}
 		}
+
+		updateToolTip ();
 	}
 
-	public void getHit (UnitContainer _attacker, int _attack) {
-		if (_attacker.unit.isVillager == true) {
+	public void getHit (UnitContainer _attacker, float _attack) {
+		if (_attacker.unit.unitType == UnitType.Villager) {
 			if (isResource == true) {
 				if (resourceType == ResourceType.Food) {
-					_attacker.unit.owner.resource.add (new Resource (_attack, 0, 0));
+					if (foodType == FoodType.Animal) {
+						_attacker.unit.owner.resource.add (new Resource (_attacker.unit.foodAnimalGatherRate, 0, 0, 0));
+						curHealth -= _attacker.unit.foodAnimalGatherRate;
+					} else if (foodType == FoodType.Forage) {
+						_attacker.unit.owner.resource.add (new Resource (_attacker.unit.foodBerryGatherRate, 0, 0, 0));
+						curHealth -= _attacker.unit.foodBerryGatherRate;
+					} else if (foodType == FoodType.Farm) {
+						_attacker.unit.owner.resource.add (new Resource (_attacker.unit.foodFarmGatherRate, 0, 0, 0));
+					}
 				} else if (resourceType == ResourceType.Wood) {
-					_attacker.unit.owner.resource.add (new Resource (0, _attack, 0));
+					_attacker.unit.owner.resource.add (new Resource (0, _attacker.unit.woodGatherRate, 0, 0));
+					curHealth -= _attacker.unit.woodGatherRate;
 				} else if (resourceType == ResourceType.Gold) {
-					_attacker.unit.owner.resource.add (new Resource (0, 0, _attack));
+					_attacker.unit.owner.resource.add (new Resource (0, 0, _attacker.unit.goldGatherRate, 0));
+					curHealth -= _attacker.unit.goldGatherRate;
+				} else if (resourceType == ResourceType.Metal) {
+					_attacker.unit.owner.resource.add (new Resource (0, 0, 0, _attacker.unit.metalGatherRate));
+					curHealth -= _attacker.unit.metalGatherRate;
 				} else {
 					GameManager.print ("Unidentified resource - Building");
 				}
-				curHealth -= _attack;
 			} else if (owner.name == _attacker.unit.owner.name) {
-				curHealth += _attack;
+				curHealth += _attacker.unit.buildRate;
 				if (curHealth >= health) {
 					curHealth = health;
 				}
@@ -108,5 +124,9 @@ public abstract class Building : ObjectBase {
 		if (insert == false) {
 			unitQueue.Add (new UnitQueue (_newUnit, 1));
 		}
+	}
+
+	public void updateToolTip () {
+		tooltipString = name;
 	}
 }

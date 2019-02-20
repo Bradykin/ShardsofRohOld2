@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Enum;
 
 public class UnitContainer : ObjectContainer {
 
@@ -56,7 +57,7 @@ public class UnitContainer : ObjectContainer {
 		}
 
 		//Set values of Behaviours
-		if (unit.isVillager == true) {
+		if (unit.unitType == UnitType.Villager) {
 			unitBehaviours.Add (new PassiveFlee (this));
 		} else {
 			unitBehaviours.Add (new PassiveAttack (this));
@@ -73,6 +74,7 @@ public class UnitContainer : ObjectContainer {
 		checkBehaviourLogic ();
 
 		if (unit.isDead == true) {
+			unit.owner.remCurUnitTarget (this);
 			gameObject.GetComponent<CapsuleCollider> ().enabled = false;
 			agent.enabled = false;
 			gameObject.GetComponent<Animator> ().SetBool ("isDead", true);
@@ -102,13 +104,12 @@ public class UnitContainer : ObjectContainer {
 						gameObject.GetComponent<Animator> ().SetBool ("isMoving", false);
 						unit.isMoving = false;
 					}
-
+						
 					setWaypointFlagActive (false);
 				} else {
 					gameObject.GetComponent<Animator> ().SetBool ("isMoving", true);
 					navMeshToggle ("Agent");
 					unit.isMoving = true;
-					//setWaypointFlagActive (true);
 				}
 
 				if (agent.enabled == true && unit.isMoving == false && ((unit.unitTarget == null && unit.buildingTarget == null) || unit.isAttacking == true)) {
@@ -123,7 +124,7 @@ public class UnitContainer : ObjectContainer {
 			} else {
 				print ("Missing Animator - UnitContainer");
 			}
-				
+
 			setWaypointFlagLocation (unit.flagPosition);
 		} else {
 			print ("Missing NavMeshAgent - UnitContainer");
@@ -154,7 +155,12 @@ public class UnitContainer : ObjectContainer {
 			point2.y = 0;
 			float distanceToTarget = Vector3.Distance (point1, point2) - gameObject.GetComponent<CapsuleCollider> ().radius - unit.unitTarget.GetComponent<CapsuleCollider> ().radius;
 			if (distanceToTarget <= unit.attackRange || (unit.isAttacking == true && unit.hasHit == false && distanceToTarget <= unit.attackRange + 3.0f) || unit.hasHit == true) {
-				moveToLocation (agent.transform.position);
+
+				//I don't remember the purpose of this line, and it's causing a bug related to moving units while they are attacking. Leaving it in, commented out, in case we discover what it was solving.
+				if (unit.isAttacking == false) {
+					moveToLocation (false, agent.transform.position);
+				}
+
 				lookDirection (GetComponent<CapsuleCollider> ().bounds.center, unit.unitTarget.GetComponent<CapsuleCollider> ().bounds.center);
 				gameObject.GetComponent<Animator> ().SetBool ("isAttacking", true);
 				unit.isAttacking = true;
@@ -162,7 +168,7 @@ public class UnitContainer : ObjectContainer {
 					unit.unitTarget.unit.getHit (this, unit.attack);
 				}
 			} else {
-				moveTowardCollider (unit.unitTarget.GetComponent<CapsuleCollider> ());
+				moveTowardCollider (false, unit.unitTarget.GetComponent<CapsuleCollider> ());
 				gameObject.GetComponent<Animator> ().SetBool ("isAttacking", false);
 				unit.isAttacking = false;
 			}
@@ -182,7 +188,7 @@ public class UnitContainer : ObjectContainer {
 					unit.buildingTarget.building.getHit (this, unit.attack);
 				}
 			} else {
-				moveTowardCollider (unit.buildingTarget.GetComponent<BoxCollider> ());
+				moveTowardCollider (false, unit.buildingTarget.GetComponent<BoxCollider> ());
 				gameObject.GetComponent<Animator> ().SetBool ("isAttacking", false);
 				unit.isAttacking = false;
 			}
@@ -195,12 +201,14 @@ public class UnitContainer : ObjectContainer {
 	}
 
 	private void checkBehaviourLogic () {
-		for (int i = 0; i < unitBehaviours.Count; i++) {
-			if (unitBehaviours [i].active == false) {
-				unitBehaviours.RemoveAt (i);
-				i--;
-			} else {
-				unitBehaviours [i].enact ();
+		if (unit.isCommandedRecently == 0) {
+			for (int i = 0; i < unitBehaviours.Count; i++) {
+				if (unitBehaviours [i].active == false) {
+					unitBehaviours.RemoveAt (i);
+					i--;
+				} else {
+					unitBehaviours [i].enact ();
+				}
 			}
 		}
 
@@ -209,16 +217,16 @@ public class UnitContainer : ObjectContainer {
 		unit.gotHitBy = null;
 	}
 
-	public void moveTowardCollider (Collider collider, bool _isWayPointing = false) {
+	public void moveTowardCollider (bool _activeMove, Collider collider, bool _isWayPointing = false) {
 		//Using closestPoint has units actually go to the closest point on the collider,
 		//but provides much worse results for pathing around other units who are also going
 		//for that same point compared to just targeting the object. Think of a middle ground!
 
-		moveToLocation (collider.ClosestPoint (unit.curLoc), _isWayPointing);
+		moveToLocation (_activeMove, collider.ClosestPoint (unit.curLoc), _isWayPointing);
 		//moveToLocation (collider.transform.position, _isWayPointing);
 	}
 
-	public void moveToLocation (Vector3 targetLoc, bool _isWayPointing = false) {
+	public void moveToLocation (bool _activeMove, Vector3 targetLoc, bool _isWayPointing = false) {
 		if (agent.enabled == true && obstacle.enabled == false) {
 			if (_isWayPointing == true) {
 				unit.moveDestinations.Add (targetLoc);
@@ -229,24 +237,26 @@ public class UnitContainer : ObjectContainer {
 				agent.SetDestination (targetLoc);
 			}
 		} else {
-			StartCoroutine (moveAfterBeingObstacle (targetLoc, _isWayPointing));
+			StartCoroutine (moveAfterBeingObstacle (_activeMove, targetLoc, _isWayPointing));
 		}
 	}
 
-	IEnumerator moveAfterBeingObstacle (Vector3 _targetLoc, bool _isWayPointing = false) {
+	IEnumerator moveAfterBeingObstacle (bool _activeMove, Vector3 _targetLoc, bool _isWayPointing = false) {
 		obstacle.enabled = false;
 
 		yield return null; 
 
-		agent.enabled = true;
+		if (obstacle.enabled == false) {
+			agent.enabled = true;
 
-		if (_isWayPointing == true) {
-			unit.moveDestinations.Add (_targetLoc);
-			agent.SetDestination (unit.moveDestinations [0]);
-		} else {
-			unit.moveDestinations.Clear ();
-			unit.moveDestinations.Add (_targetLoc);
-			agent.SetDestination (_targetLoc);
+			if (_isWayPointing == true) {
+				unit.moveDestinations.Add (_targetLoc);
+				agent.SetDestination (unit.moveDestinations [0]);
+			} else {
+				unit.moveDestinations.Clear ();
+				unit.moveDestinations.Add (_targetLoc);
+				agent.SetDestination (_targetLoc);
+			}
 		}
 
 		yield return null;

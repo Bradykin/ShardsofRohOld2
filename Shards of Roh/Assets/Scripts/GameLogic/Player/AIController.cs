@@ -8,52 +8,38 @@ public class AIController : MonoBehaviour {
 	public List<Strategies> strategies { get; protected set; }
 
 	//Variables that denote and track the AI goals
-	public List<ObjectBase> objectCreationPriorities { get; protected set; }
+	public List<AIQueue> creationQueue { get; protected set; }
+
+	public Vector3 constructionPriorities { get; set; }
+	public Vector3 commandingPriorities { get; set; } 
 	public Resource resourcePriorities { get; protected set; }
 	public float buildPriorities;
 
 	// Use this for initialization
 	void Start () {
-		objectCreationPriorities = new List<ObjectBase> ();
+		creationQueue = new List<AIQueue> ();
 		strategies = new List<Strategies> ();
 		if (player.name != "Nature") {
+			strategies.Add (new StrategyPriorityCalculator (this));
+			strategies.Add (new ObjectQueuePlanner (this));
 			strategies.Add (new GatherResources (this));
 			strategies.Add (new CreateObjects (this));
 		}
 
-		resourcePriorities = new Resource (0, 0, 0);
+		resourcePriorities = new Resource (0, 0, 0, 0);
 
-		Unit newUnit0 = ObjectFactory.createUnitByName ("Worker", player);
-		Unit newUnit1 = ObjectFactory.createUnitByName ("Worker", player);
-		Unit newUnit2 = ObjectFactory.createUnitByName ("Worker", player);
-		Unit newUnit3 = ObjectFactory.createUnitByName ("Worker", player);
+		creationQueue.Add (new AIQueue ("Unit", ObjectFactory.createUnitByName ("Worker", player)));
+		creationQueue.Add (new AIQueue ("Unit", ObjectFactory.createUnitByName ("Worker", player)));
+		creationQueue.Add (new AIQueue ("Unit", ObjectFactory.createUnitByName ("Worker", player)));
 
-		objectCreationPriorities.Add (newUnit0);
-		objectCreationPriorities.Add (newUnit1);
-		objectCreationPriorities.Add (newUnit2);
-		objectCreationPriorities.Add (newUnit3);
+		creationQueue.Add (new AIQueue ("Research", null, ResearchFactory.createResearchByName ("Age2", player)));
 
-		Building newBuilding0 = ObjectFactory.createBuildingByName ("Stables", player, false);
-		Building newBuilding1 = ObjectFactory.createBuildingByName ("Stables", player, false);
-		Building newBuilding2 = ObjectFactory.createBuildingByName ("Barracks", player, false);
-		Building newBuilding3 = ObjectFactory.createBuildingByName ("Barracks", player, false);
-		Building newBuilding4 = ObjectFactory.createBuildingByName ("Barracks", player, false);
+		creationQueue.Add (new AIQueue ("Building", ObjectFactory.createBuildingByName ("Barracks", player)));
 
-		objectCreationPriorities.Add (newBuilding0);
-		objectCreationPriorities.Add (newBuilding1);
-		objectCreationPriorities.Add (newBuilding2);
-		objectCreationPriorities.Add (newBuilding3);
-		objectCreationPriorities.Add (newBuilding4);
-
-		Unit newUnit4 = ObjectFactory.createUnitByName ("Spearman", player);
-		Unit newUnit5 = ObjectFactory.createUnitByName ("Spearman", player);
-		Unit newUnit6 = ObjectFactory.createUnitByName ("Swordsman", player);
-
-		objectCreationPriorities.Add (newUnit4);
-		objectCreationPriorities.Add (newUnit5);
-		objectCreationPriorities.Add (newUnit6);
-
-		//Research newResearch = ResearchFactory.createResearchByName ("Age2");
+		creationQueue.Add (new AIQueue ("Unit", ObjectFactory.createUnitByName ("Spearman", player)));
+		creationQueue.Add (new AIQueue ("Unit", ObjectFactory.createUnitByName ("Spearman", player)));
+		creationQueue.Add (new AIQueue ("Unit", ObjectFactory.createUnitByName ("Spearman", player)));
+		creationQueue.Add (new AIQueue ("Unit", ObjectFactory.createUnitByName ("Spearman", player)));
 
 		calculateResourcePriorities ();
 	}
@@ -69,14 +55,23 @@ public class AIController : MonoBehaviour {
 
 	private void calculateResourcePriorities () {
 		resourcePriorities.spend (resourcePriorities);
-		foreach (var r in objectCreationPriorities) {
-			resourcePriorities.add (r.cost);
+
+		//THINK OF BEST WAY TO CALCULATE THIS
+		int cap = Mathf.Min (5, creationQueue.Count - 1);
+
+		for (int i = 0; i < cap; i++) {
+			if (i == 0) {
+				for (int p = 0; p < cap; p++) {
+					resourcePriorities.add (creationQueue [i].getCost ().getNormalized ());
+				}
+			}
+			resourcePriorities.add (creationQueue [i].getCost ().getNormalized ());
 		}
 
 		buildPriorities = 0;
 		foreach (var r in player.buildings) {
 			if (r.building.isBuilt == false) {
-				buildPriorities += r.building.health;
+				buildPriorities += Mathf.Max (r.building.health / 2.0f, (r.building.health - r.building.curHealth) / 1.0f);
 			}
 		}
 	}

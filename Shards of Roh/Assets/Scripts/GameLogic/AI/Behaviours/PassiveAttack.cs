@@ -13,6 +13,7 @@ public class PassiveAttack : Behaviours {
 	public PassiveAttack (UnitContainer _unitInfo) {
 		name = "PassiveAttack";
 		active = true;
+		behaviourType = "Passive"; 
 		unitInfo = _unitInfo;
 	}
 
@@ -33,7 +34,6 @@ public class PassiveAttack : Behaviours {
 					if (target != null) {
 						timer = 0.0f;
 						checkAt = 0.0f;
-						GameManager.print (target.unit.owner.name);
 						unitInfo.unit.setAttackTarget (target);
 					} else {
 						checkAt += 1.0f;

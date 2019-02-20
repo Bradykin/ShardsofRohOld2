@@ -15,7 +15,7 @@ public class AddToUnitQueue : Ability {
 		targetType = TargetType.None;
 	}
 
-	//If you have the required resources and required research for this unit, add it to the queue of the source building
+	//If you have the required resources and required prerequisites for this unit, add it to the queue of the source building
 	public override void enact (Player owner, Unit targetUnit = null, Building targetBuilding = null, Vector3 targetPos = new Vector3 ()) {
 		Unit newUnit = ObjectFactory.createUnitByName (unitName, GameManager.addPlayerToGame (owner.name));
 		if (source.isBuilt) {

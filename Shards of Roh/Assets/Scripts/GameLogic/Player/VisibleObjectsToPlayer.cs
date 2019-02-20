@@ -28,6 +28,10 @@ public class VisibleObjectsToPlayer {
 
 		timer += Time.deltaTime;
 		if (timer > 0.25f) {
+			//if (player.name != "Player") {
+			//	GameManager.print ("ICANSEETHISMANY: " + visibleEnemyUnits.Count);
+			//}
+
 			visiblePlayerUnits.Clear ();
 			visiblePlayerBuildings.Clear ();
 			visibleResourceUnits.Clear ();

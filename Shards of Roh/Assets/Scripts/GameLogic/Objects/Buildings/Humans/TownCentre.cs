@@ -10,10 +10,11 @@ public class TownCentre : Building {
 		race = "Humans";
 		owner = _owner;
 		health = 1000;
-		cost = new Resource (0, 0, 50);
+		cost = new Resource (0, 0, 50, 0);
 		populationValue = 10;
 
 		abilities.Add (new AddToUnitQueue ("Worker", this));
+		abilities.Add (new AddToUnitQueue ("Scout", this));
 		abilities.Add (new AddToResearchQueue ("Age2", this));
 	}
 }

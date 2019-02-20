@@ -10,6 +10,12 @@ public class ObjectFactory : MonoBehaviour {
 		return unit;
 	}
 
+	public static Scout createScout (Player _owner) {
+		Scout unit = new Scout (_owner);
+		unit.initPostCreate ();
+		return unit;
+	}
+
 	public static Axeman createAxeman (Player _owner) {
 		Axeman unit = new Axeman (_owner);
 		unit.initPostCreate ();
@@ -179,9 +185,17 @@ public class ObjectFactory : MonoBehaviour {
 		return building;
 	}
 
+	public static Metal createMetal (Player _owner, bool _isBuilt) {
+		Metal building = new Metal (_owner);
+		building.initPostCreate (_isBuilt);
+		return building;
+	}
+
 	public static Unit createUnitByName (string _name, Player _owner) {
 		if (_name == "Worker" || _name == "Worker(Clone)") {
 			return createWorker (_owner);
+		} else if (_name == "Scout" || _name == "Scout(Clone)") {
+			return createScout (_owner);
 		} else if (_name == "Axeman" || _name == "Axeman(Clone)") {
 			return createAxeman (_owner);
 		} else if (_name == "Spearman" || _name == "Spearman(Clone)") {
@@ -244,6 +258,8 @@ public class ObjectFactory : MonoBehaviour {
 			return createWood (_owner, _isBuilt);
 		} else if (_name == "Gold" || _name == "Gold(Clone)") {
 			return createGold (_owner, _isBuilt);
+		} else if (_name == "Metal" || _name == "Metal(Clone)") {
+			return createMetal (_owner, _isBuilt);
 		}
 
 		print ("Fail to find name - ObjectFactory: " + _name);

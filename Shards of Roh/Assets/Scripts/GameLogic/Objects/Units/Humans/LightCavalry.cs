@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Enum;
 
 public class LightCavalry : Unit {
 
@@ -11,7 +12,7 @@ public class LightCavalry : Unit {
 		race = "Humans";
 		owner = _owner;
 		health = 100;
-		cost = new Resource (0, 0, 50);
+		cost = new Resource (0, 0, 50, 0);
 
 		unitSetup ();
 
@@ -20,10 +21,10 @@ public class LightCavalry : Unit {
 		attackRange = 1.0f;
 		attackSpeed = 1.0f;
 		damageCheck = 0.5f;
-		moveSpeed = 7;
+		moveSpeed = 11;
 		populationCost = 1;
 		sightRadius = 15;
-		isVillager = false;
+		unitType = UnitType.Cavalry;
 		queueTime = 5.0f;
 		batchSize = 5;
 	}

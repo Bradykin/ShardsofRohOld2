@@ -17,6 +17,7 @@ public class VisibleObjectsToObject {
 	public List<BuildingContainer> visibleResourceFood { get; protected set; }
 	public List<BuildingContainer> visibleResourceWood { get; protected set; }
 	public List<BuildingContainer> visibleResourceGold { get; protected set; }
+	public List<BuildingContainer> visibleResourceMetal { get; protected set; }
 
 	public UnitContainer closestPlayerUnit { get; protected set; }
 	public BuildingContainer closestPlayerBuilding { get; protected set; }
@@ -30,6 +31,7 @@ public class VisibleObjectsToObject {
 	public BuildingContainer closestResourceFood { get; protected set; }
 	public BuildingContainer closestResourceWood { get; protected set; }
 	public BuildingContainer closestResourceGold { get; protected set; }
+	public BuildingContainer closestResourceMetal { get; protected set; }
 
 	public float distanceToClosestPlayerUnitSqr { get; protected set; }
 	public float distanceToClosestPlayerBuildingSqr { get; protected set; }
@@ -43,6 +45,7 @@ public class VisibleObjectsToObject {
 	public float distanceToClosestResourceFoodSqr { get; protected set; }
 	public float distanceToClosestResourceWoodSqr { get; protected set; }
 	public float distanceToClosestResourceGoldSqr { get; protected set; }
+	public float distanceToClosestResourceMetalSqr { get; protected set; }
 
 
 	public VisibleObjectsToObject () {
@@ -58,6 +61,7 @@ public class VisibleObjectsToObject {
 		visibleResourceFood = new List<BuildingContainer> ();
 		visibleResourceWood = new List<BuildingContainer> ();
 		visibleResourceGold = new List<BuildingContainer> ();
+		visibleResourceMetal = new List<BuildingContainer> ();
 
 		resetVisibleObjects ();
 	}
@@ -82,6 +86,7 @@ public class VisibleObjectsToObject {
 		closestResourceFood = null;
 		closestResourceWood = null;
 		closestResourceGold = null;
+		closestResourceMetal = null;
 
 		distanceToClosestPlayerUnitSqr = 1000000;
 		distanceToClosestPlayerBuildingSqr = 1000000;
@@ -95,6 +100,7 @@ public class VisibleObjectsToObject {
 		distanceToClosestResourceFoodSqr = 1000000;
 		distanceToClosestResourceWoodSqr = 1000000;
 		distanceToClosestResourceGoldSqr = 1000000;
+		distanceToClosestResourceMetalSqr = 1000000;
 	}
 
 	public void doCalculations () {
@@ -173,6 +179,14 @@ public class VisibleObjectsToObject {
 			if (_sqrDistance <= distanceToClosestResourceGoldSqr) {
 				distanceToClosestResourceGoldSqr = _sqrDistance;
 				closestResourceGold = _resourceBuilding;
+			}
+		}
+
+		if (_resourceBuilding.building.resourceType == ResourceType.Metal) {
+			visibleResourceMetal.Add (_resourceBuilding);
+			if (_sqrDistance <= distanceToClosestResourceMetalSqr) {
+				distanceToClosestResourceMetalSqr = _sqrDistance;
+				closestResourceMetal = _resourceBuilding;
 			}
 		}
 	}

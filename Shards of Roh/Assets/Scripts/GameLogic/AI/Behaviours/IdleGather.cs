@@ -16,8 +16,9 @@ public class IdleGather : Behaviours {
 		active = true;
 		behaviourType = "Idle";
 		unitInfo = _unitInfo;
-		resourceType = _resourceType;
 		unitInfo.removeBehaviourByType (behaviourType, this);
+
+		resourceType = _resourceType;
 	}
 
 	public override void enact () {
@@ -42,6 +43,10 @@ public class IdleGather : Behaviours {
 				} else if (resourceType == ResourceType.Gold) {
 					if (unitInfo.unit.visibleObjects.visibleResourceGold.Count > 0) {
 						target = unitInfo.unit.visibleObjects.closestResourceGold;
+					}
+				} else if (resourceType == ResourceType.Metal) {
+					if (unitInfo.unit.visibleObjects.visibleResourceMetal.Count > 0) {
+						target = unitInfo.unit.visibleObjects.closestResourceMetal;
 					}
 				}
 

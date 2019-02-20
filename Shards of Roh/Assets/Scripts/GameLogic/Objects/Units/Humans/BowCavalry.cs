@@ -14,6 +14,6 @@ public class BowCavalry : Unit {
 		attackSpeed = 1;
 		attackRange = 50;
 		sightRadius = 40;
-		cost = new Resource (0, 0, 50);
+		cost = new Resource (0, 0, 50, 0);
 	}
 }

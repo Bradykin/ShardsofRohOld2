@@ -24,6 +24,7 @@ public class MouseController : MonoBehaviour {
 		mousePosition.y = Input.mousePosition.y;
 		zoomValue = Input.GetAxis ("Mouse ScrollWheel");
 
+		checkMouseover ();
 		handleLeftClick ();
 		handleRightClick ();
 	}
@@ -33,6 +34,22 @@ public class MouseController : MonoBehaviour {
 			var rect = SelectionBox.getScreenRect (mousePosition1, Input.mousePosition);
 			SelectionBox.drawScreenRect (rect, new Color (0.8f, 0.8f, 0.95f, 0.25f));
 			SelectionBox.drawScreenRectBorder (rect, 2, new Color (0.8f, 0.8f, 0.95f));
+		}
+	}
+
+	//For the purpose of setting the tooptip value and changing the mouse icon based on mouseover.
+	public static void checkMouseover () {
+		//Set Tooltip Value
+		RaycastHit hit;
+		Ray ray = Camera.main.ScreenPointToRay (mousePosition);
+		if (Physics.Raycast (ray, out hit, 1000, GlobalVariables.defaultMask)) {
+			if (hit.collider.gameObject.GetComponent<UnitContainer> () != null) {
+				GameManager.playerContainer.tooltipTarget = hit.collider.gameObject.GetComponent<UnitContainer> ().unit;
+			} else if (hit.collider.gameObject.GetComponent<BuildingContainer> () != null) {
+				GameManager.playerContainer.tooltipTarget = hit.collider.gameObject.GetComponent<BuildingContainer> ().building;
+			} else {
+				GameManager.playerContainer.tooltipTarget = null;
+			}
 		}
 	}
 		

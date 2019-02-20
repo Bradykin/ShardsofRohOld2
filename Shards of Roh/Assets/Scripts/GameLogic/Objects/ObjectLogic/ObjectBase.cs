@@ -14,6 +14,7 @@ public abstract class ObjectBase {
 	//Variables that will default if not declared
 	public string prefabPath { get; protected set; }
 	public List<Research> neededResearch { get; protected set; }
+	public List<Research> researchApplied { get; protected set; }
 	public List<Ability> abilities { get; protected set; }
 	public Vector4 healthbarDimensions { get; protected set; }
 
@@ -22,9 +23,13 @@ public abstract class ObjectBase {
 	public Vector3 curLoc { get; set; }
 	public bool isDead { get; protected set; }
 	public VisibleObjectsToObject visibleObjects { get; protected set; }
+	public string tooltipString { get; protected set; }
+
+	//Variables that the AI uses to understand the purpose of the object
 
 	protected void setup () {
 		neededResearch = new List<Research> ();
+		researchApplied = new List<Research> ();
 		abilities = new List<Ability> ();
 		healthbarDimensions = new Vector4 (1.0f, 1.0f, 2.0f, 0.2f);
 
@@ -62,5 +67,15 @@ public abstract class ObjectBase {
 		}
 
 		return true;
+	}
+
+	public bool hasResearchApplied (string _name) {
+		foreach (var r in researchApplied) {
+			if (r.name == _name) {
+				return true;
+			}
+		}
+
+		return false;
 	}
 }

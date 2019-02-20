@@ -1,21 +1,40 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Enum;
 
 public abstract class Unit : ObjectBase {
 
 	//Variables that must be declared in subclass
-	public int attack { get; protected set; }
+	public float attack { get; protected set; }
 	public float attackRange { get; protected set; }
 	protected float attackSpeed { get; set; } 			//Number of attacks per second
 	protected float damageCheck { get; set; }			//Percentage of the way through attack animation that the damage is dealt
 	public int moveSpeed { get; protected set; }
 	public int populationCost { get; protected set; }
 	public int sightRadius { get; protected set; }
-	public bool isVillager { get; protected set; }
+	public UnitType unitType { get; protected set; }
+	public AttackType attackType { get; protected set; }
 	public float queueTime { get; protected set; }
 	public int batchSize { get; protected set; }
 	public int avoidanceValue { get; set; }
+
+	//Armour Types
+	public float armourSlashing { get; protected set; }
+	public float armourPiercing { get; protected set; }
+	public float armourBludgeoning { get; protected set; }
+	public float armourRanged { get; protected set; }
+	public float armourSiege { get; protected set; }
+	public float armourMagic { get; protected set; }
+
+	//Only relevant if villager
+	public float foodAnimalGatherRate { get; protected set; }
+	public float foodBerryGatherRate { get; protected set; }
+	public float foodFarmGatherRate { get; protected set; }
+	public float woodGatherRate { get; protected set; }
+	public float goldGatherRate { get; protected set; }
+	public float metalGatherRate { get; protected set; }
+	public float buildRate { get; protected set; }
 
 	//Variables that adjust during gameplay
 	public UnitContainer unitTarget { get; protected set; }
@@ -30,9 +49,14 @@ public abstract class Unit : ObjectBase {
 	public UnitContainer gotHitBy  { get; set; }
 	public List<Vector3> moveDestinations { get; private set; }
 	public Vector3 flagPosition { get; set; }
+	public float isCommandedRecently { get; set; }
 
 	public void unitSetup () {
 		setup ();
+
+		foreach (var r in owner.researchList) {
+			r.applyToUnit (this);
+		}
 
 		//Variables from inherited class
 		prefabPath = "Prefabs/" + race + "/Units/" + name;
@@ -49,6 +73,7 @@ public abstract class Unit : ObjectBase {
 		isAttacking = false;
 		gotHit = false;
 		gotHitBy = null;
+		isCommandedRecently = 0;
 	}
 
 	public void update () {
@@ -56,9 +81,23 @@ public abstract class Unit : ObjectBase {
 			isCombatTimer -= Time.deltaTime;
 		}
 
+		if (isCommandedRecently > 0) {
+			isCommandedRecently -= Time.deltaTime;
+		}
+
+		if (isCommandedRecently < 0) {
+			isCommandedRecently = 0;
+		}
+
+		if (name == "Scout" || name == "Scout(Clone)") {
+			//GameManager.print (isCommandedRecently);
+		}
+
 		if (curHealth <= 0) {
 			isDead = true;
 		}
+
+		updateToolTip ();
 	}
 
 	public void passiveAttackTimer () {
@@ -137,5 +176,27 @@ public abstract class Unit : ObjectBase {
 	public void dropAttackTarget () {
 		unitTarget = null;
 		buildingTarget = null;
+		isAttacking = false;
+	}
+
+	public void activateResearch (Research _research) {
+		if (hasResearchApplied (_research.name) == false) {
+			researchApplied.Add (_research);
+			if (_research.name == "AnimalTracking") {
+				health += 10.0f;
+				attack += 1.0f;
+				foodAnimalGatherRate += 0.1f;
+			} else if (_research.name == "Forestry") {
+				foodBerryGatherRate += 0.1f;
+				woodGatherRate += 0.1f;
+			} else if (_research.name == "MineralExtraction") {
+				goldGatherRate += 0.1f;
+				metalGatherRate += 0.1f;
+			}
+		}
+	}
+
+	public void updateToolTip () {
+		tooltipString = name;
 	}
 }

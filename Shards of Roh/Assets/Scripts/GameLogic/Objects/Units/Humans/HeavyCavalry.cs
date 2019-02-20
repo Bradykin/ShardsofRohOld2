@@ -14,6 +14,6 @@ public class HeavyCavalry : Unit {
 		attackSpeed = 0.75f;
 		attackRange = 2;
 		sightRadius = 40;
-		cost = new Resource (0, 0, 50);
+		cost = new Resource (0, 0, 50, 0);
 	}
 }

@@ -20,6 +20,9 @@ public class AbilityPanelDisplay : MonoBehaviour {
 	public Image panel13;
 	public Image panel14;
 	public Image panel15;
+	public Image panel16;
+	public Image panel17;
+	public Image panel18;
 	public List<Image> panels = new List<Image> ();
 
 	// Use this for initialization
@@ -39,6 +42,9 @@ public class AbilityPanelDisplay : MonoBehaviour {
 		panels.Add (panel13);
 		panels.Add (panel14);
 		panels.Add (panel15);
+		panels.Add (panel16);
+		panels.Add (panel17);
+		panels.Add (panel18);
 	}
 	
 	// Update is called once per frame
@@ -49,10 +55,10 @@ public class AbilityPanelDisplay : MonoBehaviour {
 	private void updateAbilityPanelDisplay () {
 		Player player = GameManager.playerContainer.player;
 		List<Ability> abilities = new List<Ability> ();
-		if (player.curUnitTarget.Count > 0) {
-			abilities = player.curUnitTarget [0].unit.abilities;
-		} else if (player.curBuildingTarget.Count > 0) {
-			abilities = player.curBuildingTarget [0].building.abilities;
+		if (player.curUnitFocusIndex != -1) {
+			abilities = player.curUnitTarget [player.curUnitFocusIndex].unit.abilities;
+		} else if (player.curBuildingFocusIndex != -1) {
+			abilities = player.curBuildingTarget [player.curBuildingFocusIndex].building.abilities;
 		} 
 
 		for (int i = 0; i < panels.Count; i++) {

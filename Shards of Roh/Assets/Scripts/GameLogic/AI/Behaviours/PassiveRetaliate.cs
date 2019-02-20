@@ -2,13 +2,13 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-//PassiveAttack Behaviour gives a unit the behaviour of "If not attacking or moving, and there is an enemy unit nearby, set them as attack target
-//Similar to IdleAttack except doesn't disable itself idling
+//PassiveRetaliate Behaviour gives a unit the behaviour of "If attacked, and not attacking or moving, set the attacker as attack target
+//Might make this trigger whilst attacking/moving, or make a second version that does that. Undecided.
 //Unlike Idle behaviours, Passive behaviours have multiple various criteria for triggering, based on what the unit is currently doing, and are permanent
 public class PassiveRetaliate : Behaviours {
 
 	public PassiveRetaliate (UnitContainer _unitInfo) {
-		name = "PassiveRetaliatee";
+		name = "PassiveRetaliate";
 		active = true;
 		behaviourType = "Passive";
 		unitInfo = _unitInfo;

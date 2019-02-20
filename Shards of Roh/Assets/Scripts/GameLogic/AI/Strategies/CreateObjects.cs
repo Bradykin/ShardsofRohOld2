@@ -13,13 +13,16 @@ public class CreateObjects : Strategies {
 		AI = _AI; 
 	}
 
+	//Check if the next object in the queue is affordable. If it is, determine what type of object it is, 
 	public override void enact () {
-		if (AI.objectCreationPriorities.Count > 0) {
-			if (AI.player.resource.hasEnough (AI.objectCreationPriorities [0].cost)) {
-				if (AI.objectCreationPriorities [0] is Building) {
+		if (AI.creationQueue.Count > 0) {
+			if (AI.player.resource.hasEnough (AI.creationQueue [0].getCost ())) {
+				if (AI.creationQueue [0].type == "Unit") {
+					tryMakeUnit (AI.creationQueue [0].objectValue.name);
+				} else if (AI.creationQueue [0].type == "Building") {
 					tryPlaceBuilding (chooseBuildingLocation ());
-				} else if (AI.objectCreationPriorities [0] is Unit) {
-					tryMakeUnit (AI.objectCreationPriorities [0].name);
+				} else if (AI.creationQueue [0].type == "Research") {
+					tryQueueResearch (AI.creationQueue [0].research.name);
 				} else {
 					GameManager.print ("WRONG");
 				}
@@ -27,10 +30,67 @@ public class CreateObjects : Strategies {
 		}
 	}
 
+	//Find a place to make the unit, if one is available.
+	//Compile a list of possible spawn points, then check if any of them have an active unfinished queue group
+	public void tryMakeUnit (string _unitName) {
+		if (AI.player.hasPopulationSpace (ObjectFactory.createUnitByName (_unitName, AI.player).populationCost)) {
+
+			List<Building> possibleSpawnPoints = new List<Building> ();
+
+			foreach (var r in AI.player.buildings) {
+				if (r.building.hasAbility ("Spawn " + _unitName) && r.building.isBuilt) {
+					possibleSpawnPoints.Add (r.building);
+				}
+			}
+
+			//If there is a possible spawn point
+			if (possibleSpawnPoints.Count > 0) {
+				List<Building> spawnPoints = new List<Building> ();
+
+				//Check if there is an unfinished batch to add new unit to
+				foreach (var r in possibleSpawnPoints) {
+					foreach (var u in r.unitQueue) {
+						if (u.unit.name == _unitName && u.getFull () == false) {
+							spawnPoints.Add (r);
+							break;
+						}
+					}
+				}
+
+				//If there is an unfinished batch to add new unit to
+				if (spawnPoints.Count > 0) {
+					spawnPoints [Random.Range (0, spawnPoints.Count - 1)].useAbility ("Spawn " + _unitName);
+				} else {
+					//If no unfinished batch to add new unit to, instead choose building with shortest existing queue
+					int smallestQueue = 1000000;
+					foreach (var r in possibleSpawnPoints) {
+						if (r.unitQueue.Count < smallestQueue) {
+							smallestQueue = r.unitQueue.Count;
+						}
+					}
+
+					foreach (var r in possibleSpawnPoints) {
+						if (r.unitQueue.Count == smallestQueue) {
+							spawnPoints.Add (r);
+						}
+					}
+					if (spawnPoints.Count == 0) {
+						GameManager.print ("Something went wrong, I cut all my spawnPoints");
+					} else {
+						spawnPoints [Random.Range (0, spawnPoints.Count - 1)].useAbility ("Spawn " + _unitName);
+					}
+				}
+				AI.creationQueue.RemoveAt (0);
+			}
+		}
+	}
+
+	//Find a place to put a new building
+	//Use chooseBuildingLocations to generate a random list of locations, then try the locations one by one.
 	public void tryPlaceBuilding (List<Vector3> buildingLocations) {
 		if (buildingLocations.Count > 0) {
-			if (AI.player.createBuildingFoundation (AI.objectCreationPriorities [0].name, buildingLocations [0]) == true) {
-				AI.objectCreationPriorities.RemoveAt (0);
+			if (AI.player.createBuildingFoundation (AI.creationQueue [0].objectValue.name, buildingLocations [0]) == true) {
+				AI.creationQueue.RemoveAt (0);
 			} else {
 				buildingLocations.RemoveAt (0);
 				tryPlaceBuilding (buildingLocations);
@@ -38,11 +98,9 @@ public class CreateObjects : Strategies {
 		}
 	}
 
+	//Make a sublist of positionsAroundBuilding, then sort it based on distance from the current structures.
 	public List<Vector3> chooseBuildingLocation () {
 		List<Vector3> positionsAround = positionsAroundBuilding ();
-
-		//Current problems: PositionsAround contains spots that overlap with other buildings. Checking this many buildings for whether they are colliding with something is expensive.
-		//Current attempt: make a sublist of positionsAround randomly, then order them by which is closest to the current buildings.
 
 		List<Vector3> positionsOptions = new List<Vector3> ();
 		List<float> positionsDistance = new List<float> ();
@@ -76,6 +134,7 @@ public class CreateObjects : Strategies {
 		return positionsOptions;
 	}
 
+	//Generate a large list of random building locations around current buildings
 	public List<Vector3> positionsAroundBuilding () {
 		List<Vector3> positionsAround = new List<Vector3> ();
 
@@ -94,54 +153,38 @@ public class CreateObjects : Strategies {
 
 		return positionsAround;
 	}
-		
-	public void tryMakeUnit (string _unitName) {
-		if (AI.player.hasPopulationSpace (ObjectFactory.createUnitByName (_unitName, AI.player).populationCost)) {
 
-			List<Building> possibleSpawnPoints = new List<Building> ();
+	//Choose a location to research the building.
+	public void tryQueueResearch (string _researchName) {
+		List<Building> possibleSpawnPoints = new List<Building> ();
 
-			foreach (var r in AI.player.buildings) {
-				if (r.building.hasAbility ("Spawn " + _unitName) && r.building.isBuilt) {
-					possibleSpawnPoints.Add (r.building);
+		foreach (var r in AI.player.buildings) {
+			if (r.building.hasAbility ("Research " + _researchName) && r.building.isBuilt) {
+				possibleSpawnPoints.Add (r.building);
+			}
+		}
+
+		//If there is a possible spawn point
+		if (possibleSpawnPoints.Count > 0) {
+			List<Building> spawnPoints = new List<Building> ();
+			//Add research to the building with the shortest research queue
+			int smallestQueue = 1000000;
+			foreach (var r in possibleSpawnPoints) {
+				if (r.researchQueue.Count < smallestQueue) {
+					smallestQueue = r.researchQueue.Count;
 				}
 			}
 
-			//If there is a possible spawn point
-			if (possibleSpawnPoints.Count > 0) {
-				List<Building> spawnPoints = new List<Building> ();
-				//Check if there is an unfinished batch to add new unit to
-				foreach (var r in possibleSpawnPoints) {
-					foreach (var u in r.unitQueue) {
-						if (u.unit.name == _unitName && u.getFull () == false) {
-							spawnPoints.Add (r);
-							break;
-						}
-					}
+			foreach (var r in possibleSpawnPoints) {
+				if (r.researchQueue.Count == smallestQueue) {
+					spawnPoints.Add (r);
 				}
-
-				if (spawnPoints.Count > 0) {
-					spawnPoints [Random.Range (0, spawnPoints.Count - 1)].useAbility ("Spawn " + _unitName);
-				} else {
-					//If no unfinished batch to add new unit to, instead choose building with shortest existing queue
-					int smallestQueue = 1000000;
-					foreach (var r in possibleSpawnPoints) {
-						if (r.unitQueue.Count < smallestQueue) {
-							smallestQueue = r.unitQueue.Count;
-						}
-					}
-
-					foreach (var r in possibleSpawnPoints) {
-						if (r.unitQueue.Count == smallestQueue) {
-							spawnPoints.Add (r);
-						}
-					}
-					if (spawnPoints.Count == 0) {
-						
-					} else {
-						spawnPoints [Random.Range (0, spawnPoints.Count - 1)].useAbility ("Spawn " + _unitName);
-					}
-				}
-				AI.objectCreationPriorities.RemoveAt (0);
+			}
+			if (spawnPoints.Count == 0) {
+				GameManager.print ("Something went wrong, I cut all my spawnPoints");
+			} else {
+				spawnPoints [Random.Range (0, spawnPoints.Count - 1)].useAbility ("Research " + _researchName);
+				AI.creationQueue.RemoveAt (0);
 			}
 		}
 	}

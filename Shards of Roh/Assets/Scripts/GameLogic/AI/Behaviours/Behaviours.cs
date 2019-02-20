@@ -21,5 +21,5 @@ public abstract class Behaviours {
 	public string behaviourType { get; protected set; }
 	protected UnitContainer unitInfo { get; set; }
 
-	public abstract void enact();
+	public abstract void enact ();
 }

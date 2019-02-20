@@ -10,7 +10,7 @@ public class Stables : Building {
 		race = "Humans";
 		owner = _owner;
 		health = 200;
-		cost = new Resource (0, 0, 50);
+		cost = new Resource (0, 0, 50, 0);
 
 		abilities.Add (new AddToUnitQueue ("LightCavalry", this));
 		abilities.Add (new AddToUnitQueue ("SpearCavalry", this));

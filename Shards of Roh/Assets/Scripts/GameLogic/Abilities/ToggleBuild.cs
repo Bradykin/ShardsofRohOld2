@@ -24,7 +24,7 @@ public class ToggleBuild : Ability {
 				GameManager.playerContainer.buildToggle.transform.GetChild (i).gameObject.SetActive (false);
 			}
 		} else {
-			//If you have the required research for the buildName, set buildToggleSetting to it, otherwise disable it
+			//If you have the required prerequisites for the buildName, set buildToggleSetting to it, otherwise disable it
 			for (int i = 0; i < GameManager.playerContainer.buildToggle.transform.childCount; i++) {
 				if (GameManager.playerContainer.buildToggle.transform.GetChild (i).gameObject.name == buildName) {
 					bool hasResearch = true;
