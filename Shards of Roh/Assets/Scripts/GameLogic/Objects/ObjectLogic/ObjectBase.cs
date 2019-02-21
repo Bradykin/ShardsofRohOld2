@@ -2,14 +2,10 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public abstract class ObjectBase {
+public abstract class ObjectBase : Purchaseable {
 
 	//Variables that must be declared in subclass
-	public string name { get; protected set; }
-	public string race { get; protected set; }
-	public Player owner { get; set; }
 	public float health { get; protected set; }
-	public Resource cost { get; protected set; }
 
 	//Variables that will default if not declared
 	public string prefabPath { get; protected set; }
@@ -24,8 +20,6 @@ public abstract class ObjectBase {
 	public bool isDead { get; protected set; }
 	public VisibleObjectsToObject visibleObjects { get; protected set; }
 	public string tooltipString { get; protected set; }
-
-	//Variables that the AI uses to understand the purpose of the object
 
 	protected void setup () {
 		neededResearch = new List<Research> ();

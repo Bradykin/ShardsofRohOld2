@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class ObjectFactory : MonoBehaviour {
+public static class ObjectFactory {
 
 	public static Worker createWorker (Player _owner) {
 		Worker unit = new Worker (_owner);
@@ -226,7 +226,7 @@ public class ObjectFactory : MonoBehaviour {
 			return createCatapult (_owner);
 		}
 
-		print ("Fail to find name - ObjectFactory");
+		GameManager.print ("Fail to find name - ObjectFactory");
 		return createArcher (_owner);
 	}
 
@@ -262,7 +262,7 @@ public class ObjectFactory : MonoBehaviour {
 			return createMetal (_owner, _isBuilt);
 		}
 
-		print ("Fail to find name - ObjectFactory: " + _name);
+		GameManager.print ("Fail to find name - ObjectFactory: " + _name);
 		return createWatchTower (_owner, _isBuilt);
 	}
 }

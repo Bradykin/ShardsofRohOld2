@@ -23,7 +23,6 @@ public class Player {
 	//Establish all player variables
 	public Player (string _name, string _race) {
 		name = _name;
-		playerRace = new Humans (this); //This should eventually be based on passing in the _race string
 		units = new List<UnitContainer> ();
 		buildings = new List<BuildingContainer> ();
 		curUnitTarget = new List<UnitContainer> ();
@@ -36,6 +35,7 @@ public class Player {
 		updatePopulation ();
 		updateMaxPopulation ();
 		updateCurFocusIndex ();
+		playerRace = new Humans (this); //This should eventually be based on passing in the _race string
 	}
 
 	//Call various update functions

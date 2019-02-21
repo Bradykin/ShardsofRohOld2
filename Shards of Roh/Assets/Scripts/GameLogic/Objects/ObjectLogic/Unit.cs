@@ -8,7 +8,7 @@ public abstract class Unit : ObjectBase {
 	//Variables that must be declared in subclass
 	public float attack { get; protected set; }
 	public float attackRange { get; protected set; }
-	protected float attackSpeed { get; set; } 			//Number of attacks per second
+	public float attackSpeed { get; protected set; } 			//Number of attacks per second
 	protected float damageCheck { get; set; }			//Percentage of the way through attack animation that the damage is dealt
 	public int moveSpeed { get; protected set; }
 	public int populationCost { get; protected set; }

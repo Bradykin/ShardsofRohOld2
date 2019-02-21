@@ -17,6 +17,7 @@ public class GameManager : MonoBehaviour {
 
 		GameObject instance = Instantiate (Resources.Load ("Player", typeof(GameObject)) as GameObject);
 		playerContainer = instance.GetComponent<PlayerContainer> ();
+
 		playersInGame.Add (playerContainer.player);
 		playerContainer.player.resource.add (new Resource (1000, 1000, 1000, 1000));
 	}

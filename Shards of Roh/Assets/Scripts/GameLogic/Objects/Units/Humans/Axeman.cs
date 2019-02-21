@@ -23,7 +23,7 @@ public class Axeman : Unit {
 		damageCheck = 0.5f;
 		moveSpeed = 7;
 		populationCost = 1;
-		sightRadius = 50;
+		sightRadius = 30;
 		unitType = UnitType.Infantry;
 		attackType = AttackType.Bludgeoning;
 		queueTime = 5.0f;

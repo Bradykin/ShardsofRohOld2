@@ -16,6 +16,9 @@ public abstract class Race {
 	public List<Building> buildingTypes { get; protected set; }
 	public List<Research> researchTypes { get; protected set; }
 
+	//Lists of the objects suitable for various scenarios
+	//public List<Purchaseable> 
+
 	public void setup () {
 		unitTypes = new List<Unit> ();
 		buildingTypes = new List<Building> ();

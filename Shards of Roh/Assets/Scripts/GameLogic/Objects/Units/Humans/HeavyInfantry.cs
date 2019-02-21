@@ -6,6 +6,7 @@ using Enum;
 public class HeavyInfantry : Unit {
 
 	public HeavyInfantry (Player _owner) {
+		
 		//Variables from inherited class
 		name = "HeavyInfantry";
 		race = "Humans";
@@ -39,6 +40,6 @@ public class HeavyInfantry : Unit {
 		//Abilities
 
 		//Required Research
-		neededResearch.Add (ResearchFactory.createResearchByName ("Age3", _owner));
+		neededResearch.Add (ResearchFactory.createResearchByName ("Age2", _owner));
 	}
 }

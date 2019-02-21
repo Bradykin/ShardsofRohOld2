@@ -3,11 +3,9 @@ using System.Collections.Generic;
 using UnityEngine;
 using Enum;
 
-public abstract class Research {
+public abstract class Research : Purchaseable {
 
-	public Player owner { get; protected set; }
-	public string name { get; protected set; }
-	public Resource cost { get; protected set; }
+
 	public float queueTime { get; protected set; }
 	public List<Research> neededResearch { get; protected set; }
 

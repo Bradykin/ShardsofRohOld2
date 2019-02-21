@@ -17,7 +17,7 @@ public class Worker : Unit {
 		unitSetup ();	
 
 		//Variables from current class
-		attack = 4;
+		attack = 2;
 		attackRange = 1.0f;
 		attackSpeed = 1.2f;
 		damageCheck = 0.5f;
@@ -30,22 +30,14 @@ public class Worker : Unit {
 		batchSize = 1;
 
 		//Armour Types - value ranges from 0 to 100. 100 reduces all damage taken, 0 has no effect.
-		armourSlashing = 0;
-		armourPiercing = 0;
-		armourBludgeoning = 0;
-		armourRanged = 0;
-		armourSiege = 0;
-		armourMagic = 0;
+		armourSlashing = 5;
+		armourPiercing = 15;
+		armourBludgeoning = 20;
+		armourRanged = 80;
+		armourSiege = 10;
+		armourMagic = 50;
 
 		//Villager stats
-		/*foodAnimalGatherRate = 1.4f;
-		foodBerryGatherRate = 1.2f;
-		foodFarmGatherRate = 1.1f;
-		woodGatherRate = 1.0f;
-		goldGatherRate = 1.2f;
-		metalGatherRate = 1.0f;
-		buildRate = 10.0f;*/
-
 		foodAnimalGatherRate = 3.0f;
 		foodBerryGatherRate = 3.0f;
 		foodFarmGatherRate = 3.0f;

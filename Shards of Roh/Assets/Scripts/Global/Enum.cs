@@ -33,6 +33,9 @@ namespace Enum {
 	//Denotes whether the object is best for immediate or long term results
 	public enum ScalingPurpose {General, Immediate, LongTerm}
 
+	//Denotes whether the object is best used once (Research), sparingly (Barracks, siege weapons), moderately (Cavalry), or very frequently (common soldiers, workers)
+	public enum FrequencyUse {Once, Few, Moderate, High}
+
 	//Denotes Combat Purpose
 	public enum CombatPurpose {None, General, Offensive, Defensive}
 
