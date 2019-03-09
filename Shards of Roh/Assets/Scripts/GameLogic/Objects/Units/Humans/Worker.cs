@@ -39,7 +39,7 @@ public class Worker : Unit {
 
 		//Villager stats
 		foodAnimalGatherRate = 3.0f;
-		foodBerryGatherRate = 3.0f;
+		foodForageGatherRate = 3.0f;
 		foodFarmGatherRate = 3.0f;
 		woodGatherRate = 3.0f;
 		goldGatherRate = 3.0f;

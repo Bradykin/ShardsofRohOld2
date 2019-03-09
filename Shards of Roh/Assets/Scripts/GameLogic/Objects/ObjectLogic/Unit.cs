@@ -9,7 +9,7 @@ public abstract class Unit : ObjectBase {
 	public float attack { get; protected set; }
 	public float attackRange { get; protected set; }
 	public float attackSpeed { get; protected set; } 			//Number of attacks per second
-	protected float damageCheck { get; set; }			//Percentage of the way through attack animation that the damage is dealt
+	protected float damageCheck { get; set; }					//Percentage of the way through attack animation that the damage is dealt
 	public int moveSpeed { get; protected set; }
 	public int populationCost { get; protected set; }
 	public int sightRadius { get; protected set; }
@@ -29,7 +29,7 @@ public abstract class Unit : ObjectBase {
 
 	//Only relevant if villager
 	public float foodAnimalGatherRate { get; protected set; }
-	public float foodBerryGatherRate { get; protected set; }
+	public float foodForageGatherRate { get; protected set; }
 	public float foodFarmGatherRate { get; protected set; }
 	public float woodGatherRate { get; protected set; }
 	public float goldGatherRate { get; protected set; }
@@ -54,10 +54,6 @@ public abstract class Unit : ObjectBase {
 	public void unitSetup () {
 		setup ();
 
-		foreach (var r in owner.researchList) {
-			r.applyToUnit (this);
-		}
-
 		//Variables from inherited class
 		prefabPath = "Prefabs/" + race + "/Units/" + name;
 
@@ -74,6 +70,10 @@ public abstract class Unit : ObjectBase {
 		gotHit = false;
 		gotHitBy = null;
 		isCommandedRecently = 0;
+
+		foreach (var r in owner.researchList) {
+			r.applyToUnit (this);
+		}
 	}
 
 	public void update () {
@@ -87,10 +87,6 @@ public abstract class Unit : ObjectBase {
 
 		if (isCommandedRecently < 0) {
 			isCommandedRecently = 0;
-		}
-
-		if (name == "Scout" || name == "Scout(Clone)") {
-			//GameManager.print (isCommandedRecently);
 		}
 
 		if (curHealth <= 0) {
@@ -179,8 +175,19 @@ public abstract class Unit : ObjectBase {
 		isAttacking = false;
 	}
 
-	public void activateResearch (Research _research) {
-		if (hasResearchApplied (_research.name) == false) {
+	public void activateResearch (ResearchEffect _research) {
+		if (this.GetType ().GetProperty (_research.effectVariableIdentifier) != null) {
+			if (_research.effectVariableModifier == "+") {
+				this.GetType ().GetProperty (_research.effectVariableIdentifier).SetValue (this, (float) this.GetType ().GetProperty (_research.effectVariableIdentifier).GetValue (this, null) + _research.effectVariableAmount, null);
+			} else if (_research.effectVariableModifier == "*") {
+				//This is definitely, 100% flawed for multiplicative multipliers, and will need to be redone. This will net different results based on order of operations
+				this.GetType ().GetProperty (_research.effectVariableIdentifier).SetValue (this, (float) this.GetType ().GetProperty (_research.effectVariableIdentifier).GetValue (this, null) * _research.effectVariableAmount, null);
+			}
+		} else {
+			GameManager.print ("r.effectVariableIdentifier == null, something broke - error finding " + _research.effectVariableIdentifier);
+		}
+
+		/*if (hasResearchApplied (_research.name) == false) {
 			researchApplied.Add (_research);
 			if (_research.name == "AnimalTracking") {
 				health += 10.0f;
@@ -193,7 +200,7 @@ public abstract class Unit : ObjectBase {
 				goldGatherRate += 0.1f;
 				metalGatherRate += 0.1f;
 			}
-		}
+		}*/
 	}
 
 	public void updateToolTip () {

@@ -42,7 +42,7 @@ public class MouseController : MonoBehaviour {
 		//Set Tooltip Value
 		RaycastHit hit;
 		Ray ray = Camera.main.ScreenPointToRay (mousePosition);
-		if (Physics.Raycast (ray, out hit, 1000, GlobalVariables.defaultMask)) {
+		if (Physics.Raycast (ray, out hit, 1000, GlobalVariables.defaultMask)) {	
 			if (hit.collider.gameObject.GetComponent<UnitContainer> () != null) {
 				GameManager.playerContainer.tooltipTarget = hit.collider.gameObject.GetComponent<UnitContainer> ().unit;
 			} else if (hit.collider.gameObject.GetComponent<BuildingContainer> () != null) {

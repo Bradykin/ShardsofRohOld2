@@ -7,6 +7,7 @@ public class GameManager : MonoBehaviour {
 
 	public static PlayerContainer playerContainer;
 	public static List<Player> playersInGame = new List<Player> ();
+	public static float gameClock;
 
 	// Use this for initialization
 	void Start () {
@@ -14,6 +15,7 @@ public class GameManager : MonoBehaviour {
 		SceneManager.LoadScene ("TestMap", LoadSceneMode.Additive);
 		SelectionBox.initPostCreate ();
 		GlobalVariables.setup ();
+		gameClock = 0;
 
 		GameObject instance = Instantiate (Resources.Load ("Player", typeof(GameObject)) as GameObject);
 		playerContainer = instance.GetComponent<PlayerContainer> ();
@@ -24,7 +26,7 @@ public class GameManager : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-		
+		gameClock += Time.deltaTime;
 	}
 
 	// Add the player to the game if it does not yet exist, or return it if it does

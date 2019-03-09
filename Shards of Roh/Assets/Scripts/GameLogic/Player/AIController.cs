@@ -20,7 +20,7 @@ public class AIController : MonoBehaviour {
 		creationQueue = new List<AIQueue> ();
 		strategies = new List<Strategies> ();
 		if (player.name != "Nature") {
-			strategies.Add (new StrategyPriorityCalculator (this));
+			//	strategies.Add (new StrategyPriorityCalculator (this));
 			strategies.Add (new ObjectQueuePlanner (this));
 			strategies.Add (new GatherResources (this));
 			strategies.Add (new CreateObjects (this));
@@ -28,6 +28,7 @@ public class AIController : MonoBehaviour {
 
 		resourcePriorities = new Resource (0, 0, 0, 0);
 
+		creationQueue.Add (new AIQueue ("Research", null, ResearchFactory.createResearchByName ("Forestry", player)));
 		creationQueue.Add (new AIQueue ("Unit", ObjectFactory.createUnitByName ("Worker", player)));
 		creationQueue.Add (new AIQueue ("Unit", ObjectFactory.createUnitByName ("Worker", player)));
 		creationQueue.Add (new AIQueue ("Unit", ObjectFactory.createUnitByName ("Worker", player)));

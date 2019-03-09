@@ -17,20 +17,20 @@ public class Spearman : Unit {
 		unitSetup ();
 
 		//Variables from current class
-		attack = 8;
+		attack = 9;
 		attackRange = 1.0f;
-		attackSpeed = 1.05f;
+		attackSpeed = 1.0f;
 		damageCheck = 0.5f;
 		moveSpeed = 7;
 		populationCost = 1;
 		sightRadius = 50;
 		unitType = UnitType.Infantry;
-		attackType = AttackType.Piercing;
+		attackType = AttackType.Slashing;
 		queueTime = 5.0f;
 		batchSize = 5;
 
 		//Armour Types - value ranges from 0 to 100. 100 reduces all damage taken, 0 has no effect.
-		armourSlashing = 0;
+		armourSlashing = 40;
 		armourPiercing = 0;
 		armourBludgeoning = 0;
 		armourRanged = 0;

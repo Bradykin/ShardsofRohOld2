@@ -17,13 +17,12 @@ public class ObjectQueuePlanner : Strategies {
 	}
 
 	public override void enact () {
-		//float[] listTest = ccs.attackTypesOnEnemyUnits ();
-		//float[] listTest = ccs.armourTypesOnEnemyUnits ();
+		Vector2 priorityWeighting = new Vector2 (0.5f, 0.5f);
 
-
-		ccs.unitCreationProposal ();
-		//GameManager.print ("ATTACKTYPESOBSERVED: " + listTest[0] + ", " + listTest[1] + ", " + listTest[2] + ", " + listTest[3] + ", " + listTest[4] + ", " + listTest[5]);
-		//Check the values of the vector3 constructionPriorities, to determine how much resources should be offered to each of the miniStrategy functions
+		if (GameManager.gameClock >= 0.5) {
+			ccs.creationProposal (priorityWeighting.x);
+			ecs.creationProposal (priorityWeighting.y);
+		}
 
 		//Consult each miniStrategy on the objects they would like to create
 

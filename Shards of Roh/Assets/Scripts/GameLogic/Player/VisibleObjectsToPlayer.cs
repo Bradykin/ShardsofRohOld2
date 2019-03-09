@@ -1,17 +1,29 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Enum;
 
 public class VisibleObjectsToPlayer {
 
 	private float timer { get; set; }
 	private Player player { get; set; }
+
+	//Lists containing all objects in sight
 	public List<UnitContainer> visiblePlayerUnits { get; protected set; }
 	public List<BuildingContainer> visiblePlayerBuildings { get; protected set; }
 	public List<UnitContainer> visibleResourceUnits { get; protected set; }
 	public List<BuildingContainer> visibleResourceBuildings { get; protected set; }
 	public List<UnitContainer> visibleEnemyUnits { get; protected set; }
 	public List<BuildingContainer> visibleEnemyBuildings { get; protected set; }
+	public List<UnitContainer> rememberedEnemyUnits { get; protected set; }
+
+	//Variables that track abstract values about the previous lists, for more efficient use by other scripts
+	public bool canAccessFoodAnimal { get; protected set; }
+	public bool canAccessFoodForage { get; protected set; }
+	public bool canAccessFoodFarm { get; protected set; }
+	public bool canAccessWood { get; protected set; }
+	public bool canAccessGold { get; protected set; }
+	public bool canAccessMetal { get; protected set; }
 
 	public VisibleObjectsToPlayer (Player _player) {
 		player = _player;
@@ -22,6 +34,7 @@ public class VisibleObjectsToPlayer {
 		visibleResourceBuildings = new List<BuildingContainer> ();
 		visibleEnemyUnits = new List<UnitContainer> ();
 		visibleEnemyBuildings = new List<BuildingContainer> ();
+		rememberedEnemyUnits = new List<UnitContainer> ();
 	}
 
 	public void updateVisible () {
@@ -39,6 +52,12 @@ public class VisibleObjectsToPlayer {
 			visibleEnemyUnits.Clear ();
 			visibleEnemyBuildings.Clear ();
 			timer = 0;
+			canAccessFoodAnimal = false;
+			canAccessFoodForage = false;
+			canAccessFoodFarm = false;
+			canAccessWood = false;
+			canAccessGold = false;
+			canAccessMetal = false;
 
 			for (int i = 0; i < player.units.Count; i++) {
 				player.units [i].unit.visibleObjects.resetVisibleObjects ();
@@ -59,6 +78,9 @@ public class VisibleObjectsToPlayer {
 						} else if (GameManager.isEnemies (player, r) == true) {
 							if (visibleEnemyUnits.Contains (r.units [k]) == false && distance <= sightRadiusSqr) {
 								visibleEnemyUnits.Add (r.units [k]);
+								if (rememberedEnemyUnits.Contains (r.units [k]) == false) {
+									rememberedEnemyUnits.Add (r.units [k]);
+								}
 							}
 						} else {
 							if (visiblePlayerUnits.Contains (r.units [k]) == false) {
@@ -72,6 +94,15 @@ public class VisibleObjectsToPlayer {
 						if (r.name == "Nature") {
 							if (visibleResourceBuildings.Contains (r.buildings [k]) == false && distance <= sightRadiusSqr) {
 								visibleResourceBuildings.Add (r.buildings [k]);
+								if (r.buildings [k].building.resourceType == ResourceType.Food) {
+									canAccessFoodForage = true;
+								} else if (r.buildings [k].building.resourceType == ResourceType.Wood) {
+									canAccessWood = true;
+								} else if (r.buildings [k].building.resourceType == ResourceType.Gold) {
+									canAccessGold = true;
+								} else if (r.buildings [k].building.resourceType == ResourceType.Metal) {
+									canAccessMetal = true;
+								}
 							}
 						} else if (GameManager.isEnemies (player, r) == true) {
 							if (visibleEnemyBuildings.Contains (r.buildings [k]) == false && distance <= sightRadiusSqr) {

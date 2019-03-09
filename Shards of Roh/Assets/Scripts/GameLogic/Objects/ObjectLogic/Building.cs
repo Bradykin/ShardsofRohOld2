@@ -71,22 +71,22 @@ public abstract class Building : ObjectBase {
 			if (isResource == true) {
 				if (resourceType == ResourceType.Food) {
 					if (foodType == FoodType.Animal) {
-						_attacker.unit.owner.resource.add (new Resource (_attacker.unit.foodAnimalGatherRate, 0, 0, 0));
+						_attacker.unit.owner.addResources (new Resource (_attacker.unit.foodAnimalGatherRate, 0, 0, 0));
 						curHealth -= _attacker.unit.foodAnimalGatherRate;
 					} else if (foodType == FoodType.Forage) {
-						_attacker.unit.owner.resource.add (new Resource (_attacker.unit.foodBerryGatherRate, 0, 0, 0));
-						curHealth -= _attacker.unit.foodBerryGatherRate;
+						_attacker.unit.owner.addResources (new Resource (_attacker.unit.foodForageGatherRate, 0, 0, 0));
+						curHealth -= _attacker.unit.foodForageGatherRate;
 					} else if (foodType == FoodType.Farm) {
-						_attacker.unit.owner.resource.add (new Resource (_attacker.unit.foodFarmGatherRate, 0, 0, 0));
+						_attacker.unit.owner.addResources (new Resource (_attacker.unit.foodFarmGatherRate, 0, 0, 0));
 					}
 				} else if (resourceType == ResourceType.Wood) {
-					_attacker.unit.owner.resource.add (new Resource (0, _attacker.unit.woodGatherRate, 0, 0));
+					_attacker.unit.owner.addResources (new Resource (0, _attacker.unit.woodGatherRate, 0, 0));
 					curHealth -= _attacker.unit.woodGatherRate;
 				} else if (resourceType == ResourceType.Gold) {
-					_attacker.unit.owner.resource.add (new Resource (0, 0, _attacker.unit.goldGatherRate, 0));
+					_attacker.unit.owner.addResources (new Resource (0, 0, _attacker.unit.goldGatherRate, 0));
 					curHealth -= _attacker.unit.goldGatherRate;
 				} else if (resourceType == ResourceType.Metal) {
-					_attacker.unit.owner.resource.add (new Resource (0, 0, 0, _attacker.unit.metalGatherRate));
+					_attacker.unit.owner.addResources (new Resource (0, 0, 0, _attacker.unit.metalGatherRate));
 					curHealth -= _attacker.unit.metalGatherRate;
 				} else {
 					GameManager.print ("Unidentified resource - Building");
@@ -108,6 +108,7 @@ public abstract class Building : ObjectBase {
 		//Gain the next research
 		if (researchQueue.Count > 0) {
 			GameManager.addPlayerToGame (owner.name).researchList.Add (researchQueue [0].research);
+			researchQueue [0].research.applyOnFinish ();
 			researchQueue.RemoveAt (0);
 		}
 	}

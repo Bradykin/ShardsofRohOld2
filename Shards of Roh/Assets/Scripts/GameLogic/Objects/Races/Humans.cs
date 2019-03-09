@@ -33,6 +33,8 @@ public class Humans : Race {
 		unitTypes.Add (ObjectFactory.createUnitByName ("Swordsman", _player));
 		unitTypes.Add (ObjectFactory.createUnitByName ("Worker", _player));
 
-
+		researchTypes.Add (ResearchFactory.createResearchByName ("Age2", _player));
+		researchTypes.Add (ResearchFactory.createResearchByName ("AnimalTracking", _player));
+		researchTypes.Add (ResearchFactory.createResearchByName ("Forestry", _player));
 	}
 }

@@ -11,16 +11,4 @@ public class Age3 : Research {
 		queueTime = 5;
 		neededResearch = new List<Research> ();
 	}
-
-	public override void applyOnFinish () {
-
-	}
-
-	public override void applyToUnit (Unit _unit) {
-
-	}
-
-	public override void applyToBuilding (Building _building) {
-
-	}
 }

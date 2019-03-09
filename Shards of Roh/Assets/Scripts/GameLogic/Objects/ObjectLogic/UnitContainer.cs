@@ -75,6 +75,9 @@ public class UnitContainer : ObjectContainer {
 
 		if (unit.isDead == true) {
 			unit.owner.remCurUnitTarget (this);
+			foreach (var r in GameManager.playersInGame) {
+				r.visibleObjects.rememberedEnemyUnits.Remove (this);
+			}
 			gameObject.GetComponent<CapsuleCollider> ().enabled = false;
 			agent.enabled = false;
 			gameObject.GetComponent<Animator> ().SetBool ("isDead", true);

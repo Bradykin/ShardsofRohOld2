@@ -19,6 +19,7 @@ public class Player {
 	public List<Research> researchList { get; private set; }
 	public Resource resource { get; private set; }
 	public VisibleObjectsToPlayer visibleObjects { get; private set; }
+	public List<Resource> pastResourcesGathered { get; private set; }
 
 	//Establish all player variables
 	public Player (string _name, string _race) {
@@ -32,6 +33,8 @@ public class Player {
 		researchList = new List<Research> ();
 		resource = new Resource (0, 0, 0, 0);
 		visibleObjects = new VisibleObjectsToPlayer (this);
+		pastResourcesGathered = new List<Resource> ();
+		pastResourcesGathered.Add (new Resource (0, 0, 0, 0));
 		updatePopulation ();
 		updateMaxPopulation ();
 		updateCurFocusIndex ();
@@ -288,7 +291,7 @@ public class Player {
 		setCurUnitTarget (newList);
 	}
 
-	//Check if the player has a specific resource. Called by a variety of sources.
+	//Check if the player has a specific research. Called by a variety of sources.
 	public bool hasResearch (Research _research) {
 		foreach (var r in researchList) {
 			if (r.name == _research.name) {
@@ -343,6 +346,15 @@ public class Player {
 		}
 
 		return newDist;
+	}
+
+	public void addResources (Resource _resource) {
+		resource.add (_resource);
+		if (pastResourcesGathered.Count < GameManager.gameClock / 15) {
+			pastResourcesGathered.Add (new Resource (0, 0, 0, 0));
+		}
+
+		pastResourcesGathered [pastResourcesGathered.Count - 1].add (_resource);
 	}
 
 	//This function called by user Input functions, calls the ability of the currently focused target at the specified index

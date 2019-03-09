@@ -30,7 +30,7 @@ public class Scout : Unit {
 		batchSize = 5;
 
 		//Armour Types - value ranges from 0 to 100. 100 reduces all damage taken, 0 has no effect.
-		armourSlashing = 20;
+		armourSlashing = 80;
 		armourPiercing = 5;
 		armourBludgeoning = 5;
 		armourRanged = 60;

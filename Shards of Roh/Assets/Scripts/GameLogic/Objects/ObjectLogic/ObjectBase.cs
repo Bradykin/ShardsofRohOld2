@@ -9,7 +9,6 @@ public abstract class ObjectBase : Purchaseable {
 
 	//Variables that will default if not declared
 	public string prefabPath { get; protected set; }
-	public List<Research> neededResearch { get; protected set; }
 	public List<Research> researchApplied { get; protected set; }
 	public List<Ability> abilities { get; protected set; }
 	public Vector4 healthbarDimensions { get; protected set; }
