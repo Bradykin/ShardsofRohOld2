@@ -11,24 +11,27 @@ public class CombatConstructionStrategizer {
 		player = _AI.player;
 	}
 
-	public void creationProposal (float _priority) {
+	public List<Purchaseable> creationProposal (float _priority, AIPersonality _personality) {
 		//Step 1 - 
-		float randomDrawRange = calculateOptimalPurchaseValues ();
+		float randomDrawRange = calculateOptimalPurchaseValues (_personality);
 		float resourceBudget = _priority * 1000 * Mathf.Min (10, 1 + (int)GameManager.gameClock / 60);
 		//GameManager.print ("Combat budget: " + resourceBudget);
 
-		if (float.IsNaN (randomDrawRange) == false && randomDrawRange > 0) {
-			List <Purchaseable> proposal = generateList (randomDrawRange, resourceBudget);
+		List <Purchaseable> proposal = new List <Purchaseable> ();
 
+		if (float.IsNaN (randomDrawRange) == false && randomDrawRange > 0) {
+			proposal = generateList (randomDrawRange, resourceBudget);
 			/*GameManager.print ("DIVIDE");
 			foreach (var r in proposal) {
 				GameManager.print ("Proposal: " + r.name);
 			}
 			GameManager.print ("DIVIDE");*/
 		}
+
+		return proposal;
 	}
 
-	public float calculateOptimalPurchaseValues () {
+	public float calculateOptimalPurchaseValues (AIPersonality _personality) {
 		//Notes: Currently, this formula takes into account each unit's attack, attack speed, and armour values. It does not account for the following variables that it likely should eventually:
 		//Attack range		- Ranged units should have some kind of multiplier on their attack calculating, for both the enemy unit and picking out the optimal one to build, in the formula based on their range
 		//Unit Types 		- When infantry/cavalry/etc get involved in the combat math formula, they need to be included here
@@ -136,6 +139,7 @@ public class CombatConstructionStrategizer {
 
 		foreach (var r in player.playerRace.unitTypes) {
 			r.AIRelativeScore = r.AIOffensiveScore + r.AIDefensiveScore;
+			//Modify r.AIRelativeScore based on the AIPersonality template
 			totalCombatScoreSums += r.AIRelativeScore;
 
 			if (r.AIRelativeScore > optimalPurchase.AIRelativeScore) {

@@ -11,28 +11,44 @@ public class EconomicConstructionStrategizer {
 		player = _AI.player;
 	}
 
-	public void creationProposal (float _priority) {
-		float randomDrawRange = calculateOptimalPurchaseValues ();
+	public List<Purchaseable> creationProposal (float _priority, AIPersonality _personality) {
+		float randomDrawRange = calculateOptimalPurchaseValues (_personality);
 		float resourceBudget = _priority * 1000 * Mathf.Min (10, 1 + (int)GameManager.gameClock / 60);
 
-		if (float.IsNaN (randomDrawRange) == false && randomDrawRange > 0) {
-			List <Purchaseable> proposal = generateList (randomDrawRange, resourceBudget);
+		List <Purchaseable> proposal = new List <Purchaseable> ();
 
-			/*GameManager.print ("DIVIDE");
-			foreach (var r in proposal) {
-				GameManager.print ("Proposal: " + r.name);
-			}
-			GameManager.print ("DIVIDE");*/
+		if (float.IsNaN (randomDrawRange) == false && randomDrawRange > 0) {
+			proposal = generateList (randomDrawRange, resourceBudget);
+		} else {
+			//GameManager.print (randomDrawRange);
 		}
+
+		return proposal;
 	}
 
-	public float calculateOptimalPurchaseValues () {
+	public float calculateOptimalPurchaseValues (AIPersonality _personality) {
 		Resource predictedNeededResources = pastResourcesGathered ();
 
 		float bestFoodValue = 0;
 		float bestWoodValue = 0;
 		float bestGoldValue = 0;
 		float bestMetalValue = 0;
+
+		foreach (var r in player.playerRace.unitTypes) {
+			r.AIEconomicFoodScore = 0;
+			r.AIEconomicWoodScore = 0;
+			r.AIEconomicGoldScore = 0;
+			r.AIEconomicMetalScore = 0;
+			r.AIEconomicTotalScore = 0;
+		}
+
+		foreach (var r in player.playerRace.researchTypes) {
+			r.AIEconomicFoodScore = 0;
+			r.AIEconomicWoodScore = 0;
+			r.AIEconomicGoldScore = 0;
+			r.AIEconomicMetalScore = 0;
+			r.AIEconomicTotalScore = 0;
+		}
 
 		foreach (var r in player.playerRace.unitTypes) {
 			if (r.unitType == UnitType.Villager) {
@@ -60,8 +76,6 @@ public class EconomicConstructionStrategizer {
 					if (r.AIEconomicWoodScore > bestWoodValue) {
 						bestWoodValue = r.AIEconomicWoodScore;
 					}
-				} else {
-					r.AIEconomicWoodScore = 0;
 				}
 
 				if (player.visibleObjects.canAccessGold == true) {
@@ -69,27 +83,20 @@ public class EconomicConstructionStrategizer {
 					if (r.AIEconomicGoldScore > bestGoldValue) {
 						bestGoldValue = r.AIEconomicGoldScore;
 					}
-				} else {
-					r.AIEconomicGoldScore = 0;
 				}
-
 				if (player.visibleObjects.canAccessMetal == true) {
 					r.AIEconomicMetalScore = r.metalGatherRate * r.attackSpeed;
 					if (r.AIEconomicMetalScore > bestMetalValue) {
 						bestMetalValue = r.AIEconomicMetalScore;
 					}
-				} else {
-					r.AIEconomicMetalScore = 0;
 				}
-			} else {
-				r.AIEconomicFoodScore = 0;
-				r.AIEconomicWoodScore = 0;
-				r.AIEconomicGoldScore = 0;
-				r.AIEconomicMetalScore = 0;
+
+				//GameManager.print (r.name + " STATS: " + r.AIEconomicFoodScore + ", " + r.AIEconomicWoodScore + ", " + r.AIEconomicGoldScore + ", " + r.AIEconomicMetalScore);
 			}
 		}
 
 		foreach (var r in player.playerRace.researchTypes) {
+			r.AIEconomicTotalScore = 0;
 			if (player.hasResearch (r) == false) {
 				bool isResearchRelevant = false;
 				foreach (var e in r.effects) {
@@ -116,21 +123,16 @@ public class EconomicConstructionStrategizer {
 					if (r.AIEconomicMetalScore > bestMetalValue) {
 						bestMetalValue = r.AIEconomicMetalScore;
 					}
-				} else {
-					r.AIEconomicFoodScore = 0;
-					r.AIEconomicWoodScore = 0;
-					r.AIEconomicGoldScore = 0;
-					r.AIEconomicMetalScore = 0;
+
+					//GameManager.print (r.name + " STATS: " + r.AIEconomicFoodScore + ", " + r.AIEconomicWoodScore + ", " + r.AIEconomicGoldScore + ", " + r.AIEconomicMetalScore);
 				}
-			} else {
-				r.AIEconomicFoodScore = 0;
-				r.AIEconomicWoodScore = 0;
-				r.AIEconomicGoldScore = 0;
-				r.AIEconomicMetalScore = 0;
 			}
 		}
 
+		//GameManager.print ("BEST VALUES: " + bestFoodValue + ", " + bestWoodValue + ", " + bestGoldValue + ", " + bestMetalValue);
+
 		Purchaseable optimalPurchase = player.playerRace.unitTypes [0];
+		float optimalPurchaseScore = 0;
 		float totalEconomicScoreSums = 0;
 
 		foreach (var r in player.playerRace.unitTypes) {
@@ -139,15 +141,15 @@ public class EconomicConstructionStrategizer {
 			r.AIEconomicGoldScore = r.AIEconomicGoldScore / bestGoldValue;
 			r.AIEconomicMetalScore = r.AIEconomicMetalScore / bestMetalValue;
 			r.AIEconomicTotalScore = (r.AIEconomicFoodScore * predictedNeededResources.food) + (r.AIEconomicWoodScore * predictedNeededResources.wood) + (r.AIEconomicGoldScore * predictedNeededResources.gold) + (r.AIEconomicMetalScore * predictedNeededResources.metal);
-			totalEconomicScoreSums = totalEconomicScoreSums + r.AIEconomicTotalScore;
 
 			if (float.IsNaN (r.AIEconomicTotalScore)) {
 				GameManager.print (r.name + "NaN ERROR");
 				r.AIEconomicTotalScore = 0;
 			}
 
-			if (r.AIEconomicTotalScore > optimalPurchase.AIEconomicTotalScore) {
+			if (r.AIEconomicTotalScore >= optimalPurchaseScore) {
 				optimalPurchase = r;
+				optimalPurchaseScore = optimalPurchase.AIEconomicTotalScore;
 			}
 		}
 
@@ -157,27 +159,39 @@ public class EconomicConstructionStrategizer {
 			r.AIEconomicGoldScore = r.AIEconomicGoldScore / bestGoldValue;
 			r.AIEconomicMetalScore = r.AIEconomicMetalScore / bestMetalValue;
 			r.AIEconomicTotalScore = (r.AIEconomicFoodScore * predictedNeededResources.food) + (r.AIEconomicWoodScore * predictedNeededResources.wood) + (r.AIEconomicGoldScore * predictedNeededResources.gold) + (r.AIEconomicMetalScore * predictedNeededResources.metal);
-			totalEconomicScoreSums = totalEconomicScoreSums + r.AIEconomicTotalScore;
 
 			if (float.IsNaN (r.AIEconomicTotalScore)) {
 				GameManager.print (r.name + "NaN ERROR");
 				r.AIEconomicTotalScore = 0;
 			}
 
-			if (r.AIEconomicTotalScore > optimalPurchase.AIEconomicTotalScore) {
+			if (r.AIEconomicTotalScore >= optimalPurchaseScore) {
 				optimalPurchase = r;
+				optimalPurchaseScore = optimalPurchase.AIEconomicTotalScore;
 			}
 		}
-		player.playerRace.unitTypes.Sort ((x, y) => y.AIEconomicTotalScore.CompareTo (x.AIEconomicTotalScore));
-		player.playerRace.researchTypes.Sort ((x, y) => y.AIEconomicTotalScore.CompareTo (x.AIEconomicTotalScore));
-
-		/*for (int i = 0; i < player.playerRace.unitTypes.Count; i++) {
-			GameManager.print ("Economy index " + i + " is " + player.playerRace.unitTypes [i].name + " with resource values " + player.playerRace.unitTypes [i].AIEconomicFoodScore + ", " + player.playerRace.unitTypes [i].AIEconomicWoodScore + ", " + player.playerRace.unitTypes [i].AIEconomicGoldScore + ", " + player.playerRace.unitTypes [i].AIEconomicMetalScore);
+			
+		//GameManager.print (optimalPurchaseScore + "OPTIMAL");
+		foreach (var r in player.playerRace.unitTypes) {
+			if (float.IsNaN (r.AIEconomicTotalScore) == false) {
+				r.AIEconomicTotalScore /= optimalPurchaseScore;
+				r.AIEconomicTotalScore = r.AIEconomicTotalScore * r.AIEconomicTotalScore;
+				totalEconomicScoreSums += r.AIEconomicTotalScore;
+				//GameManager.print ("TICK: " + r.name + " " + totalEconomicScoreSums);
+			}
 		}
 
-		for (int i = 0; i < player.playerRace.researchTypes.Count; i++) {
-			GameManager.print ("Research " + player.playerRace.researchTypes [i].name + " HAS EFFECT " + player.playerRace.researchTypes [i].AIEconomicFoodScore + ", " + player.playerRace.researchTypes [i].AIEconomicWoodScore + ", " + player.playerRace.researchTypes [i].AIEconomicGoldScore + ", " + player.playerRace.researchTypes [i].AIEconomicMetalScore);
-		}*/
+		foreach (var r in player.playerRace.researchTypes) {
+			if (float.IsNaN (r.AIEconomicTotalScore) == false) {
+				r.AIEconomicTotalScore /= optimalPurchaseScore;
+				r.AIEconomicTotalScore = r.AIEconomicTotalScore * r.AIEconomicTotalScore;
+				totalEconomicScoreSums += r.AIEconomicTotalScore;
+				//GameManager.print ("TICK: " + r.name + " " + totalEconomicScoreSums);
+			}
+		}
+
+		player.playerRace.unitTypes.Sort ((x, y) => y.AIEconomicTotalScore.CompareTo (x.AIEconomicTotalScore));
+		player.playerRace.researchTypes.Sort ((x, y) => y.AIEconomicTotalScore.CompareTo (x.AIEconomicTotalScore));
 
 		return totalEconomicScoreSums;
 	}

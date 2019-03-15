@@ -20,8 +20,12 @@ public class ObjectQueuePlanner : Strategies {
 		Vector2 priorityWeighting = new Vector2 (0.5f, 0.5f);
 
 		if (GameManager.gameClock >= 0.5) {
-			ccs.creationProposal (priorityWeighting.x);
-			ecs.creationProposal (priorityWeighting.y);
+			List<Purchaseable> objectList = ccs.creationProposal (priorityWeighting.x, AI.personality);
+			objectList.AddRange (ecs.creationProposal (priorityWeighting.y, AI.personality));
+
+			foreach (var r in objectList) {
+				GameManager.print ("Purchase: " + r.name);
+			}
 		}
 
 		//Consult each miniStrategy on the objects they would like to create

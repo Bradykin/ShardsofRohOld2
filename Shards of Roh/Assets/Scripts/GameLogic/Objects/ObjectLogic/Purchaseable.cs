@@ -23,6 +23,7 @@ public abstract class Purchaseable {
 	public float AIEconomicGoldScore { get; set; }
 	public float AIEconomicMetalScore { get; set; }
 	public float AIEconomicTotalScore { get; set; }
+	public float AITotalScore { get; set; }
 	public bool viableDraw { get; set; }
 
 

@@ -5,6 +5,7 @@ using UnityEngine;
 public class AIController : MonoBehaviour {
 
 	public Player player { get; set; }
+	public AIPersonality personality { get; set; }
 	public List<Strategies> strategies { get; protected set; }
 
 	//Variables that denote and track the AI goals
