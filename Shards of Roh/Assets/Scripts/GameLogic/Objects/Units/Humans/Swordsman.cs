@@ -40,6 +40,6 @@ public class Swordsman : Unit {
 		//Abilities
 
 		//Required Research
-		neededResearch.Add (ResearchFactory.createResearchByName ("Age2", _owner));
+		neededResearch.Add ("Age2");
 	}
 }

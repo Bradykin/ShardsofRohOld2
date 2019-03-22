@@ -24,4 +24,7 @@ namespace Enum {
 
 	//Purpose of a Research Effect
 	public enum ResearchPurpose {Offense, Defense, Combat, Economic, CombatEconomic}
+
+	//Races
+	public enum RaceType {None, Humans, Barbarians, Elves, Orcs, Undead, Explorer, All}
 }

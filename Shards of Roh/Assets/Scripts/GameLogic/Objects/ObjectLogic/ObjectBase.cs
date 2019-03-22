@@ -21,7 +21,7 @@ public abstract class ObjectBase : Purchaseable {
 	public string tooltipString { get; protected set; }
 
 	protected void setup () {
-		neededResearch = new List<Research> ();
+		neededResearch = new List<string> ();
 		researchApplied = new List<Research> ();
 		abilities = new List<Ability> ();
 		healthbarDimensions = new Vector4 (1.0f, 1.0f, 2.0f, 0.2f);

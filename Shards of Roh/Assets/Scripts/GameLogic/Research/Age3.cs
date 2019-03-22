@@ -9,6 +9,6 @@ public class Age3 : Research {
 		name = "Age3";
 		cost = new Resource (50, 50, 50, 50);
 		queueTime = 5;
-		neededResearch = new List<Research> ();
+		neededResearch = new List<string> ();
 	}
 }

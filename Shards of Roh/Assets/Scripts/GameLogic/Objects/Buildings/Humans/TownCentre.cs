@@ -16,6 +16,6 @@ public class TownCentre : Building {
 		abilities.Add (new AddToUnitQueue ("Worker", this));
 		abilities.Add (new AddToUnitQueue ("Scout", this));
 		abilities.Add (new AddToResearchQueue ("Age2", this));
-		abilities.Add (new AddToResearchQueue ("Forestry", this));
+		//abilities.Add (new AddToResearchQueue ("Forestry", this));
 	}
 }

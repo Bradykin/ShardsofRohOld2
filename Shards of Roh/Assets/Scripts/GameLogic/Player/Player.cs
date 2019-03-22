@@ -292,9 +292,9 @@ public class Player {
 	}
 
 	//Check if the player has a specific research. Called by a variety of sources.
-	public bool hasResearch (Research _research) {
+	public bool hasResearch (string _research) {
 		foreach (var r in researchList) {
-			if (r.name == _research.name) {
+			if (r.name == _research) {
 				return true;
 			}
 		}

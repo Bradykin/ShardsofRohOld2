@@ -19,7 +19,7 @@ public class AddToResearchQueue : Ability {
 	public override void enact (Player owner, Unit targetUnit = null, Building targetBuilding = null, Vector3 targetPos = new Vector3 ()) {
 		Research newResearch = ResearchFactory.createResearchByName (researchName, owner);
 		if (source.isBuilt) {
-			if (owner.hasResearch (newResearch) == false) {
+			if (owner.hasResearch (newResearch.name) == false) {
 				if (owner.resource.hasEnough (newResearch.cost)) {
 					bool isQueued = false;
 					foreach (var r in owner.buildings) {

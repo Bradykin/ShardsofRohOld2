@@ -5,7 +5,7 @@ using Enum;
 
 public abstract class Ability {
 
-	protected string name;
+	public string name { get; protected set; }
 	protected TargetType targetType = TargetType.None;
 
 	public abstract void enact (Player owner, Unit targetUnit = null, Building targetBuilding = null, Vector3 targetPos = new Vector3 ());

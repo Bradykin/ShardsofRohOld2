@@ -10,6 +10,6 @@ public class MineralExtraction : Research {
 		name = "MineralExtraction";
 		cost = new Resource (0, 50, 100, 0);
 		queueTime = 5;
-		neededResearch = new List<Research> ();
+		neededResearch = new List<string> ();
 	}
 }

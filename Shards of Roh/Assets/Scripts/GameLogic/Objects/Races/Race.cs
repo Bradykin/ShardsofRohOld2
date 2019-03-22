@@ -12,6 +12,10 @@ public abstract class Race {
 	//Variables that adjust during gameplay
 
 	//Lists populated by the subclass
+	//public List<AIEvaluator> unitTypes { get; protected set; }
+	//public List<AIEvaluator> buildingTypes { get; protected set; }
+	//public List<AIEvaluator> researchTypes { get; protected set; }
+
 	public List<Unit> unitTypes { get; protected set; }
 	public List<Building> buildingTypes { get; protected set; }
 	public List<Research> researchTypes { get; protected set; }

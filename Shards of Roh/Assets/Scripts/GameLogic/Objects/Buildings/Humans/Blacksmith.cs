@@ -14,6 +14,6 @@ public class Blacksmith : Building {
 
 		abilities.Add (new AddToUnitQueue ("Catapult", this));
 
-		neededResearch.Add (ResearchFactory.createResearchByName ("Age2", _owner));
+		neededResearch.Add ("Age2");
 	}
 }

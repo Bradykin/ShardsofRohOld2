@@ -10,7 +10,7 @@ public class AnimalTracking : Research {
 		name = "AnimalTracking";
 		cost = new Resource (100, 0, 0, 0);
 		queueTime = 5;
-		neededResearch = new List<Research> ();
+		neededResearch = new List<string> ();
 		effects = new List<ResearchEffect> ();
 
 		effects.Add (new ResearchEffect ("AnimalTracking01", "Unit", ResearchPurpose.Combat, "name", "Worker", "attack", "+", 20.0f));

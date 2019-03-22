@@ -14,8 +14,6 @@ public class Humans : Race {
 	public Humans (Player _player) {
 		setup ();
 
-		//Player testPlayer = new Player ("TESTNAME", "Humans");
-
 		unitTypes.Add (ObjectFactory.createUnitByName ("Archer", _player));
 		unitTypes.Add (ObjectFactory.createUnitByName ("Axeman", _player));
 		unitTypes.Add (ObjectFactory.createUnitByName ("BowCavalry", _player));
@@ -32,6 +30,9 @@ public class Humans : Race {
 		unitTypes.Add (ObjectFactory.createUnitByName ("Spearman", _player));
 		unitTypes.Add (ObjectFactory.createUnitByName ("Swordsman", _player));
 		unitTypes.Add (ObjectFactory.createUnitByName ("Worker", _player));
+
+		buildingTypes.Add (ObjectFactory.createBuildingByName ("TownCentre", _player));
+		buildingTypes.Add (ObjectFactory.createBuildingByName ("Windmill", _player));
 
 		researchTypes.Add (ResearchFactory.createResearchByName ("Age2", _player));
 		researchTypes.Add (ResearchFactory.createResearchByName ("AnimalTracking", _player));

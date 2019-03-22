@@ -5,6 +5,7 @@ using UnityEngine;
 public class AIQueue {
 
 	public string type { get; protected set; }
+	//public Purchaseable purchase { get; protected set; }
 	public ObjectBase objectValue { get; protected set; }
 	public Research research { get; protected set; }
 

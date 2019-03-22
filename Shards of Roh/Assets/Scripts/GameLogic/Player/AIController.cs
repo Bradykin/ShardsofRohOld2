@@ -9,7 +9,7 @@ public class AIController : MonoBehaviour {
 	public List<Strategies> strategies { get; protected set; }
 
 	//Variables that denote and track the AI goals
-	public List<AIQueue> creationQueue { get; protected set; }
+	public List<AIQueue> creationQueue { get; set; }
 
 	public Vector3 constructionPriorities { get; set; }
 	public Vector3 commandingPriorities { get; set; } 
@@ -20,6 +20,7 @@ public class AIController : MonoBehaviour {
 	void Start () {
 		creationQueue = new List<AIQueue> ();
 		strategies = new List<Strategies> ();
+		personality = new AIHumanPersonality1 ();
 		if (player.name != "Nature") {
 			//	strategies.Add (new StrategyPriorityCalculator (this));
 			strategies.Add (new ObjectQueuePlanner (this));
@@ -29,10 +30,10 @@ public class AIController : MonoBehaviour {
 
 		resourcePriorities = new Resource (0, 0, 0, 0);
 
+		creationQueue.Add (new AIQueue ("Unit", ObjectFactory.createUnitByName ("Worker", player)));
+		creationQueue.Add (new AIQueue ("Unit", ObjectFactory.createUnitByName ("Worker", player)));
+		creationQueue.Add (new AIQueue ("Unit", ObjectFactory.createUnitByName ("Worker", player)));
 		creationQueue.Add (new AIQueue ("Research", null, ResearchFactory.createResearchByName ("Forestry", player)));
-		creationQueue.Add (new AIQueue ("Unit", ObjectFactory.createUnitByName ("Worker", player)));
-		creationQueue.Add (new AIQueue ("Unit", ObjectFactory.createUnitByName ("Worker", player)));
-		creationQueue.Add (new AIQueue ("Unit", ObjectFactory.createUnitByName ("Worker", player)));
 
 		creationQueue.Add (new AIQueue ("Research", null, ResearchFactory.createResearchByName ("Age2", player)));
 

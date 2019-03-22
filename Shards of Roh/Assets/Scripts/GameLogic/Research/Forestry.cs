@@ -10,7 +10,7 @@ public class Forestry : Research {
 		name = "Forestry";
 		cost = new Resource (0, 50, 0, 0);
 		queueTime = 5;
-		neededResearch = new List<Research> ();
+		neededResearch = new List<string> ();
 		effects = new List<ResearchEffect> ();
 
 		effects.Add (new ResearchEffect ("Forestry01", "Unit", ResearchPurpose.Economic, "name", "Worker", "foodForageGatherRate", "+", 0.2f));

@@ -11,5 +11,7 @@ public class Windmill : Building {
 		owner = _owner;
 		health = 1000;
 		cost = new Resource (0, 0, 50, 0);
+
+		abilities.Add (new AddToResearchQueue ("Forestry", this));
 	}
 }
