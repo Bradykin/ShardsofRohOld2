@@ -18,13 +18,13 @@ public class ObjectQueuePlanner : Strategies {
 		ccs = new CombatConstructionStrategizer (AI);
 		ecs = new EconomicConstructionStrategizer (AI);
 		bcs = new BuildingConstructionStrategizer (AI);
-		interval = 10;
+		interval = 15;
 	}
 
 	public override void enact () {
 		if (GameManager.gameClock >= 0.5) {
 			interval += Time.deltaTime;
-			if (interval >= 5) {
+			if (interval >= 15 || AI.creationQueue.Count == 0) {
 				interval = 0;
 				ccs.calculateOptimalPurchaseValues ();
 				ecs.calculateOptimalPurchaseValues ();
@@ -41,12 +41,11 @@ public class ObjectQueuePlanner : Strategies {
 				}
 				
 				if (float.IsNaN (totalRange) == false) {
-					List<Purchaseable> objectList = generateList (totalRange, 500 * Mathf.Min (10, 1 + (int)GameManager.gameClock / 60));
+					List<Purchaseable> objectList = generateList (totalRange, 250 * Mathf.Min (10, 1 + (int)GameManager.gameClock / 60));
 
 					sortList (objectList);
 					bcs.calculateBuildingPurchases (objectList);
 
-					AI.creationQueue.Clear ();
 					foreach (var r in objectList) {
 						GameManager.print ("Purchase: " + r.name);
 						string type = "";
@@ -60,7 +59,7 @@ public class ObjectQueuePlanner : Strategies {
 							GameManager.print ("Can't match object Type - ObjectQueuePlanner");
 						}
 
-						//AI.creationQueue.Add (new AIQueue (type, r as ObjectBase));
+						AI.creationQueue = objectList;
 					}
 				}
 			}

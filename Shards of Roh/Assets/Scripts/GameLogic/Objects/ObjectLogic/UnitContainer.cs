@@ -77,6 +77,7 @@ public class UnitContainer : ObjectContainer {
 			unit.owner.remCurUnitTarget (this);
 			foreach (var r in GameManager.playersInGame) {
 				r.visibleObjects.rememberedEnemyUnits.Remove (this);
+				r.visibleObjects.rememberedResourceUnits.Remove (this);
 			}
 			gameObject.GetComponent<CapsuleCollider> ().enabled = false;
 			agent.enabled = false;

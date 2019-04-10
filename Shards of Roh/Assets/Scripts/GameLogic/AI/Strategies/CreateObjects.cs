@@ -16,15 +16,16 @@ public class CreateObjects : Strategies {
 	//Check if the next object in the queue is affordable. If it is, determine what type of object it is, 
 	public override void enact () {
 		if (AI.creationQueue.Count > 0) {
-			if (AI.player.resource.hasEnough (AI.creationQueue [0].getCost ())) {
-				if (AI.creationQueue [0].type == "Unit") {
-					tryMakeUnit (AI.creationQueue [0].objectValue.name);
-				} else if (AI.creationQueue [0].type == "Building") {
+			if (AI.player.resource.hasEnough (AI.creationQueue [0].cost)) {
+				GameManager.print ("CREATING: " + AI.creationQueue [0].name);
+				if (AI.creationQueue [0] is Unit) {
+					tryMakeUnit (AI.creationQueue [0].name);
+				} else if (AI.creationQueue [0] is Building) {
 					tryPlaceBuilding (chooseBuildingLocation ());
-				} else if (AI.creationQueue [0].type == "Research") {
-					tryQueueResearch (AI.creationQueue [0].research.name);
+				} else if (AI.creationQueue [0] is Research) {
+					tryQueueResearch (AI.creationQueue [0].name);
 				} else {
-					GameManager.print ("WRONG");
+					GameManager.print ("Unidentified creationQueue Object - CreateObjects");
 				}
 			}
 		}
@@ -89,7 +90,7 @@ public class CreateObjects : Strategies {
 	//Use chooseBuildingLocations to generate a random list of locations, then try the locations one by one.
 	public void tryPlaceBuilding (List<Vector3> buildingLocations) {
 		if (buildingLocations.Count > 0) {
-			if (AI.player.createBuildingFoundation (AI.creationQueue [0].objectValue.name, buildingLocations [0]) == true) {
+			if (AI.player.createBuildingFoundation (AI.creationQueue [0].name, buildingLocations [0]) == true) {
 				AI.creationQueue.RemoveAt (0);
 			} else {
 				buildingLocations.RemoveAt (0);

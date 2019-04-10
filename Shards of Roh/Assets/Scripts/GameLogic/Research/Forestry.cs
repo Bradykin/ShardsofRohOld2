@@ -13,7 +13,7 @@ public class Forestry : Research {
 		neededResearch = new List<string> ();
 		effects = new List<ResearchEffect> ();
 
-		effects.Add (new ResearchEffect ("Forestry01", "Unit", ResearchPurpose.Economic, "name", "Worker", "foodForageGatherRate", "+", 0.2f));
-		effects.Add (new ResearchEffect ("Forestry02", "Unit", ResearchPurpose.Economic, "name", "Worker", "woodGatherRate", "+", 0.2f));
+		effects.Add (new ResearchEffect ("Forestry01", "Unit", ResearchPurpose.Economic, "name", "Worker", "foodForageGatherRate", "+", 0.8f));
+		effects.Add (new ResearchEffect ("Forestry02", "Unit", ResearchPurpose.Economic, "name", "Worker", "woodGatherRate", "+", 0.8f));
 	}
 }

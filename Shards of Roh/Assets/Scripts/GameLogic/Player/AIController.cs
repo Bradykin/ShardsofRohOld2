@@ -9,7 +9,8 @@ public class AIController : MonoBehaviour {
 	public List<Strategies> strategies { get; protected set; }
 
 	//Variables that denote and track the AI goals
-	public List<AIQueue> creationQueue { get; set; }
+	//public List<AIQueue> creationQueue { get; set; }
+	public List<Purchaseable> creationQueue { get; set; }
 
 	public Vector3 constructionPriorities { get; set; }
 	public Vector3 commandingPriorities { get; set; } 
@@ -18,7 +19,7 @@ public class AIController : MonoBehaviour {
 
 	// Use this for initialization
 	void Start () {
-		creationQueue = new List<AIQueue> ();
+		creationQueue = new List<Purchaseable> ();
 		strategies = new List<Strategies> ();
 		personality = new AIHumanPersonality1 ();
 		if (player.name != "Nature") {
@@ -29,20 +30,6 @@ public class AIController : MonoBehaviour {
 		}
 
 		resourcePriorities = new Resource (0, 0, 0, 0);
-
-		creationQueue.Add (new AIQueue ("Unit", ObjectFactory.createUnitByName ("Worker", player)));
-		creationQueue.Add (new AIQueue ("Unit", ObjectFactory.createUnitByName ("Worker", player)));
-		creationQueue.Add (new AIQueue ("Unit", ObjectFactory.createUnitByName ("Worker", player)));
-		creationQueue.Add (new AIQueue ("Research", null, ResearchFactory.createResearchByName ("Forestry", player)));
-
-		creationQueue.Add (new AIQueue ("Research", null, ResearchFactory.createResearchByName ("Age2", player)));
-
-		creationQueue.Add (new AIQueue ("Building", ObjectFactory.createBuildingByName ("Barracks", player)));
-
-		creationQueue.Add (new AIQueue ("Unit", ObjectFactory.createUnitByName ("Spearman", player)));
-		creationQueue.Add (new AIQueue ("Unit", ObjectFactory.createUnitByName ("Spearman", player)));
-		creationQueue.Add (new AIQueue ("Unit", ObjectFactory.createUnitByName ("Spearman", player)));
-		creationQueue.Add (new AIQueue ("Unit", ObjectFactory.createUnitByName ("Spearman", player)));
 
 		calculateResourcePriorities ();
 	}
@@ -65,10 +52,10 @@ public class AIController : MonoBehaviour {
 		for (int i = 0; i < cap; i++) {
 			if (i == 0) {
 				for (int p = 0; p < cap; p++) {
-					resourcePriorities.add (creationQueue [i].getCost ().getNormalized ());
+					resourcePriorities.add (creationQueue [i].cost.getNormalized ());
 				}
 			}
-			resourcePriorities.add (creationQueue [i].getCost ().getNormalized ());
+			resourcePriorities.add (creationQueue [i].cost.getNormalized ());
 		}
 
 		buildPriorities = 0;

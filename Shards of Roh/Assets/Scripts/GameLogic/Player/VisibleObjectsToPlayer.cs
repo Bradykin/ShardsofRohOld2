@@ -15,7 +15,10 @@ public class VisibleObjectsToPlayer {
 	public List<BuildingContainer> visibleResourceBuildings { get; protected set; }
 	public List<UnitContainer> visibleEnemyUnits { get; protected set; }
 	public List<BuildingContainer> visibleEnemyBuildings { get; protected set; }
+
 	public List<UnitContainer> rememberedEnemyUnits { get; protected set; }
+	public List<UnitContainer> rememberedResourceUnits { get; protected set; }
+	public List<BuildingContainer> rememberedResourceBuildings { get; protected set; }
 
 	//Variables that track abstract values about the previous lists, for more efficient use by other scripts
 	public bool canAccessFoodAnimal { get; protected set; }
@@ -35,6 +38,8 @@ public class VisibleObjectsToPlayer {
 		visibleEnemyUnits = new List<UnitContainer> ();
 		visibleEnemyBuildings = new List<BuildingContainer> ();
 		rememberedEnemyUnits = new List<UnitContainer> ();
+		rememberedResourceUnits = new List<UnitContainer> ();
+		rememberedResourceBuildings = new List<BuildingContainer> ();
 	}
 
 	public void updateVisible () {
@@ -74,6 +79,9 @@ public class VisibleObjectsToPlayer {
 						if (r.name == "Nature") {
 							if (visibleResourceUnits.Contains (r.units [k]) == false && distance <= sightRadiusSqr) {
 								visibleResourceUnits.Add (r.units [k]);
+								if (rememberedResourceUnits.Contains (r.units [k]) == false) {
+									rememberedResourceUnits.Add (r.units [k]);
+								}
 							}
 						} else if (GameManager.isEnemies (player, r) == true) {
 							if (visibleEnemyUnits.Contains (r.units [k]) == false && distance <= sightRadiusSqr) {
@@ -94,6 +102,9 @@ public class VisibleObjectsToPlayer {
 						if (r.name == "Nature") {
 							if (visibleResourceBuildings.Contains (r.buildings [k]) == false && distance <= sightRadiusSqr) {
 								visibleResourceBuildings.Add (r.buildings [k]);
+								if (rememberedResourceBuildings.Contains (r.buildings [k]) == false) {
+									rememberedResourceBuildings.Add (r.buildings [k]);
+								}
 								if (r.buildings [k].building.resourceType == ResourceType.Food) {
 									canAccessFoodForage = true;
 								} else if (r.buildings [k].building.resourceType == ResourceType.Wood) {

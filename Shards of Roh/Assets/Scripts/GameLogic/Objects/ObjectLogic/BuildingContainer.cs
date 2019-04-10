@@ -59,6 +59,9 @@ public class BuildingContainer : ObjectContainer {
 		checkQueues ();
 
 		if (building.isDead == true) {
+			foreach (var r in GameManager.playersInGame) {
+				r.visibleObjects.rememberedResourceBuildings.Remove (this);
+			}
 			GameManager.destroyBuilding (this, building.owner);
 		}
 
