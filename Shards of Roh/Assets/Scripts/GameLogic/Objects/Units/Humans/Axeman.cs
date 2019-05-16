@@ -30,12 +30,12 @@ public class Axeman : Unit {
 		batchSize = 5;
 
 		//Armour Types - value ranges from 0 to 100. 100 reduces all damage taken, 0 has no effect.
-		armourSlashing = 0;
-		armourPiercing = 0;
-		armourBludgeoning = 0;
-		armourRanged = 0;
-		armourSiege = 0;
-		armourMagic = 0;
+		armourSlashing = 5;
+		armourPiercing = 10;
+		armourBludgeoning = 20;
+		armourRanged = 15;
+		armourSiege = 20;
+		armourMagic = 15;
 
 		//Abilities
 

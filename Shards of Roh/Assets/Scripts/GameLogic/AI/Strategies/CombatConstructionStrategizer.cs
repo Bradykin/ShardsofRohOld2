@@ -27,6 +27,13 @@ public class CombatConstructionStrategizer {
 			r.AICombatScore = 0;
 		}
 
+		/* Code block for hypothetical merge of buildings into this
+		 * foreach (var r in ai.player.playerRace.buildingTypes) {
+			r.AIOffensiveScore = 0;
+			r.AIDefensiveScore = 0;
+			r.AICombatScore = 0;
+		}*/
+
 		foreach (var r in ai.player.playerRace.researchTypes) {
 			r.AIOffensiveScore = 0;
 			r.AIDefensiveScore = 0;
@@ -34,7 +41,7 @@ public class CombatConstructionStrategizer {
 		}
 
 		//Step 1.5 - Handling if the AI has no knowledge of enemy team. Process should be changed from "Doing nothing" at some point
-		if (ai.player.visibleObjects.rememberedEnemyUnits.Count == 0) {
+		if (ai.player.visibleObjects.rememberedEnemyUnits.Count == -1) {
 
 		} else {
 			//Step 2 - generate a starting value for each unit and research
@@ -44,10 +51,22 @@ public class CombatConstructionStrategizer {
 			float[] attackTypesObserved = attackTypesOnEnemyUnits ();
 			float[] armourTypesObserved = armourTypesOnEnemyUnits ();
 
+
 			//Parse through the player.race.unitTypes list to see what units would best counter the armour types observed
-			float bestOffenseEvaluation = 0;
+			float bestOffenseEvaluation = 0; 
 			foreach (var r in ai.player.playerRace.unitTypes) {
-				float offenseEvaluation = (r.attack * r.attackSpeed) * (1 - (armourTypesObserved [(int)r.attackType - 1] / 100)); // Higher score = better offensivre evaluation
+				float offenseEvaluation = ((r.attack * r.attackSpeed) * (1 - (armourTypesObserved [(int)r.attackType - 1] / 100))) / r.cost.getTotal (); // Higher score = better offensivre evaluation
+
+				//Clause that boosts value slightly for units you already have an example of
+				float numCurrentlyHave = 0;
+				foreach (var v in ai.player.units) {
+					if (v.unit.name == r.name) {
+						numCurrentlyHave++;
+					}
+				}
+				offenseEvaluation *= Mathf.Min (1.0f + (numCurrentlyHave / 20), 1.3f);
+				//EndClause
+
 				r.AIOffensiveScore = offenseEvaluation;
 
 				if (offenseEvaluation > bestOffenseEvaluation) {
@@ -66,7 +85,7 @@ public class CombatConstructionStrategizer {
 					}
 
 					if (isResearchRelevant == true) {
-						float offenseEvaluation = simulateResearchOffenseEffect (r, armourTypesObserved);
+						float offenseEvaluation = simulateResearchOffenseEffect (r, armourTypesObserved) / r.cost.getTotal ();
 						r.AIOffensiveScore = offenseEvaluation;
 
 						if (offenseEvaluation > bestOffenseEvaluation) {
@@ -83,8 +102,8 @@ public class CombatConstructionStrategizer {
 			//Parse through the player.race.unitTypes list to see what units would best counter the attack types observed
 			float bestDefenseEvaluation = 0;
 			foreach (var r in ai.player.playerRace.unitTypes) {
-				float defenseEvaluation = (r.armourSlashing * attackTypesObserved [0]) + (r.armourPiercing * attackTypesObserved [1]) + (r.armourBludgeoning * attackTypesObserved [2]) +
-				                         (r.armourRanged * attackTypesObserved [3]) + (r.armourSiege * attackTypesObserved [4]) + (r.armourMagic * attackTypesObserved [5]);
+				float defenseEvaluation = ((r.armourSlashing * attackTypesObserved [0]) + (r.armourPiercing * attackTypesObserved [1]) + (r.armourBludgeoning * attackTypesObserved [2]) + 
+					(r.armourRanged * attackTypesObserved [3]) + (r.armourSiege * attackTypesObserved [4]) + (r.armourMagic * attackTypesObserved [5])) / r.cost.getTotal ();
 				r.AIDefensiveScore = defenseEvaluation;
 
 				if (defenseEvaluation > bestDefenseEvaluation) {
@@ -103,7 +122,7 @@ public class CombatConstructionStrategizer {
 					}
 
 					if (isResearchRelevant == true) {
-						float defenseEvaluation = simulateResearchDefenseEffect (r, attackTypesObserved);
+						float defenseEvaluation = simulateResearchDefenseEffect (r, attackTypesObserved) / r.cost.getTotal ();
 						r.AIDefensiveScore = defenseEvaluation;
 
 						if (defenseEvaluation > bestDefenseEvaluation) {
@@ -130,63 +149,14 @@ public class CombatConstructionStrategizer {
 				r.AICombatScore = r.AIOffensiveScore + r.AIDefensiveScore;
 			}
 
-			//Step 3 - Apply AIPersonality to the values generated in step 2
-			if (ai.personality != null) {
-				foreach (var r in ai.personality.personalityTraits) {
-					bool processed = false;
-					foreach (var v in ai.player.playerRace.unitTypes) {
-						if (v.name == r.target) {
-							v.AICombatScore *= r.modifier;
-							processed = true;
-							break;
-						}
-					}
 
-					if (processed == false) {
-						foreach (var v in ai.player.playerRace.researchTypes) {
-							if (v.name == r.target) {
-								v.AICombatScore *= r.modifier;
-								break;
-							}
-						}
-					}
-				}
-			}
-
-			//Step 4 - Convert values for unprerequisited objects into values for their prereqs
+			//Step 3 - Convert values for unprerequisited objects into values for their prereqs
 			bool prereqDistributionDone = false;
 			while (prereqDistributionDone == false) {
 				prereqDistributionDone = true;
 
 				foreach (var r in ai.player.playerRace.unitTypes) {
-					if (r.AIEconomicTotalScore > 0) {
-						int numPrereqsMissing = 0;
-
-						foreach (var v in r.neededResearch) {
-							if (ai.player.hasResearch (v) == false) {
-								numPrereqsMissing++;
-							}
-						}
-
-						if (numPrereqsMissing > 0) {
-							prereqDistributionDone = false;
-							foreach (var v in r.neededResearch) {
-								if (ai.player.hasResearch (v) == false) {
-									foreach (var q in ai.player.playerRace.researchTypes) {
-										if (q.name == v) {
-											// Dividing by 1.5 is to reduce the amount of the AICombatScore that gets passed on in each wave such that prereq's for other prereqs don't supersede purchases that actually do something
-											q.AICombatScore += ((r.AICombatScore / numPrereqsMissing) / 1.5f);
-										}
-									}
-								}
-							}
-							r.AIEconomicTotalScore = 0;
-						}
-					}
-				}
-
-				foreach (var r in ai.player.playerRace.researchTypes) {
-					if (r.AIEconomicTotalScore > 0) {
+					if (r.AICombatScore > 0) {
 						int numPrereqsMissing = 0;
 
 						foreach (var v in r.neededResearch) {
@@ -209,6 +179,62 @@ public class CombatConstructionStrategizer {
 							}
 							r.AICombatScore = 0;
 						}
+					}
+				}
+
+				foreach (var r in ai.player.playerRace.researchTypes) {
+					if (r.AICombatScore > 0) {
+						int numPrereqsMissing = 0;
+
+						foreach (var v in r.neededResearch) {
+							if (ai.player.hasResearch (v) == false) {
+								numPrereqsMissing++;
+							}
+						}
+
+						if (numPrereqsMissing > 0) {
+							prereqDistributionDone = false;
+							foreach (var v in r.neededResearch) {
+								if (ai.player.hasResearch (v) == false) {
+									foreach (var q in ai.player.playerRace.researchTypes) {
+										if (q.name == v) {
+											// Dividing by 1.5 is to reduce the amount of the AICombatScore that gets passed on in each wave such that prereq's for other prereqs don't supersede purchases that actually do something
+											q.AICombatScore += ((r.AICombatScore / numPrereqsMissing) / 1.5f);
+										}
+									}
+								}
+							}
+							r.AICombatScore = 0;
+						}
+					}
+				}
+			}
+
+
+			//Step 4 - Apply AIPersonality to the values generated in step 2
+			if (ai.personality != null) {
+				foreach (var r in ai.personality.personalityTraits) {
+					bool processed = false;
+					foreach (var v in ai.player.playerRace.unitTypes) {
+						if (v.name == r.target) {
+							v.AICombatScore *= r.modifier;
+							processed = true;
+							break;
+						}
+					}
+
+					if (processed == false) {
+						foreach (var v in ai.player.playerRace.researchTypes) {
+							if (v.name == r.target) {
+								v.AICombatScore *= r.modifier;
+								processed = true;
+								break;
+							}
+						}
+					}
+
+					if (processed == false) {
+						GameManager.print ("AIPersonality Trait unidentified - " + r.target);
 					}
 				}
 			}
@@ -260,7 +286,7 @@ public class CombatConstructionStrategizer {
 			foreach (var e in research.effects) {
 				if (e.targetObjectType == "Unit") {
 					if (r.unit.GetType ().GetProperty (e.targetVariableIdentifier) != null) {
-						if ((string)r.unit.GetType ().GetProperty (e.targetVariableIdentifier).GetValue (r.unit, null) == e.targetVariableValue) {
+						if ((string)r.unit.GetType ().GetProperty (e.targetVariableIdentifier).GetValue (r.unit, null).ToString () == e.targetVariableValue) {
 							if (e.effectVariableIdentifier == "attack") {
 								if (e.effectVariableModifier == "+") {
 									tempAttack += e.effectVariableAmount;
@@ -309,7 +335,7 @@ public class CombatConstructionStrategizer {
 			foreach (var e in research.effects) {
 				if (e.targetObjectType == "Unit") {
 					if (r.unit.GetType ().GetProperty (e.targetVariableIdentifier) != null) {
-						if ((string)r.unit.GetType ().GetProperty (e.targetVariableIdentifier).GetValue (r.unit, null) == e.targetVariableValue) {
+						if ((string)r.unit.GetType ().GetProperty (e.targetVariableIdentifier).GetValue (r.unit, null).ToString () == e.targetVariableValue) {
 							if (e.effectVariableIdentifier == "health") {
 								if (e.effectVariableModifier == "+") {
 									tempHealth += e.effectVariableAmount;
@@ -371,6 +397,13 @@ public class CombatConstructionStrategizer {
 	public float[] attackTypesOnEnemyUnits () {
 		float[] attackTypesObserved = new float [6];
 
+		if (ai.player.visibleObjects.rememberedEnemyUnits.Count == 0) {
+			for (int i = 0; i < 6; i++) {
+				attackTypesObserved [i] = 1;
+			}
+			return attackTypesObserved;
+		}
+
 		foreach (var r in ai.player.visibleObjects.rememberedEnemyUnits) {
 			attackTypesObserved [(int)r.unit.attackType - 1] += r.unit.attack * r.unit.attackSpeed;
 		}
@@ -388,6 +421,13 @@ public class CombatConstructionStrategizer {
 
 	public float[] armourTypesOnEnemyUnits () {
 		float[] armourTypesObserved = new float[6];
+
+		if (ai.player.visibleObjects.rememberedEnemyUnits.Count == 0) {
+			for (int i = 0; i < 6; i++) {
+				armourTypesObserved [i] = 1;
+			}
+			return armourTypesObserved;
+		}
 
 		foreach (var r in ai.player.visibleObjects.rememberedEnemyUnits) {
 			armourTypesObserved [0] += r.unit.armourSlashing;

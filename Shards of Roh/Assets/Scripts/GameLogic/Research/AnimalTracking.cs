@@ -13,6 +13,7 @@ public class AnimalTracking : Research {
 		neededResearch = new List<string> ();
 		effects = new List<ResearchEffect> ();
 
-		effects.Add (new ResearchEffect ("AnimalTracking01", "Unit", ResearchPurpose.Combat, "name", "Worker", "attack", "+", 20.0f));
+		effects.Add (new ResearchEffect ("AnimalTracking01", "Unit", ResearchPurpose.Combat, "name", "Worker", "attack", "+", 0.5f));
+		effects.Add (new ResearchEffect ("AnimalTracking02", "Unit", ResearchPurpose.Economic, "name", "Worker", "foodAnimalGatherRate", "+", 0.5f));
 	}
 }

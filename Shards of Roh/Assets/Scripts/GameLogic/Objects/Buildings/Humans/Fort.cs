@@ -10,6 +10,8 @@ public class Fort : Building {
 		race = "Humans";
 		owner = _owner;
 		health = 1000;
-		cost = new Resource (0, 0, 50, 0);
+		cost = new Resource (0, 250, 0, 100);
+
+		neededResearch.Add ("Age3");
 	}
 }

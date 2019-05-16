@@ -8,14 +8,17 @@ public class GameManager : MonoBehaviour {
 	public static PlayerContainer playerContainer;
 	public static List<Player> playersInGame = new List<Player> ();
 	public static float gameClock;
+	public static LoggingClass logging;
 
 	// Use this for initialization
 	void Start () {
+		//Add static variable "MapLogic" that checks map name, and provides values such as "MapSize"
 		playersInGame.Clear ();
-		SceneManager.LoadScene ("TestMap", LoadSceneMode.Additive);
-		SelectionBox.initPostCreate ();
 		GlobalVariables.setup ();
+		SceneManager.LoadScene (GlobalVariables.mapName, LoadSceneMode.Additive);
+		SelectionBox.initPostCreate ();
 		gameClock = 0;
+		logging = new LoggingClass ();
 
 		GameObject instance = Instantiate (Resources.Load ("Player", typeof(GameObject)) as GameObject);
 		playerContainer = instance.GetComponent<PlayerContainer> ();

@@ -11,11 +11,13 @@ public class ResourceDisplay : MonoBehaviour
 	public Text metalText;
 	public Text populationText;
 	public static string playerSetting;
+	private static Player focusPlayer;
 
 	// Use this for initialization
 	void Start ()
 	{
 		playerSetting = "Player";
+		focusPlayer = GameManager.findPlayer (playerSetting);
 	}
 
 	// Update is called once per frame
@@ -24,18 +26,18 @@ public class ResourceDisplay : MonoBehaviour
 		updateResourceDisplay();
 	}
 
-	public void setPlayerSetting (string _input)
+	public static void setPlayerSetting (string _input)
 	{
 		playerSetting = _input;
+		focusPlayer = GameManager.findPlayer (playerSetting);
 	}
 
 	private void updateResourceDisplay ()
 	{
-		Player player = GameManager.findPlayer (playerSetting);
-		foodText.text = ((int) player.resource.food).ToString ();
-		woodText.text = ((int) player.resource.wood).ToString ();
-		goldText.text = ((int) player.resource.gold).ToString ();
-		metalText.text = ((int) player.resource.metal).ToString ();
-		populationText.text = player.population + "/" + player.maxPopulation;
+		foodText.text = ((int) focusPlayer.resource.food).ToString ();
+		woodText.text = ((int) focusPlayer.resource.wood).ToString ();
+		goldText.text = ((int) focusPlayer.resource.gold).ToString ();
+		metalText.text = ((int) focusPlayer.resource.metal).ToString ();
+		populationText.text = focusPlayer.population + "/" + focusPlayer.maxPopulation;
 	}
 }

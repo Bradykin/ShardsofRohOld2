@@ -40,6 +40,6 @@ public class BowCavalry : Unit {
 		//Abilities
 
 		//Required Research
-		neededResearch.Add ("Age2");
+		neededResearch.Add ("Age3");
 	}
 }

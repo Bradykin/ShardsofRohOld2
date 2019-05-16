@@ -10,11 +10,13 @@ public class Cathedral : Building {
 		race = "Humans";
 		owner = _owner;
 		health = 1000;
-		cost = new Resource (0, 0, 50, 0);
+		cost = new Resource (0, 250, 125, 0);
 
 		abilities.Add (new AddToUnitQueue ("Mage", this));
 		abilities.Add (new AddToUnitQueue ("MageCavalry", this));
 		abilities.Add (new AddToUnitQueue ("Priest", this));
 		abilities.Add (new AddToUnitQueue ("PriestCavalry", this));
+
+		neededResearch.Add ("Age3");
 	}
 }

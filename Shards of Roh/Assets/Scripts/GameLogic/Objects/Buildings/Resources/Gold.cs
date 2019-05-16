@@ -11,7 +11,7 @@ public class Gold : Building {
 		race = "Nature";
 		owner = _owner;
 		health = 1000;
-		cost = new Resource (10000, 10000, 10000, 10000);
+		cost = new Resource (0, 0, 1000, 0);
 
 		isResource = true;
 		resourceType = ResourceType.Gold;

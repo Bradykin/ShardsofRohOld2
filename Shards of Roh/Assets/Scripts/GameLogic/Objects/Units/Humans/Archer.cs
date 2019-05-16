@@ -30,12 +30,12 @@ public class Archer : Unit {
 		batchSize = 5;
 
 		//Armour Types - value ranges from 0 to 100. 100 reduces all damage taken, 0 has no effect.
-		armourSlashing = 0;
-		armourPiercing = 0;
-		armourBludgeoning = 0;
-		armourRanged = 0;
-		armourSiege = 0;
-		armourMagic = 0;
+		armourSlashing = 10;
+		armourPiercing = 15;
+		armourBludgeoning = 5;
+		armourRanged = 40;
+		armourSiege = 30;
+		armourMagic = 10;
 
 		//Abilities
 

@@ -17,7 +17,9 @@ public class CreateObjects : Strategies {
 	public override void enact () {
 		if (AI.creationQueue.Count > 0) {
 			if (AI.player.resource.hasEnough (AI.creationQueue [0].cost)) {
-				GameManager.print ("CREATING: " + AI.creationQueue [0].name);
+				if (GameManager.logging.createNewObject == true) {
+					GameManager.print ("CREATING NEW OBJECT: " + AI.creationQueue [0].name);
+				}
 				if (AI.creationQueue [0] is Unit) {
 					tryMakeUnit (AI.creationQueue [0].name);
 				} else if (AI.creationQueue [0] is Building) {
@@ -82,7 +84,13 @@ public class CreateObjects : Strategies {
 					}
 				}
 				AI.creationQueue.RemoveAt (0);
+			} else {
+				GameManager.print ("Can't make unit yet, delaying process");
+				AI.creationQueue.RemoveAt (0);
 			}
+		} else {
+			GameManager.print ("Need more population space, inserting house into build path");
+			AI.creationQueue.Insert (0, ObjectFactory.createBuildingByName ("House", AI.player));
 		}
 	}
 
@@ -92,6 +100,7 @@ public class CreateObjects : Strategies {
 		if (buildingLocations.Count > 0) {
 			if (AI.player.createBuildingFoundation (AI.creationQueue [0].name, buildingLocations [0]) == true) {
 				AI.creationQueue.RemoveAt (0);
+				AI.isNewBuilding = true;
 			} else {
 				buildingLocations.RemoveAt (0);
 				tryPlaceBuilding (buildingLocations);
@@ -187,6 +196,9 @@ public class CreateObjects : Strategies {
 				spawnPoints [Random.Range (0, spawnPoints.Count - 1)].useAbility ("Research " + _researchName);
 				AI.creationQueue.RemoveAt (0);
 			}
+		} else {
+			GameManager.print ("Can't make research yet, delaying process");
+			AI.creationQueue.RemoveAt (0);
 		}
 	}
 }

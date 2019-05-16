@@ -27,12 +27,12 @@ public abstract class Research : Purchaseable {
 			foreach (var r in effects) {
 				if (r.targetObjectType == "Unit") {
 					if (_unit.GetType ().GetProperty (r.targetVariableIdentifier) != null) {
-						if ((string)_unit.GetType ().GetProperty (r.targetVariableIdentifier).GetValue (_unit, null) == r.targetVariableValue) {
+						if ((string)_unit.GetType ().GetProperty (r.targetVariableIdentifier).GetValue (_unit, null).ToString () == r.targetVariableValue) {
 							relevantToUnit = true;
 							_unit.activateResearch (r);
 						}
 					} else {
-						GameManager.print ("r.targetVariableIdentifier == null, something broke");
+						GameManager.print ("r.targetVariableIdentifier == null, something broke - " + r.researchEffectName);
 					}
 				}
 			}

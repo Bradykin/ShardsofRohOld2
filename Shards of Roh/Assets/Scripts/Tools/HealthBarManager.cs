@@ -32,6 +32,7 @@ public class HealthBarManager : MonoBehaviour {
 		startPosY = curHealth.anchoredPosition.y;
 		startWidth = curHealth.sizeDelta.x;
 		startHeight = curHealth.sizeDelta.y;
+		setupCheck = true;
 	}
 	
 	// Update is called once per frame

@@ -12,12 +12,12 @@ public class Catapult : Unit {
 		race = "Humans";
 		owner = _owner;
 		health = 100;
-		cost = new Resource (40, 70, 0, 0);
+		cost = new Resource (0, 125, 0, 75);
 
 		unitSetup ();
 
 		//Variables from current class
-		attack = 10;
+		attack = 15;
 		attackRange = 20.0f;
 		attackSpeed = 0.6f;
 		damageCheck = 0.5f;
@@ -30,16 +30,16 @@ public class Catapult : Unit {
 		batchSize = 5;
 
 		//Armour Types - value ranges from 0 to 100. 100 reduces all damage taken, 0 has no effect.
-		armourSlashing = 0;
-		armourPiercing = 0;
+		armourSlashing = 5;
+		armourPiercing = 5;
 		armourBludgeoning = 0;
-		armourRanged = 0;
-		armourSiege = 0;
-		armourMagic = 0;
+		armourRanged = 30;
+		armourSiege = 20;
+		armourMagic = 50;
 
 		//Abilities
 
 		//Required Research
-		neededResearch.Add ("Age2");
+		neededResearch.Add ("Age3");
 	}
 }

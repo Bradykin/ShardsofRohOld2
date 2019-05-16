@@ -8,6 +8,7 @@ public class BuildingContainer : ObjectContainer {
 	public Building building { get; set; }
 	private float unitQueueTimer { get; set; }
 	private float researchQueueTimer { get; set; }
+	public BoxCollider boxCollider { get; private set; }
 
 	// Use this for initialization
 	void Start () {
@@ -46,12 +47,14 @@ public class BuildingContainer : ObjectContainer {
 			}
 		}
 
+		boxCollider = GetComponent<BoxCollider> ();
+
 		building.wayPoint = building.curLoc;
 	}
 
 	// Update is called once per frame
 	void Update () {
-		if (building.wayPoint == building.curLoc) {
+		if (building.owner.name == "Player" && building.wayPoint == building.curLoc) {
 			setWaypointFlagActive (false);
 		}
 
@@ -125,16 +128,17 @@ public class BuildingContainer : ObjectContainer {
 					Unit newUnit = ObjectFactory.createUnitByName (building.unitQueue [0].unit.name, building.owner);
 					//GameManager.print (newUnit.prefabPath);
 					GameObject instance = GameManager.Instantiate (Resources.Load (newUnit.prefabPath, typeof(GameObject)) as GameObject);
+					GameObject temp = instance.transform.GetChild (0).gameObject;
 
-					instance.transform.position = GetComponent<BoxCollider> ().ClosestPoint (building.wayPoint);
-					instance.GetComponent<UnitContainer> ().unit = newUnit;
-					if (instance.GetComponent<UnitContainer> ().started == false) {
-						instance.GetComponent<UnitContainer> ().setCleanUnitBehaviours ();
-						instance.GetComponent<UnitContainer> ().setNavMeshProperties ();
+					temp.transform.position = GetComponent<BoxCollider> ().ClosestPoint (building.wayPoint);
+					temp.GetComponent<UnitContainer> ().unit = newUnit;
+					if (temp.GetComponent<UnitContainer> ().started == false) {
+						temp.GetComponent<UnitContainer> ().setCleanUnitBehaviours ();
+						temp.GetComponent<UnitContainer> ().setNavMeshProperties ();
 					}
-					StartCoroutine (sendUnitToDestination (instance.GetComponent<UnitContainer> (), building.wayPoint, hit.collider.gameObject));
+					StartCoroutine (sendUnitToDestination (temp.GetComponent<UnitContainer> (), building.wayPoint, hit.collider.gameObject));
 
-					GameManager.addPlayerToGame (building.owner.name).units.Add (instance.GetComponent<UnitContainer> ());
+					GameManager.addPlayerToGame (building.owner.name).units.Add (temp.GetComponent<UnitContainer> ());
 				}
 				building.unitQueue.RemoveAt (0);
 			}
@@ -146,7 +150,7 @@ public class BuildingContainer : ObjectContainer {
 
 		//Handle if waypoint on unit
 		if (building.unitWayPointTarget != null) {
-			_unit.unit.flagPosition = building.unitWayPointTarget.unit.curLoc;
+			_unit.setWaypointFlagLocation (building.unitWayPointTarget.unit.curLoc);
 			if (GameManager.isEnemies (building.unitWayPointTarget.unit.owner, GameManager.playerContainer.player)) {
 				_unit.unit.setAttackTarget (building.unitWayPointTarget);
 				_unit.checkAttackLogic ();
@@ -159,7 +163,7 @@ public class BuildingContainer : ObjectContainer {
 		}
 		//Handle if waypoint on building
 		else if (building.buildingWayPointTarget != null) {
-			_unit.unit.flagPosition = building.buildingWayPointTarget.building.curLoc;
+			_unit.setWaypointFlagLocation (building.buildingWayPointTarget.building.curLoc);
 			if (building.buildingWayPointTarget.building.isResource) {
 				if (_unit.unit.unitType == UnitType.Villager) {
 					_unit.unit.setAttackTarget (building.buildingWayPointTarget);
@@ -184,7 +188,7 @@ public class BuildingContainer : ObjectContainer {
 		}
 		//Handle if waypoint on nothing 
 		else {
-			_unit.unit.flagPosition = building.wayPoint;
+			_unit.setWaypointFlagLocation (building.wayPoint);
 			_unit.moveToLocation (false, building.wayPoint);
 		}
 	}

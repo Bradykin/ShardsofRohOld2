@@ -8,7 +8,7 @@ public class Forestry : Research {
 	public Forestry (Player _owner) {
 		owner = _owner;
 		name = "Forestry";
-		cost = new Resource (0, 50, 0, 0);
+		cost = new Resource (50, 50, 0, 0);
 		queueTime = 5;
 		neededResearch = new List<string> ();
 		effects = new List<ResearchEffect> ();

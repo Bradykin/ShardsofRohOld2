@@ -10,7 +10,7 @@ public abstract class Unit : ObjectBase {
 	public float attackRange { get; protected set; }
 	public float attackSpeed { get; protected set; } 			//Number of attacks per second
 	protected float damageCheck { get; set; }					//Percentage of the way through attack animation that the damage is dealt
-	public int moveSpeed { get; protected set; }
+	public float moveSpeed { get; protected set; }
 	public int populationCost { get; protected set; }
 	public int sightRadius { get; protected set; }
 	public UnitType unitType { get; protected set; }
@@ -48,10 +48,13 @@ public abstract class Unit : ObjectBase {
 	public bool gotHit { get; set; }
 	public UnitContainer gotHitBy  { get; set; }
 	public List<Vector3> moveDestinations { get; private set; }
-	public Vector3 flagPosition { get; set; }
 	public float isCommandedRecently { get; set; }
+	public int scoutingValue { get; protected set; }
 
 	public void unitSetup () {
+		//Temporary
+		scoutingValue = 0;
+
 		setup ();
 
 		//Variables from inherited class

@@ -116,6 +116,18 @@ public static class ObjectFactory {
 		return building;
 	}
 
+	public static Wall createWall (Player _owner, bool _isBuilt) {
+		Wall building = new Wall (_owner);
+		building.initPostCreate (_isBuilt);
+		return building;
+	}
+
+	public static House createHouse (Player _owner,  bool _isBuilt) {
+		House building = new House (_owner);
+		building.initPostCreate (_isBuilt);
+		return building;
+	}
+
 	public static Barracks createBarracks (Player _owner, bool _isBuilt) {
 		Barracks building = new Barracks (_owner);
 		building.initPostCreate (_isBuilt);
@@ -235,6 +247,10 @@ public static class ObjectFactory {
 			return createTownCentre (_owner, _isBuilt);
 		} else if (_name == "Windmill" || _name == "Windmill(Clone)") {
 			return createWindmill (_owner, _isBuilt);
+		} else if (_name == "Wall" || _name == "Wall(Clone)") {
+			return createWall (_owner, _isBuilt);
+		} else if (_name == "House" || _name == "House(Clone)") {
+			return createHouse (_owner, _isBuilt);
 		} else if (_name == "Barracks" || _name == "Barracks(Clone)") {
 			return createBarracks (_owner, _isBuilt);
 		} else if (_name == "Stables" || _name == "Stables(Clone)") {

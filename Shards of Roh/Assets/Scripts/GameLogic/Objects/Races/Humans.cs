@@ -31,11 +31,32 @@ public class Humans : Race {
 		unitTypes.Add (ObjectFactory.createUnitByName ("Swordsman", _player));
 		unitTypes.Add (ObjectFactory.createUnitByName ("Worker", _player));
 
+		buildingTypes.Add (ObjectFactory.createBuildingByName ("Barracks", _player));
+		buildingTypes.Add (ObjectFactory.createBuildingByName ("Blacksmith", _player));
+		buildingTypes.Add (ObjectFactory.createBuildingByName ("Cathedral", _player));
+		buildingTypes.Add (ObjectFactory.createBuildingByName ("CityHall", _player));
+		buildingTypes.Add (ObjectFactory.createBuildingByName ("Fort", _player));
+		buildingTypes.Add (ObjectFactory.createBuildingByName ("House", _player));
+		buildingTypes.Add (ObjectFactory.createBuildingByName ("Stables", _player));
+		buildingTypes.Add (ObjectFactory.createBuildingByName ("Tavern", _player));
 		buildingTypes.Add (ObjectFactory.createBuildingByName ("TownCentre", _player));
+		buildingTypes.Add (ObjectFactory.createBuildingByName ("Wall", _player));
+		buildingTypes.Add (ObjectFactory.createBuildingByName ("WatchTower", _player));
 		buildingTypes.Add (ObjectFactory.createBuildingByName ("Windmill", _player));
 
 		researchTypes.Add (ResearchFactory.createResearchByName ("Age2", _player));
+		researchTypes.Add (ResearchFactory.createResearchByName ("Age3", _player));
+		researchTypes.Add (ResearchFactory.createResearchByName ("Age4", _player));
 		researchTypes.Add (ResearchFactory.createResearchByName ("AnimalTracking", _player));
 		researchTypes.Add (ResearchFactory.createResearchByName ("Forestry", _player));
+		researchTypes.Add (ResearchFactory.createResearchByName ("Horseshoes", _player));
+		researchTypes.Add (ResearchFactory.createResearchByName ("ImprovedArchers", _player));
+		researchTypes.Add (ResearchFactory.createResearchByName ("ImprovedAxemen", _player));
+		researchTypes.Add (ResearchFactory.createResearchByName ("ImprovedShields", _player));
+		researchTypes.Add (ResearchFactory.createResearchByName ("ImprovedSpearmen", _player));
+		researchTypes.Add (ResearchFactory.createResearchByName ("ImprovedSwordsmen", _player));
+		researchTypes.Add (ResearchFactory.createResearchByName ("Industrialization", _player));
+		researchTypes.Add (ResearchFactory.createResearchByName ("MineralExtraction", _player));
+		researchTypes.Add (ResearchFactory.createResearchByName ("WorkerCoats", _player));
 	}
 }

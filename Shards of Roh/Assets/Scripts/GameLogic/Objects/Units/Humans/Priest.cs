@@ -12,12 +12,12 @@ public class Priest : Unit {
 		race = "Humans";
 		owner = _owner;
 		health = 95;
-		cost = new Resource (60, 30, 20, 0);
+		cost = new Resource (60, 30, 90, 0);
 
 		unitSetup ();
 
 		//Variables from current class
-		attack = 10;
+		attack = 4;
 		attackRange = 15.0f;
 		attackSpeed = 0.75f;
 		damageCheck = 0.5f;
@@ -40,6 +40,6 @@ public class Priest : Unit {
 		//Abilities
 
 		//Required Research
-		neededResearch.Add ("Age2");
+		neededResearch.Add ("Age3");
 	}
 }

@@ -8,15 +8,18 @@ public class UnitContainer : ObjectContainer {
 	public Unit unit { get; set; }
 	public List<Behaviours> unitBehaviours { get; private set; }
 
-	//public CapsuleCollider collider { get; private set; }
 	public UnityEngine.AI.NavMeshAgent agent { get; private set; }
 	public UnityEngine.AI.NavMeshObstacle obstacle { get; private set; }
+	public CapsuleCollider capsuleCollider { get; private set; }
+	public Animator animator { get; private set; }
+
+	private int count { get; set; }
 
 	void Start () {
-		//GameManager.print ("Start Worker");
 		//Set values for preset units
 		setup ();
 		setCleanUnitBehaviours ();
+		count = 0;
 
 		//Set values of preset units on map
 		if (presetOwnerName != "") {
@@ -56,12 +59,19 @@ public class UnitContainer : ObjectContainer {
 			}
 		}
 
+		//Set values of CapsuleCollider and Animator
+		capsuleCollider = gameObject.GetComponent<CapsuleCollider> ();
+		animator = gameObject.GetComponent<Animator> ();
+
 		//Set values of Behaviours
 		if (unit.unitType == UnitType.Villager) {
 			unitBehaviours.Add (new PassiveFlee (this));
 		} else {
-			unitBehaviours.Add (new PassiveAttack (this));
+			//unitBehaviours.Add (new PassiveAttack (this));
 			unitBehaviours.Add (new PassiveRetaliate (this));
+			if (unit.owner.name != "Player") {
+				//unitBehaviours.Add (new ScoutHarry (this));
+			}
 		}
 	}
 
@@ -79,11 +89,11 @@ public class UnitContainer : ObjectContainer {
 				r.visibleObjects.rememberedEnemyUnits.Remove (this);
 				r.visibleObjects.rememberedResourceUnits.Remove (this);
 			}
-			gameObject.GetComponent<CapsuleCollider> ().enabled = false;
+			capsuleCollider.enabled = false;
 			agent.enabled = false;
-			gameObject.GetComponent<Animator> ().SetBool ("isDead", true);
-			gameObject.GetComponent<Animator> ().SetInteger ("deathAnimation", Random.Range (0, 2));
-			if (gameObject.GetComponent<Animator> ().GetCurrentAnimatorStateInfo (0).IsName ("PostDeath")) {
+			animator.SetBool ("isDead", true);
+			animator.SetInteger ("deathAnimation", Random.Range (0, 2));
+			if (animator.GetCurrentAnimatorStateInfo (0).IsName ("PostDeath")) {
 				GameManager.destroyUnit (this, unit.owner);
 			}
 		}
@@ -93,25 +103,32 @@ public class UnitContainer : ObjectContainer {
 
 		//Update curLoc and isMoving
 		if (agent != null) {
-			unit.curLoc = gameObject.GetComponent<CapsuleCollider> ().transform.position;
-			if (gameObject.GetComponent<Animator> () != null) {
+			agent.speed = unit.moveSpeed;
+			unit.curLoc = capsuleCollider.transform.position;
+			if (animator != null) {
 				if (Vector3.Distance (unit.curLoc, agent.destination) <= 0.1 || agent.enabled == false) {
 					if (unit.moveDestinations.Count > 0) {
 						unit.moveDestinations.RemoveAt (0);
 						if (unit.moveDestinations.Count > 0) {
 							agent.SetDestination (unit.moveDestinations [0]);
 						} else {
-							gameObject.GetComponent<Animator> ().SetBool ("isMoving", false);
+							animator.SetBool ("isMoving", false);
 							unit.isMoving = false;
 						}
 					} else {
-						gameObject.GetComponent<Animator> ().SetBool ("isMoving", false);
+						animator.SetBool ("isMoving", false);
 						unit.isMoving = false;
 					}
-						
-					setWaypointFlagActive (false);
+
+					if (unit.owner.name == "Player") {
+						count++;
+						if (count > 2) {
+							setWaypointFlagActive (false);
+							count = 0;
+						}
+					}
 				} else {
-					gameObject.GetComponent<Animator> ().SetBool ("isMoving", true);
+					animator.SetBool ("isMoving", true);
 					navMeshToggle ("Agent");
 					unit.isMoving = true;
 				}
@@ -121,21 +138,16 @@ public class UnitContainer : ObjectContainer {
 				}
 
 				if (unit.isCombatTimer > 0) {
-					gameObject.GetComponent<Animator> ().SetBool ("isCombat", true);
+					animator.SetBool ("isCombat", true);
 				} else {
-					gameObject.GetComponent<Animator> ().SetBool ("isCombat", false);
+					animator.SetBool ("isCombat", false);
 				}
 			} else {
 				print ("Missing Animator - UnitContainer");
 			}
-
-			setWaypointFlagLocation (unit.flagPosition);
 		} else {
 			print ("Missing NavMeshAgent - UnitContainer");
 		}
-
-		//gameObject.transform.position += pathfinder.transform.localPosition;
-		//GameManager.print (pathfinder.transform.position);
 	}
 
 	public void checkAttackLogic () {
@@ -153,11 +165,11 @@ public class UnitContainer : ObjectContainer {
 		//Check for distance to targets, update isAttacking
 		if (unit.unitTarget != null && unit.unitTarget.unit.isDead == false) {
 
-			Vector3 point1 = gameObject.GetComponent<CapsuleCollider> ().bounds.center;
-			Vector3 point2 = unit.unitTarget.GetComponent<CapsuleCollider> ().bounds.center;
+			Vector3 point1 = capsuleCollider.bounds.center;
+			Vector3 point2 = unit.unitTarget.capsuleCollider.bounds.center;
 			point1.y = 0;
 			point2.y = 0;
-			float distanceToTarget = Vector3.Distance (point1, point2) - gameObject.GetComponent<CapsuleCollider> ().radius - unit.unitTarget.GetComponent<CapsuleCollider> ().radius;
+			float distanceToTarget = Vector3.Distance (point1, point2) - capsuleCollider.radius - unit.unitTarget.capsuleCollider.radius;
 			if (distanceToTarget <= unit.attackRange || (unit.isAttacking == true && unit.hasHit == false && distanceToTarget <= unit.attackRange + 3.0f) || unit.hasHit == true) {
 
 				//I don't remember the purpose of this line, and it's causing a bug related to moving units while they are attacking. Leaving it in, commented out, in case we discover what it was solving.
@@ -165,39 +177,39 @@ public class UnitContainer : ObjectContainer {
 					moveToLocation (false, agent.transform.position);
 				}
 
-				lookDirection (GetComponent<CapsuleCollider> ().bounds.center, unit.unitTarget.GetComponent<CapsuleCollider> ().bounds.center);
-				gameObject.GetComponent<Animator> ().SetBool ("isAttacking", true);
+				lookDirection (capsuleCollider.bounds.center, unit.unitTarget.capsuleCollider.bounds.center);
+				animator.SetBool ("isAttacking", true);
 				unit.isAttacking = true;
 				if (unit.attackUnit () == true) {
 					unit.unitTarget.unit.getHit (this, unit.attack);
 				}
 			} else {
-				moveTowardCollider (false, unit.unitTarget.GetComponent<CapsuleCollider> ());
-				gameObject.GetComponent<Animator> ().SetBool ("isAttacking", false);
+				moveTowardCollider (false, unit.unitTarget.capsuleCollider);
+				animator.SetBool ("isAttacking", false);
 				unit.isAttacking = false;
 			}
 		} else if (unit.buildingTarget != null && unit.buildingTarget.building.isDead == false) {
-			Vector3 point1 = GetComponent<CapsuleCollider> ().bounds.center;
-			Vector3 point2 = unit.buildingTarget.GetComponent<BoxCollider> ().ClosestPoint (GetComponent<CapsuleCollider> ().bounds.center);
+			Vector3 point1 = capsuleCollider.bounds.center;
+			Vector3 point2 = unit.buildingTarget.boxCollider.ClosestPoint (capsuleCollider.bounds.center);
 			point1.y = 0;
 			point2.y = 0;
-			if (Vector3.Distance (point1, point2) - GetComponent<CapsuleCollider> ().radius <= unit.attackRange) {
+			if (Vector3.Distance (point1, point2) - capsuleCollider.radius <= unit.attackRange) {
 				if (agent.enabled == true) {
 					agent.ResetPath ();
 				}
-				lookDirection (GetComponent<CapsuleCollider> ().bounds.center, unit.buildingTarget.GetComponent<BoxCollider> ().bounds.center);
-				gameObject.GetComponent<Animator> ().SetBool ("isAttacking", true);
+				lookDirection (capsuleCollider.bounds.center, unit.buildingTarget.boxCollider.bounds.center);
+				animator.SetBool ("isAttacking", true);
 				unit.isAttacking = true;
 				if (unit.attackBuilding () == true) {
 					unit.buildingTarget.building.getHit (this, unit.attack);
 				}
 			} else {
-				moveTowardCollider (false, unit.buildingTarget.GetComponent<BoxCollider> ());
-				gameObject.GetComponent<Animator> ().SetBool ("isAttacking", false);
+				moveTowardCollider (false, unit.buildingTarget.boxCollider);
+				animator.SetBool ("isAttacking", false);
 				unit.isAttacking = false;
 			}
 		} else {
-			gameObject.GetComponent<Animator> ().SetBool ("isAttacking", false);
+			animator.SetBool ("isAttacking", false);
 			unit.isAttacking = false;
 			unit.dropAttackTarget ();
 			unit.passiveAttackTimer ();

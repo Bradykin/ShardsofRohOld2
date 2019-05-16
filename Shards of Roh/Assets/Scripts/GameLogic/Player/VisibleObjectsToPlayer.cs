@@ -17,8 +17,14 @@ public class VisibleObjectsToPlayer {
 	public List<BuildingContainer> visibleEnemyBuildings { get; protected set; }
 
 	public List<UnitContainer> rememberedEnemyUnits { get; protected set; }
+	public List<BuildingContainer> rememberedEnemyBuildings { get; protected set; }
 	public List<UnitContainer> rememberedResourceUnits { get; protected set; }
 	public List<BuildingContainer> rememberedResourceBuildings { get; protected set; }
+
+	public List<UnitContainer> rememberedEnemyUnitsNew { get; protected set; }
+	public List<BuildingContainer> rememberedEnemyBuildingsNew { get; protected set; }
+	public List<UnitContainer> rememberedResourceUnitsNew { get; protected set; }
+	public List<BuildingContainer> rememberedResourceBuildingsNew { get; protected set; }
 
 	//Variables that track abstract values about the previous lists, for more efficient use by other scripts
 	public bool canAccessFoodAnimal { get; protected set; }
@@ -38,8 +44,13 @@ public class VisibleObjectsToPlayer {
 		visibleEnemyUnits = new List<UnitContainer> ();
 		visibleEnemyBuildings = new List<BuildingContainer> ();
 		rememberedEnemyUnits = new List<UnitContainer> ();
+		rememberedEnemyBuildings = new List<BuildingContainer> ();
 		rememberedResourceUnits = new List<UnitContainer> ();
 		rememberedResourceBuildings = new List<BuildingContainer> ();
+		rememberedEnemyUnitsNew = new List<UnitContainer> ();
+		rememberedEnemyBuildingsNew = new List<BuildingContainer> ();
+		rememberedResourceUnitsNew = new List<UnitContainer> ();
+		rememberedResourceBuildingsNew = new List<BuildingContainer> ();
 	}
 
 	public void updateVisible () {
@@ -56,6 +67,10 @@ public class VisibleObjectsToPlayer {
 			visibleResourceBuildings.Clear ();
 			visibleEnemyUnits.Clear ();
 			visibleEnemyBuildings.Clear ();
+			rememberedEnemyUnitsNew.Clear ();
+			rememberedEnemyBuildingsNew.Clear ();
+			rememberedResourceUnitsNew.Clear ();
+			rememberedResourceBuildingsNew.Clear ();
 			timer = 0;
 			canAccessFoodAnimal = false;
 			canAccessFoodForage = false;
@@ -81,6 +96,7 @@ public class VisibleObjectsToPlayer {
 								visibleResourceUnits.Add (r.units [k]);
 								if (rememberedResourceUnits.Contains (r.units [k]) == false) {
 									rememberedResourceUnits.Add (r.units [k]);
+									rememberedResourceUnitsNew.Add (r.units [k]);
 								}
 							}
 						} else if (GameManager.isEnemies (player, r) == true) {
@@ -88,6 +104,7 @@ public class VisibleObjectsToPlayer {
 								visibleEnemyUnits.Add (r.units [k]);
 								if (rememberedEnemyUnits.Contains (r.units [k]) == false) {
 									rememberedEnemyUnits.Add (r.units [k]);
+									rememberedEnemyUnitsNew.Add (r.units [k]);
 								}
 							}
 						} else {
@@ -104,6 +121,7 @@ public class VisibleObjectsToPlayer {
 								visibleResourceBuildings.Add (r.buildings [k]);
 								if (rememberedResourceBuildings.Contains (r.buildings [k]) == false) {
 									rememberedResourceBuildings.Add (r.buildings [k]);
+									rememberedResourceBuildingsNew.Add (r.buildings [k]);
 								}
 								if (r.buildings [k].building.resourceType == ResourceType.Food) {
 									canAccessFoodForage = true;
@@ -118,6 +136,10 @@ public class VisibleObjectsToPlayer {
 						} else if (GameManager.isEnemies (player, r) == true) {
 							if (visibleEnemyBuildings.Contains (r.buildings [k]) == false && distance <= sightRadiusSqr) {
 								visibleEnemyBuildings.Add (r.buildings [k]);
+								if (rememberedEnemyBuildings.Contains (r.buildings [k]) == false) {
+									rememberedEnemyBuildings.Add (r.buildings [k]);
+									rememberedEnemyBuildingsNew.Add (r.buildings [k]);
+								}
 							}
 						} else {
 							if (visiblePlayerBuildings.Contains (r.buildings [k]) == false) {

@@ -10,8 +10,8 @@ public class Metal : Building {
 		name = "Metal";
 		race = "Nature";
 		owner = _owner;
-		health = 1000;
-		cost = new Resource (10000, 10000, 10000, 10000);
+		health = 2000;
+		cost = new Resource (0, 0, 0, 2000);
 
 		isResource = true;
 		resourceType = ResourceType.Metal;

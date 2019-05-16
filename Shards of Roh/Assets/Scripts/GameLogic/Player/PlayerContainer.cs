@@ -101,7 +101,8 @@ public class PlayerContainer : MonoBehaviour {
 			UnitContainer targetUnitContainer = _clicked.GetComponent<UnitContainer> ();
 
 			foreach (var r in GameManager.playerContainer.player.curUnitTarget) {
-				r.unit.flagPosition = targetUnitContainer.unit.curLoc;
+				r.setWaypointFlagLocation (targetUnitContainer.unit.curLoc);
+				r.setWaypointFlagActive (true);
 			}
 
 			if (GameManager.isEnemies (targetUnitContainer.unit.owner, GameManager.playerContainer.player)) {
@@ -123,7 +124,8 @@ public class PlayerContainer : MonoBehaviour {
 			BuildingContainer targetBuildingContainer = _clicked.GetComponent<BuildingContainer> ();
 
 			foreach (var r in GameManager.playerContainer.player.curUnitTarget) {
-				r.unit.flagPosition = targetBuildingContainer.building.curLoc;
+				r.setWaypointFlagLocation (targetBuildingContainer.building.curLoc);
+				r.setWaypointFlagActive (true);
 			}
 
 			if (targetBuildingContainer.building.isResource) {

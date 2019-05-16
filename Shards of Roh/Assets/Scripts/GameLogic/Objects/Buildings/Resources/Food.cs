@@ -10,8 +10,8 @@ public class Food : Building {
 		name = "Food";
 		race = "Nature";
 		owner = _owner;
-		health = 1000;
-		cost = new Resource (10000, 10000, 10000, 10000);
+		health = 2000;
+		cost = new Resource (2000, 0, 0, 0);
 
 		isResource = true;
 		resourceType = ResourceType.Food;

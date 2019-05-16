@@ -6,7 +6,7 @@ using Enum;
 public class ResearchEffect {
 
 	public string researchEffectName { get; protected set; }
-	public string targetObjectType { get; protected set; }
+	public string targetObjectType { get; protected set; } //Unit, Building, Research
 	public ResearchPurpose researchEffectPurpose { get; protected set; } 
 
 	//Identifies the variable in the target you are comparing to, and the value you want it to be, for it to be a viable candidate for this research

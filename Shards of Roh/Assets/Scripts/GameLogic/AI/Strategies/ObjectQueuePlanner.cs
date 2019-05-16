@@ -21,33 +21,46 @@ public class ObjectQueuePlanner : Strategies {
 		interval = 15;
 	}
 
-	public override void enact () {
+	public override void enact () {	
 		if (GameManager.gameClock >= 0.5) {
 			interval += Time.deltaTime;
 			if (interval >= 15 || AI.creationQueue.Count == 0) {
 				interval = 0;
+				sp.updatePriorities ();
 				ccs.calculateOptimalPurchaseValues ();
 				ecs.calculateOptimalPurchaseValues ();
 
+
+				if (GameManager.logging.objectPlannerValues == true) {
+					GameManager.print ("Object Planning Values: ");
+				}
 				float totalRange = 0;
 				foreach (var r in AI.player.playerRace.unitTypes) {
 					r.AITotalScore = (r.AICombatScore * sp.combatPriority) + (r.AIEconomicTotalScore * sp.economicPriority);
+					if (GameManager.logging.objectPlannerValues == true && r.AITotalScore != 0 && float.IsNaN (r.AITotalScore) == false) {
+						GameManager.print (r.name + ": " + r.AITotalScore);
+					}
 					totalRange += r.AITotalScore;
 				}
 
 				foreach (var r in AI.player.playerRace.researchTypes) {
 					r.AITotalScore = (r.AICombatScore * sp.combatPriority) + (r.AIEconomicTotalScore * sp.economicPriority);
+					if (GameManager.logging.objectPlannerValues == true && r.AITotalScore != 0 && float.IsNaN (r.AITotalScore) == false) {
+						GameManager.print (r.name + ": " + r.AITotalScore);
+					}
 					totalRange += r.AITotalScore;
 				}
 				
 				if (float.IsNaN (totalRange) == false) {
-					List<Purchaseable> objectList = generateList (totalRange, 250 * Mathf.Min (10, 1 + (int)GameManager.gameClock / 60));
+					List<Purchaseable> objectList = generateList (totalRange, 400 * Mathf.Min (10, 1 + (int)GameManager.gameClock / 60));
 
 					sortList (objectList);
 					bcs.calculateBuildingPurchases (objectList);
 
+					string returnString = "";
 					foreach (var r in objectList) {
-						GameManager.print ("Purchase: " + r.name);
+						returnString += r.name + ", ";
+						//GameManager.print ("Purchase: " + r.name);
 						string type = "";
 						if (r is Unit) {
 							type = "Unit";
@@ -60,6 +73,10 @@ public class ObjectQueuePlanner : Strategies {
 						}
 
 						AI.creationQueue = objectList;
+					}
+
+					if (GameManager.logging.objectPlannerResults) {
+						GameManager.print ("Purchase list at " + GameManager.gameClock + " = " + returnString);
 					}
 				}
 			}

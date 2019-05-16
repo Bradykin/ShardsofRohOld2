@@ -15,7 +15,7 @@ public class CheatCodes : MonoBehaviour {
 	}
 
 	public static void inputCheatCode (string _input) {
-		GameManager.print (_input);
+		GameManager.print ("Code entered: " + _input);
 		string input1 = "";
 		string input2 = "";
 		try {
@@ -23,10 +23,40 @@ public class CheatCodes : MonoBehaviour {
 			input2 = _input.Substring (_input.IndexOf (" ") + 1);
 		} catch {
 		}
+
+		if (input1 == "EnableLogging") {
+			if (input2 == "GatherResources" || input2 == "All") {
+				GameManager.logging.gatherResources = true;
+			}
+			if (input2 == "ObjectPlannerValues" || input2 == "All") {
+				GameManager.logging.objectPlannerValues = true;
+			}
+			if (input2 == "ObjectPlannerResults" || input2 == "All") {
+				GameManager.logging.objectPlannerResults = true;
+			}
+			if (input2 == "CreateNewObject" || input2 == "All") {
+				GameManager.logging.createNewObject = true;
+			}
+		}
+
+		if (input1 == "DisableLogging") {
+			if (input2 == "GatherResources" || input2 == "All") {
+				GameManager.logging.gatherResources = false;
+			}
+			if (input2 == "ObjectPlannerValues" || input2 == "All") {
+				GameManager.logging.objectPlannerValues = false;
+			}
+			if (input2 == "ObjectPlannerResults" || input2 == "All") {
+				GameManager.logging.objectPlannerResults = false;
+			}
+			if (input2 == "CreateNewObject" || input2 == "All") {
+				GameManager.logging.createNewObject = false;
+			}
+		}
 		
 		if (input1 == "Focus") {
 			if (GameManager.findPlayer (input2) != null) {
-				ResourceDisplay.playerSetting = input2;
+				ResourceDisplay.setPlayerSetting (input2);
 			}
 		}
 

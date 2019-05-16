@@ -12,22 +12,23 @@ public class Worker : Unit {
 		race = "Humans";
 		owner = _owner;
 		health = 60;
-		cost = new Resource (50, 0, 0, 0);
+		cost = new Resource (70, 0, 0, 0);
 
 		unitSetup ();	
 
 		//Variables from current class
-		attack = 2;
+		attack = 2.0f;
 		attackRange = 1.0f;
 		attackSpeed = 1.2f;
 		damageCheck = 0.5f;
 		moveSpeed = 6;
 		populationCost = 1;
-		sightRadius = 50;
+		sightRadius = 20;
 		unitType = UnitType.Villager;
 		attackType = AttackType.Slashing;
 		queueTime = 5.0f;
 		batchSize = 1;
+		scoutingValue = 10;
 
 		//Armour Types - value ranges from 0 to 100. 100 reduces all damage taken, 0 has no effect.
 		armourSlashing = 5;
@@ -48,7 +49,7 @@ public class Worker : Unit {
 
 		//Abilities
 		abilities.Add (new ToggleBuild ("TownCentre"));
-		//abilities.Add (new ToggleBuild ("House"));
+		abilities.Add (new ToggleBuild ("House"));
 		//abilities.Add (new ToggleBuild ("Wall"));
 		abilities.Add (new ToggleBuild ("Windmill"));
 

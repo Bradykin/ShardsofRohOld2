@@ -12,12 +12,12 @@ public class PriestCavalry : Unit {
 		race = "Humans";
 		owner = _owner;
 		health = 75;
-		cost = new Resource (40, 70, 0, 0);
+		cost = new Resource (90, 70, 100, 0);
 
 		unitSetup ();
 
 		//Variables from current class
-		attack = 8;
+		attack = 3;
 		attackRange = 20.0f;
 		attackSpeed = 0.75f;
 		damageCheck = 0.5f;
@@ -40,6 +40,6 @@ public class PriestCavalry : Unit {
 		//Abilities
 
 		//Required Research
-		neededResearch.Add ("Age2");
+		neededResearch.Add ("Age3");
 	}
 }

@@ -11,8 +11,8 @@ public class HeavyInfantry : Unit {
 		name = "HeavyInfantry";
 		race = "Humans";
 		owner = _owner;
-		health = 95;
-		cost = new Resource (60, 30, 20, 0);
+		health = 105;
+		cost = new Resource (60, 30, 40, 20);
 
 		unitSetup ();
 
@@ -30,16 +30,16 @@ public class HeavyInfantry : Unit {
 		batchSize = 5;
 
 		//Armour Types - value ranges from 0 to 100. 100 reduces all damage taken, 0 has no effect.
-		armourSlashing = 0;
-		armourPiercing = 0;
-		armourBludgeoning = 0;
-		armourRanged = 0;
-		armourSiege = 0;
-		armourMagic = 0;
+		armourSlashing = 40;
+		armourPiercing = 35;
+		armourBludgeoning = 20;
+		armourRanged = 50;
+		armourSiege = 15;
+		armourMagic = 10;
 
 		//Abilities
 
 		//Required Research
-		neededResearch.Add ("Age2");
+		neededResearch.Add ("Age3");
 	}
 }

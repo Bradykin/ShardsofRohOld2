@@ -10,6 +10,8 @@ public class Tavern : Building {
 		race = "Humans";
 		owner = _owner;
 		health = 1000;
-		cost = new Resource (0, 0, 50, 0);
+		cost = new Resource (0, 100, 100, 0);
+
+		neededResearch.Add ("Age2");
 	}
 }

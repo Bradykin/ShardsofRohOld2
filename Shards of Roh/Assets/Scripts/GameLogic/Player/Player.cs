@@ -44,6 +44,7 @@ public class Player {
 	//Call various update functions
 	public void update () {
 		visibleObjects.updateVisible ();
+
 		updatePopulation ();
 		updateMaxPopulation ();
 	}
@@ -121,43 +122,45 @@ public class Player {
 
 	//The toggleSelection circle and box functions are called to enable and disable the TargetRings and TargetBoxes on units and buildings to denote them being selected by this class
 	public void toggleSelectionCircle (bool _toggle, UnitContainer _unit) {
-
 		foreach (Transform child in _unit.gameObject.transform) {
-			if (child.name == "TargetRing" || child.name == "Waypoint") {
+			if (child.name == "TargetRing") {
 				child.gameObject.SetActive (_toggle);
 			}
 		}
+		_unit.setWaypointFlagActive (_toggle);
 	}
 
 	//The toggleSelection circle and box functions are called to enable and disable the TargetRings and TargetBoxes on units and buildings to denote them being selected by this class
 	public void toggleSelectionCircles (bool _toggle) {
 		foreach (var r in curUnitTarget) {
-
 			foreach (Transform child in r.gameObject.transform) {
-				if (child.name == "TargetRing" || child.name == "Waypoint") {
+				if (child.name == "TargetRing") {
 					child.gameObject.SetActive (_toggle);
 				}
 			}
+			r.setWaypointFlagActive (_toggle);
 		}
 	}
 
 	//The toggleSelection circle and box functions are called to enable and disable the TargetRings and TargetBoxes on units and buildings to denote them being selected by this class
 	public void toggleSelectionBox (bool _toggle, BuildingContainer _building) {
 		foreach (Transform child in _building.gameObject.transform) {
-			if (child.name == "TargetRing" || child.name == "Waypoint") {
+			if (child.name == "TargetRing") {
 				child.gameObject.SetActive (_toggle);
 			}
 		}
+		_building.setWaypointFlagActive (_toggle);
 	}
 
 	//The toggleSelection circle and box functions are called to enable and disable the TargetRings and TargetBoxes on units and buildings to denote them being selected by this class
 	public void toggleSelectionBoxes (bool _toggle) {
 		foreach (var r in curBuildingTarget) {
 			foreach (Transform child in r.gameObject.transform) {
-				if (child.name == "TargetRing" || child.name == "Waypoint") {
+				if (child.name == "TargetRing") {
 					child.gameObject.SetActive (_toggle);
 				}
 			}
+			r.setWaypointFlagActive (_toggle);
 		}
 	}
 
@@ -285,7 +288,7 @@ public class Player {
 
 		//3: Set the waypoint flag of each unit to their respective destination
 		foreach (var r in newList) {
-			r.unit.flagPosition = _formationPositions [0].getPosition ();
+			r.setWaypointFlagLocation (_formationPositions [0].getPosition ());
 		}
 
 		setCurUnitTarget (newList);
@@ -397,6 +400,7 @@ public class Player {
 			//2: Check if the instance of the building overlaps with any current unit or building. If it does, destroy it.
 			Collider[] hitColliders = Physics.OverlapBox (instance.transform.position, instance.GetComponent<BoxCollider> ().size / 2, new Quaternion (0.9240f, 0.0f, 0.383f, 0.0f));
 			foreach (var r in hitColliders) {
+				//GameManager.print ("Collider: " + r.name);
 				if (r.gameObject != instance) {
 					if (r.gameObject.GetComponent<UnitContainer> () != null) {
 						GameManager.Destroy (instance);

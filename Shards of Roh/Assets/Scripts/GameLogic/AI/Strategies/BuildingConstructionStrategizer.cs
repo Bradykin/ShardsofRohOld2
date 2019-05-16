@@ -61,13 +61,26 @@ class BuildingConstructionStrategizer {
 							break;
 						}
 					}
+
+					if (foundBuilding == false) {
+						GameManager.print ("No building option for making " + r.name);
+					}
 				}
 			}
 		}
 
 		//Add population building
-		if (player.population + 5 >= player.maxPopulation) {
-			//buildingsToAdd.Add (ObjectFactory.createBuildingByName ("House", player));
+		if (((float) player.population * 1.5f) >= player.maxPopulation) {
+			bool hasHouseInQueue = false;
+			foreach (var r in player.buildings) {
+				if (r.building.isBuilt == false && r.building.name == "House") {
+					hasHouseInQueue = true;
+				}
+			}
+
+			if (hasHouseInQueue == false) {
+				purchases.Insert (0, ObjectFactory.createBuildingByName ("House", player));
+			}
 		}
 
 		bool adding = true;

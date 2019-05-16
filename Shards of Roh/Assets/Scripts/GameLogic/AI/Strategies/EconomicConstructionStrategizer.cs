@@ -86,7 +86,7 @@ public class EconomicConstructionStrategizer {
 			//r.AIEconomicWoodScore = r.AIEconomicWoodScore / bestWoodValue;
 			//r.AIEconomicGoldScore = r.AIEconomicGoldScore / bestGoldValue;
 			//r.AIEconomicMetalScore = r.AIEconomicMetalScore / bestMetalValue;
-			r.AIEconomicTotalScore = (r.AIEconomicFoodScore * predictedNeededResources.food) + (r.AIEconomicWoodScore * predictedNeededResources.wood) + (r.AIEconomicGoldScore * predictedNeededResources.gold) + (r.AIEconomicMetalScore * predictedNeededResources.metal);
+			r.AIEconomicTotalScore = ((r.AIEconomicFoodScore * predictedNeededResources.food) + (r.AIEconomicWoodScore * predictedNeededResources.wood) + (r.AIEconomicGoldScore * predictedNeededResources.gold) + (r.AIEconomicMetalScore * predictedNeededResources.metal)) / r.cost.getTotal ();
 
 			if (float.IsNaN (r.AIEconomicTotalScore)) {
 				GameManager.print (r.name + " NaN ERROR");
@@ -129,7 +129,7 @@ public class EconomicConstructionStrategizer {
 			//r.AIEconomicWoodScore = r.AIEconomicWoodScore / bestWoodValue;
 			//r.AIEconomicGoldScore = r.AIEconomicGoldScore / bestGoldValue;
 			//r.AIEconomicMetalScore = r.AIEconomicMetalScore / bestMetalValue;
-			r.AIEconomicTotalScore = (r.AIEconomicFoodScore * predictedNeededResources.food) + (r.AIEconomicWoodScore * predictedNeededResources.wood) + (r.AIEconomicGoldScore * predictedNeededResources.gold) + (r.AIEconomicMetalScore * predictedNeededResources.metal);
+			r.AIEconomicTotalScore = ((r.AIEconomicFoodScore * predictedNeededResources.food) + (r.AIEconomicWoodScore * predictedNeededResources.wood) + (r.AIEconomicGoldScore * predictedNeededResources.gold) + (r.AIEconomicMetalScore * predictedNeededResources.metal)) / r.cost.getTotal ();
 
 			if (float.IsNaN (r.AIEconomicTotalScore)) {
 				GameManager.print (r.name + " NaN ERROR");
@@ -137,31 +137,8 @@ public class EconomicConstructionStrategizer {
 			}
 		}
 
-		//Step 3 - Apply AIPersonality to the values generated in step 2
-		if (ai.personality != null) {
-			foreach (var r in ai.personality.personalityTraits) {
-				bool processed = false;
-				foreach (var v in ai.player.playerRace.unitTypes) {
-					if (v.name == r.target) {
-						v.AICombatScore *= r.modifier;
-						processed = true;
-						break;
-					}
-				}
 
-				if (processed == false) {
-					foreach (var v in ai.player.playerRace.researchTypes) {
-						if (v.name == r.target) {
-							v.AICombatScore *= r.modifier;
-							break;
-						}
-					}
-				}
-			}
-		}
-
-
-		//Step 4 - Convert values for unprerequisited objects into values for their prereqs
+		//Step 3 - Convert values for unprerequisited objects into values for their prereqs
 		bool prereqDistributionDone = false;
 		while (prereqDistributionDone == false) {
 			prereqDistributionDone = true;
@@ -217,6 +194,35 @@ public class EconomicConstructionStrategizer {
 						}
 						r.AIEconomicTotalScore = 0;
 					}
+				}
+			}
+		}
+
+
+		//Step 4 - Apply AIPersonality to the values generated in step 2
+		if (ai.personality != null) {
+			foreach (var r in ai.personality.personalityTraits) {
+				bool processed = false;
+				foreach (var v in ai.player.playerRace.unitTypes) {
+					if (v.name == r.target) {
+						v.AIEconomicTotalScore *= r.modifier;
+						processed = true;
+						break;
+					}
+				}
+
+				if (processed == false) {
+					foreach (var v in ai.player.playerRace.researchTypes) {
+						if (v.name == r.target) {
+							v.AIEconomicTotalScore *= r.modifier;
+							processed = true;
+							break;
+						}
+					}
+				}
+
+				if (processed == false) {
+					GameManager.print ("AIPersonality Trait unidentified - " + r.target);
 				}
 			}
 		}
@@ -309,7 +315,7 @@ public class EconomicConstructionStrategizer {
 					foreach (var e in research.effects) {
 						if (e.targetObjectType == "Unit") {
 							if (r.unit.GetType ().GetProperty (e.targetVariableIdentifier) != null) {
-								if ((string)r.unit.GetType ().GetProperty (e.targetVariableIdentifier).GetValue (r.unit, null) == e.targetVariableValue) {
+								if ((string)r.unit.GetType ().GetProperty (e.targetVariableIdentifier).GetValue (r.unit, null).ToString () == e.targetVariableValue) {
 									if (e.effectVariableIdentifier == identifier) {
 										if (e.effectVariableModifier == "+") {
 											tempGather += e.effectVariableAmount;

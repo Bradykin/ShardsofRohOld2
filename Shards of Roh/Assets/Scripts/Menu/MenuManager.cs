@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
+//Class that handles logic during the Menu Scene. Has a set of functions that are each linked to a different button in the UI. Does not control the escape menu in game.
 public class MenuManager : MonoBehaviour {
 
 	public GameObject menuMain;
@@ -10,14 +11,16 @@ public class MenuManager : MonoBehaviour {
 
 	// Use this for initialization
 	void Start () {
-		menuMain = GameObject.Find ("MenuMain");
+		GlobalVariables.setup ();
+
+		//menuMain = GameObject.Find ("MenuMain");
 		if (menuMain == null) {
 			print ("Can't find Main Menu - MenuManager");
 		} else {
 			menuMain.SetActive (true);
 		}
 
-		menuOptions = GameObject.Find ("MenuOptions");
+		//menuOptions = GameObject.Find ("MenuOptions");
 		if (menuOptions == null) {
 			print ("Can't find Menu Options - MenuManager");
 		} else {

@@ -10,6 +10,8 @@ public class CityHall : Building {
 		race = "Humans";
 		owner = _owner;
 		health = 1000;
-		cost = new Resource (0, 0, 50, 0);
+		cost = new Resource (0, 350, 50, 0);
+
+		neededResearch.Add ("Age3");
 	}
 }
